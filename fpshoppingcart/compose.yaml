@@ -4,13 +4,10 @@ services:
     image: mysql:8.0
     command: --default-authentication-plugin=caching_sha2_password
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: shoppingCartDB
-      MYSQL_USER: keycloak
-      MYSQL_PASSWORD: keycloak
+    env_file:
+      - mysql.env
     ports:
-      - "3310:3306"
+      - "${PORT}:3306"
     networks:
       - dark-scorpion
     volumes:
