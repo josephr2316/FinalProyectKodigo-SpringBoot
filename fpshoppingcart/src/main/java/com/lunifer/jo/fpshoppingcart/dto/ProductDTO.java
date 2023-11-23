@@ -11,5 +11,5 @@ public class ProductDTO {
     private BigDecimal price;
     private int stock;
     private boolean isActive;
-    private CategoryDTO category;
+    private CategoryDTO categoryDTO;
 }
