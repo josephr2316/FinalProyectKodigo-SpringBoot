@@ -1,4 +1,14 @@
-package com.lunifer.jo.fpshoppingcart.service.impl;
+package com.lunifer.jo.fpshoppingcart.service;
 
-public class ProductService {
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import java.util.List;
+
+
+public interface ProductService {
+    ProductDTO saveProduct(ProductDTO productDTO);
+    List<ProductDTO> getAllProducts();
+    ProductDTO getProductById(long productId);
+    ProductDTO updateProduct(ProductDTO productDTO, long productId);
+    void deleteProduct(long productId);
+
 }
