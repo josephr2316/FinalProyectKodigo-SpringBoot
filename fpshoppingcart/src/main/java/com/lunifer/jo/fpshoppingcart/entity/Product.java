@@ -33,4 +33,8 @@ public class Product {
     @Column(columnDefinition = "boolean default true")
     private boolean isActive;
 
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Category category;
+
 }
