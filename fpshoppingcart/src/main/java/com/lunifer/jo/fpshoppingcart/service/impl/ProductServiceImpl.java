@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import java.util.List;
 @Service
@@ -26,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllProducts() {
-        return StreamSupport.stream(productRepository.findAll().spliterator(), false)
+        return productRepository.findAll().stream()
                 .map(productMapper::productEntityToProductDTO)
                 .collect(Collectors.toList());
     }
