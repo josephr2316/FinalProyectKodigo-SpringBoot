@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
@@ -16,11 +17,14 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final CategoryMapper categoryMapper;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
+                              CategoryMapper categoryMapper) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.categoryMapper = categoryMapper;
     }
 
     @Override
@@ -49,8 +53,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setPrice(productDTO.getPrice());
         existingProduct.setStock(productDTO.getStock());
         existingProduct.setActive(productDTO.isActive());
-        // Implement category
-        //existingProduct.g
+        existingProduct.setCategory(categoryMapper.categoryDTOToCategoryEntity(productDTO.getCategoryDTO()));
 
         // 3. Save the updated productEntity back to the database
         Product updatedProductEntity = productRepository.save(existingProduct);
@@ -75,6 +78,13 @@ public class ProductServiceImpl implements ProductService {
                 productRepository.save(productMapper.productDTOToProductEntity(productDTO)));*/
     }
 
+    @Override
+    public void deleteProduct(long productId) {
+        // Throw exception
+        productRepository.findById(productId).orElseThrow();
+        productRepository.deleteById(productId);
+    }
+
     private void validateProductDTO(ProductDTO productDTO) {
 
         // Check if product name is not null and not empty
@@ -92,21 +102,14 @@ public class ProductServiceImpl implements ProductService {
             throw new IllegalArgumentException("Stock cannot be negative");
         }
 
-        // Example: Check if the category is provided (assuming you have a CategoryDTO in ProductDTO)
-        if (productDTO.getCategory() == null) {
+        // Check if the category is provided (assuming you have a CategoryDTO in ProductDTO)
+        if (productDTO.getCategoryDTO() == null) {
             throw new IllegalArgumentException("Product category is required");
         }
 
-        // Example: Check if the category name is not null and not empty
+        // Check if the category name is not null and not empty
        /* if (productDTO.getCategory().getCategoryName() == null || productDTO.getCategory().getCategoryName().trim().isEmpty()) {
             throw new IllegalArgumentException("Category name cannot be null or empty");
         }*/
-    }
-
-    @Override
-    public void deleteProduct(long productId) {
-        // Throw exception
-        productRepository.findById(productId).orElseThrow();
-        productRepository.deleteById(productId);
     }
 }

@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -32,5 +31,9 @@ public class Product {
 
     @Column(columnDefinition = "boolean default true")
     private boolean isActive;
+
+    @JoinColumn(nullable = false)
+    @ManyToOne
+    private Category category;
 
 }
