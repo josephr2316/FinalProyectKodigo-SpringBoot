@@ -14,8 +14,9 @@ public class Review {
     @Column(updatable=false)
     private long reviewId;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productId")
+    private Product product;
 
     @Column(nullable = false)
     private long userId;

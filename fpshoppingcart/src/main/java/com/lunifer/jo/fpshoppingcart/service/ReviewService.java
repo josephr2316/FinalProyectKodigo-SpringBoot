@@ -5,7 +5,7 @@ import com.lunifer.jo.fpshoppingcart.dto.ReviewDTO;
 import java.util.List;
 
 public interface ReviewService {
-    ReviewDTO saveReview(ReviewDTO reviewDTO, long productId);
-    void deleteReview(long reviewId, long productId);
+    void saveReview(ReviewDTO reviewDTO, long productId);
+    void deleteReview(long reviewId);
     List<ReviewDTO> getAllReviewsByProductId(long productId);
 }
