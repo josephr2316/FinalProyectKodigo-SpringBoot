@@ -11,9 +11,9 @@ public interface ReviewMapper {
 
     ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
 
-    @Mapping(source = "productId", target = "productId")
+    @Mapping(target = "productId", source = "product.productId")
     ReviewDTO reviewEntityToReviewDTO(Review reviewEntity);
 
-    @Mapping(source = "productId", target = "productId")
+    @Mapping(target = "product.productId", source = "productId")
     Review reviewDTOToReviewEntity(ReviewDTO reviewDTO);
 }
