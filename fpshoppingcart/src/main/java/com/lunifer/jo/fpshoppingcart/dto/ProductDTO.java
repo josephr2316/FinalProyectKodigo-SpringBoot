@@ -1,5 +1,4 @@
 package com.lunifer.jo.fpshoppingcart.dto;
-import jdk.jfr.Category;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,5 +11,5 @@ public class ProductDTO {
     private BigDecimal price;
     private int stock;
     private boolean isActive;
-    private Category category;
+    private CategoryDTO categoryDTO;
 }
