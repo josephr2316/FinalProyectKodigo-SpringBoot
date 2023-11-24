@@ -1,8 +1,11 @@
 package com.lunifer.jo.fpshoppingcart.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
 
+@Data
 public class ShoppingCartDTO {
 
     private Long cartId;
