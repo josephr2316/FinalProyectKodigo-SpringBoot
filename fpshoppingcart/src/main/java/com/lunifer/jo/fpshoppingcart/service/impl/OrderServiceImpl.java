@@ -15,20 +15,24 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private final OrderRepository orderRepository;
+
     @Autowired
-    private OrderRepository orderRepository;
+    public OrderServiceImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     @Override
     public OrderDTO getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
-        return OrderMapper.mapToOrderDTO(order);
+        return OrderMapper.INSTANCE.orderEntityToOrderDTO(order);
     }
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        Order newOrder = OrderMapper.mapToOrderEntity(orderDTO);
+        Order newOrder = OrderMapper.INSTANCE.orderDTOToOrderEntity(orderDTO);
         Order savedOrder = orderRepository.save(newOrder);
-        return OrderMapper.mapToOrderDTO(savedOrder);
+        return OrderMapper.INSTANCE.orderEntityToOrderDTO(savedOrder);
     }
 
     @Override
@@ -36,21 +40,22 @@ public class OrderServiceImpl implements OrderService {
         Order existingOrder = orderRepository.findById(orderId).orElse(null);
 
         if (existingOrder != null) {
-            // Convertir la lista de ProductDTO a Product utilizando el OrderMapper
+            // Convert the list of ProductDTO to Product using OrderMapper
             List<Product> productList = orderDTO.getProductList().stream()
-                    .map(productDTO -> (Product) OrderMapper.mapToProductEntity(productDTO))
-                    .toList();
-            // Actualizar productos
-//            existingOrder.setProductList(productList);
+                    .map(productDTO -> OrderMapper.INSTANCE.mapToProductEntity(productDTO))
+                    .collect(Collectors.toList());
 
-            // Actualizar hora
+            // Update products
+            existingOrder.setProductList(productList);
+
+            // Update order date
             existingOrder.setOrderDate(orderDTO.getOrderDate());
 
-            // Actualizar estado
+            // Update status
             existingOrder.setStatus(orderDTO.getStatus());
 
             Order updatedOrder = orderRepository.save(existingOrder);
-            return OrderMapper.mapToOrderDTO(updatedOrder);
+            return OrderMapper.INSTANCE.orderEntityToOrderDTO(updatedOrder);
         } else {
             return null;
         }
@@ -65,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
-                .map(OrderMapper::mapToOrderDTO)
+                .map(OrderMapper.INSTANCE::orderEntityToOrderDTO)
                 .collect(Collectors.toList());
     }
 }
