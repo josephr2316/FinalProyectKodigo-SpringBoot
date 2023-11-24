@@ -7,7 +7,7 @@ services:
     env_file:
       - mysql.env
     ports:
-      - "${PORT}:3306"
+      - "3310:3306"
     networks:
       - dark-scorpion
     volumes:

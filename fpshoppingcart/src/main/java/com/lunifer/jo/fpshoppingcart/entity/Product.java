@@ -33,4 +33,7 @@ public class Product {
     @Column(columnDefinition = "boolean default true")
     private boolean isActive;
 
+  @ManyToOne
+  @JoinColumn (nullable = false)
+  private ShoppingCart shoppingCart;
 }

@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
                     .map(productDTO -> (Product) OrderMapper.mapToProductEntity(productDTO))
                     .collect(Collectors.toList());
             // Actualizar productos
-            existingOrder.setProductList(productList);
+//            existingOrder.setProductList(productList);
 
             // Actualizar hora
             existingOrder.setOrderDate(orderDTO.getOrderDate());
