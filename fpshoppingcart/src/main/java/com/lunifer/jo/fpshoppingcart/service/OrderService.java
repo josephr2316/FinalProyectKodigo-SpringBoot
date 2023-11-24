@@ -1,6 +1,6 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
-import com.lunifer.jo.fpshoppingcart.entity.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 
 import java.util.List;
 

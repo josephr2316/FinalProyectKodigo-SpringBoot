@@ -1,4 +1,4 @@
-package com.lunifer.jo.fpshoppingcart.repositories;
+package com.lunifer.jo.fpshoppingcart.repository;
 
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;

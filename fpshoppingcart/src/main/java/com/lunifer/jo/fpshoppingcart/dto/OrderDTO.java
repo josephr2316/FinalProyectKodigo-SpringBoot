@@ -1,8 +1,7 @@
-package com.lunifer.jo.fpshoppingcart.entity;
+package com.lunifer.jo.fpshoppingcart.dto;
 
+import com.lunifer.jo.fpshoppingcart.entity.OrderStatus;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;

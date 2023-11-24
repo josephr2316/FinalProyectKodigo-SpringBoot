@@ -1,9 +1,9 @@
-package com.lunifer.jo.fpshoppingcart.mappers;
+package com.lunifer.jo.fpshoppingcart.mapper;
 
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
-import com.lunifer.jo.fpshoppingcart.entity.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
-import com.lunifer.jo.fpshoppingcart.entity.ProductDTO;
 import org.modelmapper.ModelMapper;
 
 public interface OrderMapper {

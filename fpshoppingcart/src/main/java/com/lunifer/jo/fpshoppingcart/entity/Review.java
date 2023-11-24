@@ -1,9 +1,12 @@
 package com.lunifer.jo.fpshoppingcart.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Review {
     @Id

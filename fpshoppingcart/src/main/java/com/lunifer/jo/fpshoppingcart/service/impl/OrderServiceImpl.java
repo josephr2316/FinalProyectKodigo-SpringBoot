@@ -1,10 +1,11 @@
-package com.lunifer.jo.fpshoppingcart.service;
+package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.entity.Order;
-import com.lunifer.jo.fpshoppingcart.entity.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
-import com.lunifer.jo.fpshoppingcart.repositories.OrderRepository;
-import com.lunifer.jo.fpshoppingcart.mappers.OrderMapper;
+import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
+import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
+import com.lunifer.jo.fpshoppingcart.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
             // Convertir la lista de ProductDTO a Product utilizando el OrderMapper
             List<Product> productList = orderDTO.getProductList().stream()
                     .map(productDTO -> (Product) OrderMapper.mapToProductEntity(productDTO))
-                    .collect(Collectors.toList());
+                    .toList();
             // Actualizar productos
 //            existingOrder.setProductList(productList);
 
