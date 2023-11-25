@@ -34,7 +34,7 @@ public class User {
     private String password;
 
     //role:Enum
-    private Boolean isActive;
+    private boolean isActive;
 
     private List<Order> orderHistory;
 
