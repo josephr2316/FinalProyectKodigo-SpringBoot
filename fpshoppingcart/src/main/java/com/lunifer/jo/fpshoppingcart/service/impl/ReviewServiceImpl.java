@@ -8,12 +8,13 @@ import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@Service // Le falto esto a Luis
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;

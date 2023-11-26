@@ -1,7 +1,7 @@
-package com.lunifer.jo.fpshoppingcart.service;
+package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.entity.User;
-import com.lunifer.jo.fpshoppingcart.repository.UserService;
 import com.lunifer.jo.fpshoppingcart.security.auth.AuthResponse;
+import com.lunifer.jo.fpshoppingcart.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -16,7 +16,6 @@ import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,11 +96,7 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
     public Boolean validateToken(String token){
         return !isTokenExpired(token);
     }
-
-
-
 }
