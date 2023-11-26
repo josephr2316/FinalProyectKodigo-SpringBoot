@@ -20,12 +20,14 @@ public class Invoice {
     @Column(updatable=false)
     private Long invoiceId;
 
-    @OneToOne
-    @JoinColumn(name = "orderId")
+    @OneToOne(mappedBy = "invoice")
+    @JoinColumn()
+    //@JoinColumn(name = "orderId")
     private Order order;
 
     @Column(nullable = false)
     private BigDecimal totalAmount;
+
     @Column(nullable = false)
     private LocalDate issueDate;
 

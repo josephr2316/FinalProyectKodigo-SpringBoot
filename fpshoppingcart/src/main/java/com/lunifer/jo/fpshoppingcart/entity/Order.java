@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "orders")
+@Table(name="orders")
 public class Order {
 
     @Id
@@ -23,8 +23,8 @@ public class Order {
 
     @ManyToMany
     @JoinTable(
-            name = "order_product",
-            joinColumns = @JoinColumn(name = "order_id"),
+            name = "orders_product",
+            joinColumns =@JoinColumn(name = "orders_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<Product> productList;
@@ -35,7 +35,11 @@ public class Order {
     private OrderStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    //@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn()
     private User user;
+    @OneToOne
+    @JoinColumn
+    private Invoice invoice;
 
 }

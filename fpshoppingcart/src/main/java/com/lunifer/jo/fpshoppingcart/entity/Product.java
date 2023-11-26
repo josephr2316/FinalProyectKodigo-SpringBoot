@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,6 +36,9 @@ public class Product {
     @ManyToOne
     @JoinColumn (nullable = false)
     private ShoppingCart shoppingCart;
+
+    @ManyToMany(mappedBy = "productList")
+    private List<Order> order;
 
     @JoinColumn(nullable = false)
     @ManyToOne

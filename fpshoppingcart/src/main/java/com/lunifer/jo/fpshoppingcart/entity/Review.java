@@ -15,7 +15,7 @@ public class Review {
     private long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId")
+    @JoinColumn()
     private Product product;
 
     @Column(nullable = false)
@@ -28,6 +28,6 @@ public class Review {
     private boolean likeDislike;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    //@JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 }
