@@ -21,7 +21,7 @@ public class Invoice {
     private Long invoiceId;
 
     @OneToOne(mappedBy = "invoice")
-    @JoinColumn()
+    @JoinColumn(nullable = false)
     //@JoinColumn(name = "orderId")
     private Order order;
 

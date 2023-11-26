@@ -15,19 +15,17 @@ public class Review {
     private long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn()
+    @JoinColumn(nullable = false)
     private Product product;
-
-    @Column(nullable = false)
-    private long userId;
 
     @Column(nullable = false)
     private String comment;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean likeDislike;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     //@JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private User user;
 }

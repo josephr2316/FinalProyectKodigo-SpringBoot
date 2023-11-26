@@ -19,8 +19,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
-    private Long userId;
-
     @ManyToMany
     @JoinTable(
             name = "orders_product",
@@ -29,17 +27,20 @@ public class Order {
     )
     private List<Product> productList;
 
+    @Column(nullable = false)
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status;
 
     @ManyToOne
     //@JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    @JoinColumn()
+    @JoinColumn(nullable = false)
     private User user;
+
     @OneToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Invoice invoice;
 
 }
