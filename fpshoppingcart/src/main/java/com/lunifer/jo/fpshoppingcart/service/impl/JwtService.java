@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,11 @@ public class JwtService {
     private String SECRET;
     @Value("${token.time}")
     private long EXPIRATION_TIME;
-    private UserService userService;
+    private final UserService userService;
+
+    public JwtService(UserService userService){
+        this.userService = userService;
+    }
 
     private final Logger logger =  LoggerFactory.getLogger(JwtService.class);
 
@@ -67,7 +72,7 @@ public class JwtService {
 
         //Getting the user's roles
         User user = userService.findByUsername(username);
-        claims.put("roles", String.join(",", "user.Role"));
+        claims.put("roles", String.join(",", user.getRoles()));
         //
         return createToken(claims, username);
     }
