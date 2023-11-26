@@ -18,7 +18,7 @@ public class Category {
     @Column(nullable = false)
     private String categoryName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)

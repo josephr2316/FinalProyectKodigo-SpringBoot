@@ -33,9 +33,8 @@ public class Product {
     @Column(columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @ManyToOne
-    @JoinColumn (nullable = false)
-    private ShoppingCart shoppingCart;
+    @ManyToMany(mappedBy ="productList")
+    private List<ShoppingCart> shoppingCart;
 
     @ManyToMany(mappedBy = "productList")
     private List<Order> order;
