@@ -33,10 +33,13 @@ public class User {
 
     private String password;
 
-    //role:Enum
+    private UserRol userRol;
+
     private boolean isActive;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Order> orderHistory;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "review")
     private List<Review> reviewHistory;
 }

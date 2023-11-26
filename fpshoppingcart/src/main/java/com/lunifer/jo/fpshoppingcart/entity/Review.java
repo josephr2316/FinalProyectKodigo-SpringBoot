@@ -11,7 +11,7 @@ import lombok.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable=false)
+    @Column(updatable = false)
     private long reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,4 +26,8 @@ public class Review {
 
     @Column(nullable = false)
     private boolean likeDislike;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    private User user;
 }
