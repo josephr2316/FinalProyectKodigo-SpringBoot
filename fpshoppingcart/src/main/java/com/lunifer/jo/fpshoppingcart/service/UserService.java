@@ -14,4 +14,11 @@ public interface UserService {
     UserDTO updateUser(Long userId, UserDTO userDTO);
 
     void deleteUser(Long userId);
+
+    User findByUsername(String username);
+
+    User saveUser(User user);
+
+    void initializeUser();
+
 }

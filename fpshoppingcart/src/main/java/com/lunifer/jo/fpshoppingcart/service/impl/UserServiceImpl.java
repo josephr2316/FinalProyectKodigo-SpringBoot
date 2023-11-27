@@ -16,11 +16,18 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private final UserRepository userRepository;
 
-    @Autowired
     private final UserMapper userMapper;
+
+    private PasswordEncoder passwordE;
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordE){
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.passwordE = passwordE;
+    }
 
     @Override
     public UserDTO saveUser(UserDTO userDTO) {
@@ -69,4 +76,55 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
+     @Bean
+    PasswordEncoder passwordE() {
+        this.passwordE = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+        return this.passwordE;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        logger.info("Querying the user: " + username);
+
+        User user = userRepository.findByUsername(username);
+        if(user==null){
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
+
+        for (String role : user.getRoles()) {
+            logger.info("Role: "+role);
+            roles.add(new SimpleGrantedAuthority(role));
+        }
+
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true, true, true, grantedAuthorities);
+    }
+
+    public void createUser(@NonNull String username, @NonNull String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordE.encode(password));
+
+        this.userRepository.save(user);
+    }
+
+    public void initializeUser() {
+        this.createUser("ada", "ada");
+        this.createUser("maria", "maria");
+    }
+
 }
+
