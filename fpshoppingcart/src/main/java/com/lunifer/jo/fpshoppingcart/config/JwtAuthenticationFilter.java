@@ -62,18 +62,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.info("JWT USER : " + jwtService.extractUsername(jwtToken));
 
             // I can fetch roles from the database, but in a JWT schema, the aim is to be decentralized.
-            // UserDetails userDetails = userService.loadUserByUsername(username);
+             UserDetails userDetails = userService.loadUserByUsername(username);
 
-            UserDetails userDetails = new User(jwtService.extractUsername(jwtToken),"null",true, true, true, true, grantedAuthorityList);
+            //UserDetails userDetails = new User(jwtService.extractUsername(jwtToken),"null",true, true, true, true, grantedAuthorityList);
 
             if (jwtService.validateToken(jwtToken, userDetails) || jwtService.validateToken(jwtToken)) {
 
                 //In case we seek the roles from the database. "
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                //UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        //userDetails, null, userDetails.getAuthorities());
 
                 //Switching directly
-               // UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, grantedAuthorities);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, grantedAuthorityList);
 
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

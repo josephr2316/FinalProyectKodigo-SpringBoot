@@ -3,32 +3,46 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private PasswordEncoder passwordE;
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     public UserServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
     }
+
+    @Bean
+    PasswordEncoder passwordE() {
+        this.passwordE = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+        return this.passwordE;
+    }
+
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
@@ -50,5 +64,18 @@ public class UserServiceImpl implements UserService {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
 
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true, true, true, grantedAuthorities);
+    }
+
+    public void createUser(@NonNull String username, @NonNull String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(passwordE.encode(password));
+
+        this.userRepository.save(user);
+    }
+
+    public void initializeUser() {
+        this.createUser("ada", "ada");
+        this.createUser("maria", "maria");
     }
 }

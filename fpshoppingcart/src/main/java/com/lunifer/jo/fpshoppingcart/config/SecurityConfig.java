@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.PasswordManagementDsl;
@@ -38,6 +39,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+/*    @Bean
+    public DaoAuthenticationProvider getAuthenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+       // authenticationProvider(userService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }*/
+
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -49,12 +58,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChainGeneral(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( authorization -> authorization
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/auth/**")).permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests( authorization ->authorization
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/"))
+                        .permitAll()
+                /*.authorizeHttpRequests( authorization -> authorization
+                        .requestMatchers("/auth").permitAll()
+                        .anyRequest().authenticated()*/
                 )
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                //AbstractAuthenticationFilterConfigurer::permitAll, withDefaults()
+                .httpBasic(Customizer.withDefaults())
+                /*.formLogin(Customizer.withDefaults())
+                .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .permitAll())*/
                 .build();
     }
 

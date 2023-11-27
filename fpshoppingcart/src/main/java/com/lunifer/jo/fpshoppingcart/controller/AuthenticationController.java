@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/auth")
+@RequestMapping(path = "/")
 public class AuthenticationController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
@@ -39,7 +39,7 @@ public class AuthenticationController {
         return "Welcome to our Shopping Cart Application";
     }
 
-    @PostMapping("/auth")
+    @PostMapping("/login")
     public ResponseEntity<AuthResponse> auth(@RequestParam("username") String username, @RequestParam("password") String password){
 
         User user = userRepository.findByUsername(username);
