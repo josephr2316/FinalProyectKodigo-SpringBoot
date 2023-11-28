@@ -2,13 +2,13 @@ package com.lunifer.jo.fpshoppingcart.serviceImpl;
 
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
-import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.service.impl.OrderServiceImpl;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 public class OrderServiceImplTest {
 
     @Mock
