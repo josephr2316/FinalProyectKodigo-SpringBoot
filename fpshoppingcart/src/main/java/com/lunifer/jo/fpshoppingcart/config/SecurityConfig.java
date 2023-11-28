@@ -1,7 +1,6 @@
 package com.lunifer.jo.fpshoppingcart.config;
 
-import com.lunifer.jo.fpshoppingcart.service.UserService;
-import io.jsonwebtoken.Jwt;
+import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +10,10 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.PasswordManagementDsl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,11 +23,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+/*    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserServiceImpl();
+    }*/
+
     @Autowired
-    public SecurityConfig(UserService userService, JwtAuthenticationFilter jwtAuthenticationFilter){
+    public SecurityConfig(UserServiceImpl userService, JwtAuthenticationFilter jwtAuthenticationFilter){
         this.userService = userService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -42,7 +45,7 @@ public class SecurityConfig {
 /*    @Bean
     public DaoAuthenticationProvider getAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-       // authenticationProvider(userService);
+        authenticationProvider(userService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }*/

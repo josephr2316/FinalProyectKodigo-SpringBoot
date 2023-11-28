@@ -1,10 +1,14 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
+import com.lunifer.jo.fpshoppingcart.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService  {
     UserDTO saveUser(UserDTO userDTO);
 
     List<UserDTO> getAllUsers();
@@ -18,6 +22,8 @@ public interface UserService {
     User findByUsername(String username);
 
     User saveUser(User user);
+
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     void initializeUser();
 
