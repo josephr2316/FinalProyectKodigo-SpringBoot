@@ -4,10 +4,14 @@ import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
+import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,11 +35,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
+    public UserResponse getAllUsers(int pageNo, int pageSize) {
+        // Create a Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        // Retrieve a page of users
+        Page<User> userList = userRepository.findAll(pageable);
+
+        // Get content for user object
+        List<User> listOfUsers = userList.getContent();
+
+        List<UserDTO> content = listOfUsers.stream()
                 .map(UserMapper.INSTANCE::userEntityToUserDTO)
                 .collect(Collectors.toList());
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setContent(content);
+        userResponse.setPageNo(userList.getNumber());
+        userResponse.setPageSize(userList.getSize());
+        userResponse.setTotalElements(userList.getTotalElements());
+        userResponse.setTotalPages(userList.getTotalPages());
+        userResponse.setLast(userList.isLast());
+        return userResponse;
     }
 
     @Override

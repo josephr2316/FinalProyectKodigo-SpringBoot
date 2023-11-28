@@ -1,13 +1,14 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
+import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
     UserDTO saveUser(UserDTO userDTO);
 
-    List<UserDTO> getAllUsers();
+    UserResponse getAllUsers(int page, int pageSize);
 
     UserDTO getUserById(Long userId);
 

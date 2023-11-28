@@ -1,6 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
+import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,10 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> userDTOS = userService.getAllUsers();
-        return new ResponseEntity<>(userDTOS, HttpStatus.OK);
+    public UserResponse getAllUsers(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize) {
+        return userService.getAllUsers(pageNo, pageSize);
     }
 
     @GetMapping("{userId}")
