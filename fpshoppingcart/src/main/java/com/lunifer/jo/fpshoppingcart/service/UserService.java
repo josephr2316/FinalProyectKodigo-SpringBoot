@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     UserDTO saveUser(UserDTO userDTO);
 
-    UserResponse getAllUsers(int page, int pageSize);
+    UserResponse getAllUsers(int page, int pageSize, String sortBy, String sortDir);
 
     UserDTO getUserById(Long userId);
 
