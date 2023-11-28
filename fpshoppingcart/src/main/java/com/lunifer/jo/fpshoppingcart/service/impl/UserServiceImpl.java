@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
@@ -39,13 +40,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         return UserMapper.INSTANCE.userEntityToUserDTO(user);
     }
 
     @Override
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
-        User existingUser = userRepository.findById(userId).orElseThrow();
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         existingUser.setFirstName(userDTO.getFirstName());
         existingUser.setLastName(userDTO.getLastName());
@@ -66,7 +69,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        userRepository.delete(user);
     }
 
 }
