@@ -39,8 +39,6 @@ public class Order {
     @JoinColumn(nullable = false)
     private User user;
 
-    @OneToOne
-    @JoinColumn(nullable = false)
-    private Invoice invoice;
+
 
 }

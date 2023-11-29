@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/invoices")
+@RequestMapping("api/invoices")
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
@@ -22,7 +22,7 @@ public class InvoiceController {
         return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/order/{orderId}")
     public ResponseEntity<InvoiceDTO> getInvoiceByOrderId(@PathVariable Long orderId) {
         InvoiceDTO invoice = invoiceService.getInvoiceByOrderId(orderId);
         if (invoice != null) {
