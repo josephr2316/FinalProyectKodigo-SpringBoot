@@ -20,7 +20,7 @@ public class Invoice {
     @Column(updatable=false)
     private Long invoiceId;
 
-    @OneToOne(mappedBy = "invoice")
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     //@JoinColumn(name = "orderId")
     private Order order;
