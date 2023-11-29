@@ -8,11 +8,11 @@ import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-@Service
+@Service // Le falto esto a Luis
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
@@ -24,9 +24,10 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     @Override
-    public void saveReview(ReviewDTO reviewDTO) {
+    public ReviewDTO saveReview(ReviewDTO reviewDTO) {
         Review reviewEntity = reviewMapper.reviewDTOToReviewEntity(reviewDTO);
-        reviewRepository.save(reviewEntity);
+        reviewEntity = reviewRepository.save(reviewEntity);
+        return reviewMapper.reviewEntityToReviewDTO(reviewEntity);
     }
 
     @Override

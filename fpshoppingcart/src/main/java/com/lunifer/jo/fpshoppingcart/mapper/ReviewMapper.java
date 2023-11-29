@@ -6,14 +6,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = ProductMapper.class)
+@Mapper(componentModel = "spring")
 public interface ReviewMapper {
 
-    ReviewMapper INSTANCE = Mappers.getMapper(ReviewMapper.class);
-
     @Mapping(target = "productId", source = "product.productId")
+    @Mapping(target = "userId", source = "user.userId")
     ReviewDTO reviewEntityToReviewDTO(Review reviewEntity);
 
     @Mapping(target = "product.productId", source = "productId")
+    @Mapping(target = "user.userId", source = "userId")
     Review reviewDTOToReviewEntity(ReviewDTO reviewDTO);
 }

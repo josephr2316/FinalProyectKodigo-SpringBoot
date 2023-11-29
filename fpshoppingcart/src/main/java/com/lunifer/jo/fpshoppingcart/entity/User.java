@@ -35,14 +35,15 @@ public class User {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private String userName;
+    private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRol userRol;
+   // @Enumerated(EnumType.STRING)
+   // @Column(nullable = false)
+    @ElementCollection(targetClass = String.class,fetch = FetchType.EAGER)
+    List<String> roles;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
