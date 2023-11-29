@@ -44,7 +44,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice existingInvoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró la factura #: " + invoiceId));
 
-        existingInvoice.setIssueDate(invoiceDTO.getIssueDate());
+
         existingInvoice.setTotalAmount(invoiceDTO.getTotalAmount());
 
         Invoice updatedInvoiceEntity = invoiceRepository.save(existingInvoice);
