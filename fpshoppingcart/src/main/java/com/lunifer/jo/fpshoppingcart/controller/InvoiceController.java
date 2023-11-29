@@ -22,7 +22,7 @@ public class InvoiceController {
         return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/order/{orderId}")
     public ResponseEntity<InvoiceDTO> getInvoiceByOrderId(@PathVariable Long orderId) {
         InvoiceDTO invoice = invoiceService.getInvoiceByOrderId(orderId);
         if (invoice != null) {
