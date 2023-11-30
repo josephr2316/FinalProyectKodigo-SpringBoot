@@ -1,14 +1,14 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
-<<<<<<< HEAD
+//<<<<< HEAD
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-=======
+//=======
 import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
->>>>>>> security-jwt
+//>>>>>>> security-jwt
 
 import java.util.List;
 
