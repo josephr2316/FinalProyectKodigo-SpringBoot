@@ -2,7 +2,9 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
+import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import io.micrometer.common.lang.NonNull;
@@ -10,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +21,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -52,22 +61,44 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream()
+    public UserResponse getAllUsers(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        // Sorting Support
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        // Retrieve a page of users
+        Page<User> userList = userRepository.findAll(pageable);
+
+        // Get content for user object
+        List<User> listOfUsers = userList.getContent();
+
+        List<UserDTO> content = listOfUsers.stream()
                 .map(UserMapper.INSTANCE::userEntityToUserDTO)
                 .collect(Collectors.toList());
+
+        UserResponse userResponse = new UserResponse();
+        userResponse.setContent(content);
+        userResponse.setPageNo(userList.getNumber());
+        userResponse.setPageSize(userList.getSize());
+        userResponse.setTotalElements(userList.getTotalElements());
+        userResponse.setTotalPages(userList.getTotalPages());
+        userResponse.setLast(userList.isLast());
+        return userResponse;
     }
 
     @Override
     public UserDTO getUserById(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         return UserMapper.INSTANCE.userEntityToUserDTO(user);
     }
 
     @Override
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
-        User existingUser = userRepository.findById(userId).orElseThrow();
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         existingUser.setFirstName(userDTO.getFirstName());
         existingUser.setLastName(userDTO.getLastName());
@@ -87,7 +118,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        userRepository.delete(user);
     }
 
     @Override
