@@ -1,4 +1,4 @@
-package com.lunifer.jo.fpshoppingcart.serviceImpl;
+package com.lunifer.jo.fpshoppingcart.serviceImplTest;
 
 import com.lunifer.jo.fpshoppingcart.dto.InvoiceDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Invoice;
