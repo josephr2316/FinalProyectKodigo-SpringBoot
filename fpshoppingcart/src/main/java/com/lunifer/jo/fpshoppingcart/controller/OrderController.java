@@ -57,8 +57,9 @@ public class OrderController {
     public OrderResponse getAllOrders(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "orderId", required = false) String sortBy
+            @RequestParam(value = "sortBy", defaultValue = "orderId", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
     ) {
-        return orderService.getAllOrders(pageNo, pageSize, sortBy);
+        return orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir);
     }
 }
