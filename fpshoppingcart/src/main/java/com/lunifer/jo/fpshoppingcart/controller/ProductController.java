@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -37,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> saveProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO createdProduct = productService.saveProduct(productDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
