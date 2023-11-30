@@ -1,4 +1,4 @@
-package com.lunifer.jo.fpshoppingcart.serviceImpl;
+package com.lunifer.jo.fpshoppingcart.serviceImplTest;
 
 import com.lunifer.jo.fpshoppingcart.dto.ReviewDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +55,7 @@ class ReviewServiceImplTest {
         Review reviewEntityToDelete = new Review();
 
         when(reviewRepository.existsById(reviewId)).thenReturn(true);
-        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(reviewEntityToDelete));
+
 
         reviewService.deleteReview(reviewId);
 
