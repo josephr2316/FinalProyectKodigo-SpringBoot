@@ -3,10 +3,15 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -67,10 +72,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream()
+    public OrderResponse getAllOrders(int pageNo, int pageSize, String sortBy) {
+        // Create a Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+
+        // Retrieve a page of orders
+        Page<Order> orderList = orderRepository.findAll(pageable);
+
+        // Get content for page object
+        List<Order> listOfOrder = orderList.getContent();
+
+        List<OrderDTO> content = listOfOrder.stream()
                 .map(OrderMapper.INSTANCE::orderEntityToOrderDTO)
                 .collect(Collectors.toList());
+
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setContent(content);
+        orderResponse.setPageNo(orderList.getNumber());
+        orderResponse.setPageSize(orderList.getSize());
+        orderResponse.setTotalElements(orderList.getTotalElements());
+        orderResponse.setTotalPages(orderList.getTotalPages());
+        orderResponse.setLast(orderList.isLast());
+        return orderResponse;
     }
 }
