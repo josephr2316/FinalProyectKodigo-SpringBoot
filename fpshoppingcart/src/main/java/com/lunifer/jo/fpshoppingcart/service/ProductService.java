@@ -10,5 +10,6 @@ public interface ProductService {
     ProductDTO getProductById(long productId);
     ProductDTO updateProduct(ProductDTO productDTO, long productId);
     void deleteProduct(long productId);
+     boolean disableProduct(Long productId);
 
 }

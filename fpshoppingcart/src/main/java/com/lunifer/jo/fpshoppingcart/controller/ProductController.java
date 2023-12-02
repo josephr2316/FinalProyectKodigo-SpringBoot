@@ -53,4 +53,19 @@ public class ProductController {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/disable/{productId}")
+    public ResponseEntity<Void> disableProduct(@PathVariable Long productId) {
+        // Call the service method to disable the product and get the result
+        boolean success = productService.disableProduct(productId);
+
+        // Check if the operation was successful
+        if (success) {
+            // If successful, return a response with HTTP status 204 (No Content)
+            return ResponseEntity.noContent().build();
+        } else {
+            // If the product was not found, return a response with HTTP status 404 (Not Found)
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
