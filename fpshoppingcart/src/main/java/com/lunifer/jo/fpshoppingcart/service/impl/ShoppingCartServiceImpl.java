@@ -3,10 +3,15 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
 import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
+import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.ShoppingCartMapper;
 import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +25,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ProductMapper productMapper, ShoppingCartMapper shoppingCartMapper){
+    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ProductMapper productMapper, ShoppingCartMapper shoppingCartMapper) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productMapper = productMapper;
         this.shoppingCartMapper = shoppingCartMapper;
@@ -60,17 +65,37 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
 
-
     @Override
     public void deleteShoppingCart(Long cartId) {
         shoppingCartRepository.deleteById(cartId);
     }
 
     @Override
-    public List<ShoppingCartDTO> getAllShoppingCarts() {
-        List<ShoppingCart> shoppingCarts = shoppingCartRepository.findAll();
-        return shoppingCarts.stream()
+    public ShoppingCartResponse getAllShoppingCarts(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // Create a Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        // Retrieve a page of shoppingCarts
+        Page<ShoppingCart> shoppingCarts = shoppingCartRepository.findAll(pageable);
+
+        // Get content for page object
+        List<ShoppingCart> shoppingCartList = shoppingCarts.getContent();
+
+        List<ShoppingCartDTO> content = shoppingCartList.stream()
                 .map(ShoppingCartMapper.INSTANCE::shoppingCartEntityToShoppingCartDTO)
                 .collect(Collectors.toList());
+
+        ShoppingCartResponse shoppingCartResponse = new ShoppingCartResponse();
+        shoppingCartResponse.setContent(content);
+        shoppingCartResponse.setPageNo(shoppingCarts.getNumber());
+        shoppingCartResponse.setPageSize(shoppingCarts.getSize());
+        shoppingCartResponse.setTotalElements(shoppingCarts.getTotalElements());
+        shoppingCartResponse.setTotalPages(shoppingCarts.getTotalPages());
+        shoppingCartResponse.setLast(shoppingCarts.isLast());
+        return shoppingCartResponse;
     }
 }

@@ -6,6 +6,7 @@ import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ShoppingCartMapper;
+import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
 import com.lunifer.jo.fpshoppingcart.service.impl.ShoppingCartServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -130,15 +135,21 @@ class ShoppingCartServiceImplTest {
 
     @Test
     void testGetAllShoppingCarts() {
-        // Mock data
-        List<ShoppingCart> shoppingCarts = Collections.singletonList(new ShoppingCart());
-        when(shoppingCartRepository.findAll()).thenReturn(shoppingCarts);
-        when(shoppingCartMapper.shoppingCartEntityToShoppingCartDTO(any(ShoppingCart.class))).thenReturn(new ShoppingCartDTO());
 
-        // Call the method to test
-        List<ShoppingCartDTO> result = shoppingCartService.getAllShoppingCarts();
+        List<ShoppingCart> mockShoppingCartList = Arrays.asList();
+        Page<ShoppingCart> mockShoppingCartPage = new PageImpl<>(mockShoppingCartList);
 
-        // Assertions
-        assertNotNull(result);
+        // Mock the repository method
+        when(shoppingCartRepository.findAll(any(Pageable.class))).thenReturn(mockShoppingCartPage);
+
+        // Call the service method
+        ShoppingCartResponse shoppingCartResponse = shoppingCartService.getAllShoppingCarts(0, 10, "cartId", "ASC");
+
+        // Assert the results
+        assertEquals(0, shoppingCartResponse.getPageNo());
+        assertEquals(0, shoppingCartResponse.getPageSize());
+
+
+        assertEquals(mockShoppingCartList.stream().map(ShoppingCartMapper.INSTANCE::shoppingCartEntityToShoppingCartDTO).toList(), shoppingCartResponse.getContent());
     }
 }

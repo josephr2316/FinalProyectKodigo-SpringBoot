@@ -39,10 +39,10 @@ class DTOTest {
         userDTO.setUserId(1L);
         userDTO.setFirstName("Pedro");
         userDTO.setLastName("Perez");
-        userDTO.setEmail("john.doe@example.com");
+        userDTO.setEmail("pPerez@example.com");
         userDTO.setAddress("123 Main St");
         userDTO.setPhoneNumber("123-456-7890");
-        userDTO.setUserName("john_doe");
+        userDTO.setUserName("pe_pe");
         userDTO.setPassword("password");
         userDTO.setActive(true);
         userDTO.setOrderHistory(orderHistory);
@@ -196,7 +196,7 @@ class DTOTest {
 
         assertEquals(1L, userDTO.getUserId());
         assertEquals("Pedro", userDTO.getFirstName());
-        assertEquals("Peres", userDTO.getLastName());
+        assertEquals("Perez", userDTO.getLastName());
         assertEquals("pPerez@example.com", userDTO.getEmail());
         assertEquals("123 Main St", userDTO.getAddress());
         assertEquals("123-456-7890", userDTO.getPhoneNumber());

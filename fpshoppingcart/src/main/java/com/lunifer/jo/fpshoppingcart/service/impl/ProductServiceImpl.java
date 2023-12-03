@@ -76,8 +76,7 @@ public class ProductServiceImpl implements ProductService {
 
         // Map the saved entity back to a DTO and return it
         return productMapper.productEntityToProductDTO(savedProductEntity);
-        /*return productMapper.productEntityToProductDTO(
-                productRepository.save(productMapper.productDTOToProductEntity(productDTO)));*/
+
     }
 
     @Override
@@ -108,11 +107,6 @@ public class ProductServiceImpl implements ProductService {
         if (productDTO.getCategoryDTO() == null) {
             throw new IllegalArgumentException("Product category is required");
         }
-
-        // Check if the category name is not null and not empty
-       /* if (productDTO.getCategory().getCategoryName() == null || productDTO.getCategory().getCategoryName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
-        }*/
     }
 
     @Override

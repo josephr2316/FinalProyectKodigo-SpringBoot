@@ -1,6 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
+import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
 import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,12 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ShoppingCartDTO>> getAllShoppingCarts() {
-        List<ShoppingCartDTO> shoppingCartsDTO = shoppingCartService.getAllShoppingCarts();
-        return ResponseEntity.ok(shoppingCartsDTO);
+    public ShoppingCartResponse getAllShoppingCarts(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "cartId", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        return shoppingCartService.getAllShoppingCarts(pageNo, pageSize, sortBy, sortDir);
     }
 }
