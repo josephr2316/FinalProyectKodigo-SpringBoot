@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.serviceImplTest;
 
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
+import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.service.impl.OrderServiceImpl;
 import org.junit.Test;
@@ -64,6 +65,7 @@ public class OrderServiceImplTest {
         assertNotNull(result);
         verify(orderRepository, times(1)).save(any(Order.class));
     }
+
     @Test
     public void testUpdateOrder() {
         // Arrange
@@ -83,7 +85,7 @@ public class OrderServiceImplTest {
 
         // Assert
         assertNotNull(result);
-        assertEquals(orderDTO.getOrderId(),orderId );
+        assertEquals(orderDTO.getOrderId(), orderId);
 
     }
 
@@ -103,15 +105,20 @@ public class OrderServiceImplTest {
     @Test
     public void testGetAllOrders() {
         // Arrange
+        int pageNo = 0;
+        int pageSize = 10;
+        String sortBy = "orderId";
+        String sortDir = "asc";
+
         List<Order> orders = Collections.singletonList(new Order());
         when(orderRepository.findAll()).thenReturn(orders);
 
         // Act
-        List<OrderDTO> result = orderService.getAllOrders();
+        OrderResponse result = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir);
 
         // Assert
         assertNotNull(result);
-        assertEquals(orders.size(), result.size());
+        assertEquals(orders.size(), result.getContent().size());
         verify(orderRepository, times(1)).findAll();
     }
 }
