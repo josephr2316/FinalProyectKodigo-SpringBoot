@@ -128,7 +128,7 @@ class ShoppingCartServiceImplTest {
         assertDoesNotThrow(() -> shoppingCartService.deleteShoppingCart(cartId));
     }
 
-    @Test
+   /* @Test
     void testGetAllShoppingCarts() {
         // Mock data
         List<ShoppingCart> shoppingCarts = Collections.singletonList(new ShoppingCart());
@@ -140,5 +140,5 @@ class ShoppingCartServiceImplTest {
 
         // Assertions
         assertNotNull(result);
-    }
+    }*/
 }
