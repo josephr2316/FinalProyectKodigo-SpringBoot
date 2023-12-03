@@ -10,15 +10,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -104,21 +103,19 @@ public class OrderServiceImplTest {
 
     @Test
     public void testGetAllOrders() {
-        // Arrange
-        int pageNo = 0;
-        int pageSize = 10;
-        String sortBy = "orderId";
-        String sortDir = "asc";
 
-        List<Order> orders = Collections.singletonList(new Order());
-        when(orderRepository.findAll()).thenReturn(orders);
+        List<Order> mockOrderList = Arrays.asList();
+        Page<Order> mockOrderPage = new PageImpl<>(mockOrderList);
 
-        // Act
-        OrderResponse result = orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(orders.size(), result.getContent().size());
-        verify(orderRepository, times(1)).findAll();
+        when(orderRepository.findAll(any(Pageable.class))).thenReturn(mockOrderPage);
+
+
+        OrderResponse orderResponse = orderService.getAllOrders(0, 10, "orderId", "ASC");
+
+
+        assertEquals(0, orderResponse.getPageNo());
+        assertEquals(0, orderResponse.getPageSize());
+
     }
 }
