@@ -1,0 +1,177 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "com.lunifer.jo.fpshoppingcart.serviceImplTest.ProductServiceImplTest",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_520577039 { 
+   	label=lunifer
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_616289404 { 
+   	label=jo
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   CategoryMapperImpl1933045440[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CategoryMapperImpl</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ categoryDTOToCategoryEntity(categoryDTO: CategoryDTO): Category</TD></TR>
+<TR><TD ALIGN="LEFT" >+ categoryEntityToCategoryDTO(category: Category): CategoryDTO</TD></TR>
+<TR><TD ALIGN="LEFT" ># productDTOListToProductList(list: List&lt;ProductDTO&gt;): List&lt;Product&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" ># productDTOToProduct(productDTO: ProductDTO): Product</TD></TR>
+<TR><TD ALIGN="LEFT" ># productListToProductDTOList(list: List&lt;Product&gt;): List&lt;ProductDTO&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" ># productToProductDTO(product: Product): ProductDTO</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ProductMapperImpl1933045440[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ProductMapperImpl</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ productDTOToProductEntity(productDTO: ProductDTO): Product</TD></TR>
+<TR><TD ALIGN="LEFT" >+ productEntityToProductDTO(productEntity: Product): ProductDTO</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ProductServiceImpl1934267768[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ProductServiceImpl</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   categoryMapper: CategoryMapper [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   productMapper: ProductMapper [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   productRepository: ProductRepository [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ deleteProduct(productId: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getProductById(productId: long): ProductDTO</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveProduct(productDTO: ProductDTO): ProductDTO</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateProduct(productDTO: ProductDTO, productId: long): ProductDTO</TD></TR>
+<TR><TD ALIGN="LEFT" >- validateProductDTO(productDTO: ProductDTO)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ProductServiceImplTest1637698696[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ProductServiceImplTest</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   categoryMapper: CategoryMapper [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   productMapper: ProductMapper [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   productRepository: ProductRepository [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   productService: ProductServiceImpl [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ testDeleteProduct()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ testDeleteProduct_ProductNotFound()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ testGetAllProducts()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ testGetProductById()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+ProductServiceImpl1934267768 -> CategoryMapperImpl1933045440[arrowhead=none];
+ProductServiceImpl1934267768 -> ProductMapperImpl1933045440[arrowhead=none];
+ProductServiceImplTest1637698696 -> ProductServiceImpl1934267768[label="productService
+[0..1]"];
+    
+}
+@enduml

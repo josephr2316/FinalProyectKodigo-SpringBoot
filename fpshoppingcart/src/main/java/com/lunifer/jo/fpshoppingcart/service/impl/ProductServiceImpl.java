@@ -6,10 +6,12 @@ import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import java.util.List;
@@ -105,5 +107,19 @@ public class ProductServiceImpl implements ProductService {
         if (productDTO.getCategoryDTO() == null) {
             throw new IllegalArgumentException("Product category is required");
         }
+    }
+
+    @Override
+    @Transactional
+    public boolean disableProduct(Long productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setActive(!product.isActive());
+            return true;
+        }
+
+        return false;
     }
 }

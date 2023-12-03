@@ -9,12 +9,14 @@ import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -84,6 +86,31 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Override
+    @Transactional
+    public boolean disableCategory(long categoryId) {
+        // Try to find the category with the given ID in the database
+        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
+
+        // Check if the category was found
+        if (optionalCategory.isPresent()) {
+            // If the category is found, get its instance
+            Category category = optionalCategory.get();
+
+            // Toggle the 'isActive' attribute (change it to the opposite value)
+            category.setActive(!category.isActive());
+
+            // Since we're using @Transactional, changes will be automatically
+            // saved to the database when the transaction is committed
+
+            // Return true to indicate that the category was successfully disabled
+            return true;
+        }
+
+        // If the category is not found, return false to indicate failure
+        return false;
+    }
+
     public void validateCategoryDTO(CategoryDTO categoryDTO) {
 
         // Check if category name is not null and not empty
@@ -91,4 +118,5 @@ public class CategoryServiceImpl implements CategoryService {
             throw new IllegalArgumentException("Category name cannot be null or empty");
         }
     }
+
 }
