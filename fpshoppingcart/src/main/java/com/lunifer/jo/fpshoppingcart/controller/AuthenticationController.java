@@ -1,21 +1,30 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
+import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.security.auth.AuthRequest;
 import com.lunifer.jo.fpshoppingcart.security.auth.AuthResponse;
 import com.lunifer.jo.fpshoppingcart.service.impl.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 public class AuthenticationController {
@@ -48,7 +57,7 @@ public class AuthenticationController {
         AuthResponse token = jwtService.generateToken(username);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
-    @PostMapping("/generateToken")
+    @PostMapping("/token")
     public AuthResponse authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         logger.info("Request Token Generation: "+authRequest.toString());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
@@ -58,4 +67,22 @@ public class AuthenticationController {
             throw new UsernameNotFoundException("Invalid user...");
         }
     }
+
+    /*@PostMapping("/sign-up")
+    public AuthResponse authenticateAndGetToken(@RequestBody UserDTO UserDTO) {
+        logger.info("Request Token Generation: "+authRequest.toString());
+
+        Set<String> roles = UserDTO.getRoles().stream()
+                .map(role-> RoleEntity.builder()
+                        .name(ERole.valueOf(role))
+                        .build())
+                .collect(Collectors.toSet());
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.username());
+        } else {
+            throw new UsernameNotFoundException("Invalid user...");
+        }
+    }*/
 }

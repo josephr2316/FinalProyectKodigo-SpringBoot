@@ -7,6 +7,7 @@ import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.ShoppingCartMapper;
 import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +34,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDTO getShoppingCartById(Long cartId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findById(cartId).orElse(null);
         return ShoppingCartMapper.INSTANCE.shoppingCartEntityToShoppingCartDTO(shoppingCart);
@@ -46,6 +48,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDTO updateShoppingCart(ShoppingCartDTO shoppingCartDTO, Long cartId) {
         // 1. Check whether the shopping cart with the given ID exists in DB or not
         ShoppingCart existingShoppingCart = shoppingCartRepository.findById(cartId).orElseThrow();
@@ -72,6 +75,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartResponse getAllShoppingCarts(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()

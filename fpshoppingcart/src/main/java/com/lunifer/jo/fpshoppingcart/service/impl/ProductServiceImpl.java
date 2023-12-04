@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::productEntityToProductDTO)
@@ -37,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDTO getProductById(long productId) {
         return productRepository.findById(productId)
                 .map(productMapper::productEntityToProductDTO)
@@ -44,6 +46,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDTO updateProduct(ProductDTO productDTO, long productId) {
         // 1. Check whether the product with the given ID exists in DB or not
         //Throw exception
@@ -110,7 +113,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public boolean disableProduct(Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
 

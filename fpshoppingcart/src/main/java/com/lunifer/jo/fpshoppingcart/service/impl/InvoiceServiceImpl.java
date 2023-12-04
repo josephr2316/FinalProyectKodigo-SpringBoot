@@ -6,6 +6,7 @@ import com.lunifer.jo.fpshoppingcart.mapper.InvoiceMapper;
 import com.lunifer.jo.fpshoppingcart.repository.InvoiceRepository;
 import com.lunifer.jo.fpshoppingcart.service.InvoiceService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +22,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 
     @Override
+
     public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
         Invoice invoice = invoiceMapper.InvoiceDTOToInvoiceEntity(invoiceDTO);
         invoice = invoiceRepository.save(invoice);
@@ -28,6 +30,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    @Transactional
     public InvoiceDTO getInvoiceByOrderId(Long orderId) {
         Invoice invoice = invoiceRepository.findByOrderId(orderId);
 
@@ -39,6 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    @Transactional
     public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO, Long invoiceId) {
 
         Invoice existingInvoice = invoiceRepository.findById(invoiceId)

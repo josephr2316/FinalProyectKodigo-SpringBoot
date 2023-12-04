@@ -89,7 +89,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
     public boolean disableCategory(long categoryId) {
         // Try to find the category with the given ID in the database
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);

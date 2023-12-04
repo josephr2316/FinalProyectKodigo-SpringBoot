@@ -6,6 +6,7 @@ import com.lunifer.jo.fpshoppingcart.mapper.ReviewMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void deleteReview(long reviewId) {
         if (reviewRepository.existsById(reviewId)) {
             reviewRepository.deleteById(reviewId);
@@ -41,6 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public List<ReviewDTO> getAllReviewsByProductId(long productId) {
         List<Review> reviewEntities = reviewRepository.findReviewsByProductId(productId);
         return reviewEntities.stream()

@@ -188,8 +188,8 @@ INSERT INTO orders (order_date, status, user_user_id) VALUES
                                                           ('2023-11-27 13:30:00', 'DELIVERED', 27),
                                                           ('2023-11-28 15:50:00', 'CANCELLED', 28),
                                                           ('2023-11-29 16:25:00', 'DELIVERED', 29),
-                                                          ('2023-11-30 09:35:00', 'DELIVERED', 30),
-                                                          ('2023-12-01 12:15:00', 'PENDING', 31);
+                                                          ('2023-11-30 09:35:00', 'DELIVERED', 30);
+                                                         # ('2023-12-01 12:15:00', 'PENDING', 31);
 
 -- Insert data into the Invoice table with order_order_id
 INSERT INTO invoice (total_amount, issue_date, order_order_id) VALUES
@@ -222,8 +222,8 @@ INSERT INTO invoice (total_amount, issue_date, order_order_id) VALUES
                                                                    (79.99, '2023-01-27', 27),
                                                                    (119.99, '2023-01-28', 28),
                                                                    (69.99, '2023-01-29', 29),
-                                                                   (199.99, '2023-01-30', 30),
-                                                                   (89.99, '2023-01-31', 31);
+                                                                   (199.99, '2023-01-30', 30);
+                                                                   #(89.99, '2023-01-31', 31);
 
 
 -- Insert data into the Order table
@@ -247,10 +247,10 @@ INSERT INTO orders_product (orders_id, product_id) VALUES
 -- Order 9
 (9, 21), (9, 22),
 -- Order 10
-(10, 23), (10, 24),
+(10, 23), (10, 24);
 -- ... Add more entries for other orders ...
 -- Order 31
-(31, 1), (31, 2), (31, 3);
+#(31, 1), (31, 2), (31, 3);
 
 -- Insert data into the Review table
 INSERT INTO review (product_product_id, comment, like_dislike, user_user_id) VALUES
@@ -283,8 +283,8 @@ INSERT INTO review (product_product_id, comment, like_dislike, user_user_id) VAL
                                                                                  (27, 'Not worth the money.', false, 27),
                                                                                  (28, 'Excellent customer service.', true, 28),
                                                                                  (29, 'Quality could be better.', false, 29),
-                                                                                 (30, 'Happy with the purchase.', true, 30),
-                                                                                 (31, 'Average quality.', false, 31);
+                                                                                 (30, 'Happy with the purchase.', true, 30);
+                                                                                 #(31, 'Average quality.', false, 31);
 
 
 -- Insert data into the ShoppingCart table
@@ -350,6 +350,6 @@ INSERT INTO cart_product (cart_id, product_id) VALUES
                                                    (9, 27),
                                                    (10, 28),
                                                    (10, 29),
-                                                   (10, 30),
-                                                   (11, 31);
+                                                   (10, 30);
+                                                   #(11, 31);
 

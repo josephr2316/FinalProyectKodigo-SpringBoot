@@ -26,7 +26,7 @@ public class UserDTO {
 
     private String password;
 
-    private UserRol userRol;
+    List<String> roles;
 
     private boolean isActive;
 
