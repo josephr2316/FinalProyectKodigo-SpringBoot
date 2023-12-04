@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
 import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
@@ -36,7 +37,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     @Transactional
     public ShoppingCartDTO getShoppingCartById(Long cartId) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findById(cartId).orElse(null);
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("ShoppingCart", "id", cartId));
         return ShoppingCartMapper.INSTANCE.shoppingCartEntityToShoppingCartDTO(shoppingCart);
     }
 
@@ -51,7 +53,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     public ShoppingCartDTO updateShoppingCart(ShoppingCartDTO shoppingCartDTO, Long cartId) {
         // 1. Check whether the shopping cart with the given ID exists in DB or not
-        ShoppingCart existingShoppingCart = shoppingCartRepository.findById(cartId).orElseThrow();
+        ShoppingCart existingShoppingCart = shoppingCartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("ShoppingCart", "id", cartId));
 
         // 2. Map the updated fields from shoppingCartDTO to the existing shoppingCartEntity
         existingShoppingCart.setProductList(
