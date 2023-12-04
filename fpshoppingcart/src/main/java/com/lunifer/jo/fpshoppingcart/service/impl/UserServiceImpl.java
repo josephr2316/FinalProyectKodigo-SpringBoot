@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,12 +48,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
     }
-    @Bean
-    PasswordEncoder passwordE() {
-        this.passwordE = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-        return this.passwordE;
-    }
-
     @Override
     public UserDTO saveUser(UserDTO userDTO) {
         User user = UserMapper.INSTANCE.userDTOToUserEntity(userDTO);
@@ -124,6 +119,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -134,6 +130,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("Querying the user: " + username);
 

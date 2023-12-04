@@ -47,6 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::categoryEntityToCategoryDTO)
@@ -54,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDTO getCategoryById(long categoryId) {
         return categoryRepository.findById(categoryId)
                 .map(categoryMapper::categoryEntityToCategoryDTO)

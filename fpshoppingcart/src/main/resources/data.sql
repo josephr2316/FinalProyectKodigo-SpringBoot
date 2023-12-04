@@ -92,7 +92,7 @@ INSERT INTO product (product_name, description, price, stock, is_active, categor
 
 -- Insert data into the User table
 INSERT INTO user (first_name, last_name, email, address, phone_number, username, password, is_active) VALUES
-                                                                                                          ('John', 'Doe', 'john.doe@email.com', '123 Main St', '123-456-7890', 'johndoe', '$2a$10$FAKV3E7H8SscklTPU64y6eC6Cml.Vvo1.gZd6R9JTFNJz9JIEvviG', true),
+                                                                                                          ('John', 'Doe', 'john.doe@email.com', '123 Main St', '123-456-7890', 'josephr2316', '$2a$10$kjY0zxBvcsu7Yu9n2yt/s.YZK8WLnOWrIHgEz1cfms.EPCVnyiXkK', true),
                                                                                                           ('Jane', 'Doe', 'jane.doe@email.com', '456 Oak St', '987-654-3210', 'janedoe', '$2a$10$FAKV3E7H8SscklTPU64y6eC6Cml.Vvo1.gZd6R9JTFNJz9JIEvviG', true),
                                                                                                           ('Alice', 'Smith', 'alice.smith@email.com', '789 Elm St', '555-123-4567', 'alicesmith', '$2a$10$FAKV3E7H8SscklTPU64y6eC6Cml.Vvo1.gZd6R9JTFNJz9JIEvviG', true),
                                                                                                           ('Bob', 'Johnson', 'bob.johnson@email.com', '987 Pine St', '111-222-3333', 'bobjohnson', '$2a$10$FAKV3E7H8SscklTPU64y6eC6Cml.Vvo1.gZd6R9JTFNJz9JIEvviG', true),
@@ -121,8 +121,8 @@ INSERT INTO user (first_name, last_name, email, address, phone_number, username,
                                                                                                           ('Ella', 'Moore', 'ella.moore@example.com', '789 Oak St, Townsville', '999-888-7777', 'ella_moore', '$2a$10$OMZ3qlmxuN4j7d3V7bTr3e0ss/Tp5JFzhqZFljfnP.CdLwO3opniW',  true),
                                                                                                           ('Benjamin', 'Smith', 'benjamin.smith@example.com', '101 Pine St, Villagetown', '111-222-3333', 'benjamin_smith', '$2a$10$OMZ3qlmxuN4j7d3V7bTr3e0ss/Tp5JFzhqZFljfnP.CdLwO3opniW',  true),
                                                                                                           ('Emma', 'Taylor', 'emma.taylor@example.com', '555 Oak St, Townsville', '222-333-4444', 'emma_taylor', '$2a$10$OMZ3qlmxuN4j7d3V7bTr3e0ss/Tp5JFzhqZFljfnP.CdLwO3opniW',  true),
-                                                                                                          ('Lucas', 'Miller', 'lucas.miller@example.com', '789 Cedar St, Hamletville', '444-555-6666', 'lucas_miller', '$2a$10$OMZ3qlmxuN4j7d3V7bTr3e0ss/Tp5JFzhqZFljfnP.CdLwO3opniW', true),
-                                                                                                          ('Ava', 'Anderson', 'ava.anderson@example.com', '456 Pine St, Villagetown', '111-222-3333', 'ava_anderson', '$2a$10$OMZ3qlmxuN4j7d3V7bTr3e0ss/Tp5JFzhqZFljfnP.CdLwO3opniW', true);
+                                                                                                          ('Lucas', 'Miller', 'lucas.miller@example.com', '789 Cedar St, Hamletville', '444-555-6666', 'lucas_miller', '$2a$10$OMZ3qlmxuN4j7d3V7bTr3e0ss/Tp5JFzhqZFljfnP.CdLwO3opniW', true);
+
 
 INSERT INTO user_roles (user_user_id, roles) VALUES
                                                  (1, 'USER'),
@@ -154,8 +154,7 @@ INSERT INTO user_roles (user_user_id, roles) VALUES
                                                  (27, 'USER'),
                                                  (28, 'USER'),
                                                  (29, 'USER'),
-                                                 (30, 'USER'),
-                                                 (31, 'USER');
+                                                 (30, 'USER');
 
 
 -- Insert data into the orders_product join table for the product list
@@ -319,8 +318,7 @@ INSERT INTO shopping_cart (user_user_id, total_price) VALUES
                                                           (27, 150.75),
                                                           (28, 55.50),
                                                           (29, 80.25),
-                                                          (30, 125.75),
-                                                          (31, 65.00);
+                                                          (30, 125.75);
 -- Insert data into the cart_product table
 INSERT INTO cart_product (cart_id, product_id) VALUES
                                                    (1, 1),

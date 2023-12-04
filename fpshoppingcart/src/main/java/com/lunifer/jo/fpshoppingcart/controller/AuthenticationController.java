@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/")
 public class AuthenticationController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
