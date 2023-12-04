@@ -34,7 +34,7 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @JoinColumn(nullable = false)
     private User user;

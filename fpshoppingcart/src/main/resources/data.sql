@@ -1,4 +1,4 @@
--- Insert data into the Category table
+USE DATABASE shoppingCartDB;
 INSERT INTO category (category_name, is_active) VALUES
                                                     ('Electronics', true),
                                                     ('Clothing', true),
