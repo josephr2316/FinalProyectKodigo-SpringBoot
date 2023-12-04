@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
@@ -30,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(productMapper::productEntityToProductDTO)
@@ -37,17 +40,20 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDTO getProductById(long productId) {
         return productRepository.findById(productId)
                 .map(productMapper::productEntityToProductDTO)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
     }
 
     @Override
+    @Transactional
     public ProductDTO updateProduct(ProductDTO productDTO, long productId) {
         // 1. Check whether the product with the given ID exists in DB or not
         //Throw exception
-        Product existingProduct = productRepository.findById(productId).orElseThrow();
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
 
         // 2. Map the updated fields from productDTO to the existing productEntity
         existingProduct.setProductName(productDTO.getProductName());
@@ -82,7 +88,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(long productId) {
         // Throw exception
-        productRepository.findById(productId).orElseThrow();
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
         productRepository.deleteById(productId);
     }
 
@@ -110,7 +117,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public boolean disableProduct(Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
 

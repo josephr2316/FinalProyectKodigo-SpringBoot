@@ -12,10 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class FPShoppingCartApplication {
 
 	public static void main(String[] args) {
-		//ApplicationContext applicationContext =
 		SpringApplication.run(FPShoppingCartApplication.class, args);
-		//UserServiceImpl userService =  (UserServiceImpl) applicationContext.getBean("userServiceImpl");
-		//userService.initializeUser();
 	}
 
 }

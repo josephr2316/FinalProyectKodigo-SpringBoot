@@ -8,7 +8,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +54,15 @@ public class JwtService {
     }
     public String extractClaim(String token, String name){
         Claims claims = extractAllClaims(token);
+        // Get the claim value as an Object
+        Object claimValue = claims.get(name);
+
+        // Check if the claim value is an ArrayList
+        if (claimValue instanceof ArrayList) {
+            // Handle ArrayList type, e.g., convert it to a String representation
+            // For example, join the elements into a comma-separated string
+            return  claimValue.toString();
+        }
         return claims.get(name, String.class);
     }
 
@@ -85,9 +94,15 @@ public class JwtService {
         Date expirationDate = Date.from(localDateTime.toInstant(ZoneOffset.ofHours(-4)));
         //Generating the GWT
         String jwt =  Jwts.builder()
-                .issuer("PWA-JWT")
-                .claims().empty().add(claims).and()
+                //.issuer("PWA-JWT")
+                //.claims().empty().add(claims).and()
+//                .subject(username)
+//                .expiration(expirationDate)
+//                .signWith(getSignKey())
+//                .compact();
+                .claims().add(claims).and()
                 .subject(username)
+                .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(expirationDate)
                 .signWith(getSignKey())
                 .compact();

@@ -4,6 +4,7 @@ import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Category;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
@@ -28,11 +29,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper,
-                               ProductMapper productMapper){
+                               ProductMapper productMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
         this.productMapper = productMapper;
     }
+
     @Override
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
         // Perform validation or transformation logic before saving to the database
@@ -47,6 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::categoryEntityToCategoryDTO)
@@ -54,17 +57,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDTO getCategoryById(long categoryId) {
         return categoryRepository.findById(categoryId)
                 .map(categoryMapper::categoryEntityToCategoryDTO)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
     }
 
     @Override
     public CategoryDTO updateCategory(CategoryDTO categoryDTO, long categoryId) {
         // 1. Check whether the category with the given ID exists in DB or not
         //Throw exception
-        Category existingCategory = categoryRepository.findById(categoryId).orElseThrow();
+        Category existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         // 2. Map the updated fields from categoryDTO to the existing categoryEntity
         existingCategory.setCategoryName(categoryDTO.getCategoryName());
@@ -81,13 +86,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(long categoryId) {
         // Throw exception
-        categoryRepository.findById(categoryId).orElseThrow();
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         categoryRepository.deleteById(categoryId);
 
     }
 
     @Override
-    @Transactional
     public boolean disableCategory(long categoryId) {
         // Try to find the category with the given ID in the database
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
