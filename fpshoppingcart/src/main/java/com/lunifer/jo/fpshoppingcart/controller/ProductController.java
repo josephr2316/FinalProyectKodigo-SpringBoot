@@ -54,18 +54,20 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/disable/{productId}")
-    public ResponseEntity<Void> disableProduct(@PathVariable Long productId) {
+    @PutMapping("/disable/{productId}")
+    public ResponseEntity<String> disableEnableProduct(@PathVariable Long productId) {
         // Call the service method to disable the product and get the result
-        boolean success = productService.disableProduct(productId);
+        String message = productService.DisableEnableProduct(productId);
 
         // Check if the operation was successful
-        if (success) {
-            // If successful, return a response with HTTP status 204 (No Content)
-            return ResponseEntity.noContent().build();
+        if (message != null) {
+            // If successful, return a response with HTTP status 200 (OK) and the message in the body
+            return ResponseEntity.ok(message);
         } else {
             // If the product was not found, return a response with HTTP status 404 (Not Found)
             return ResponseEntity.notFound().build();
         }
     }
+
+
 }

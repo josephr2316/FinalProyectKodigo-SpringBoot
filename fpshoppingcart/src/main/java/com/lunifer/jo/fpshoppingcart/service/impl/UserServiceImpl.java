@@ -8,6 +8,7 @@ import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import io.micrometer.common.lang.NonNull;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,6 +172,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void initializeUser() {
         this.createUser("ada", "ada","Ada", "Martinez", "adamartinez@gmail.com","Rep Dom", "809-667-8998");
         this.createUser("maria", "maria","Maria", "Perez", "mariaperez@gmail.com","Rep Dom", "809-893-3489");
+    }
+
+    @Override
+    @Transactional
+    public String disableEnableUser(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setActive(!user.isActive());
+
+            // Since we're using @Transactional, changes will be automatically
+            // saved to the database when the transaction is committed
+
+            // Return a message indicating whether the user was successfully disabled or enabled
+            return "User: " + user.getUsername() +
+                    " with ID: " + user.getUserId() +
+                    " has been successfully " + (user.isActive() ? "enabled" : "disabled");
+        } else {
+            throw new EntityNotFoundException("Cannot find user with ID " + userId);
+        }
     }
 
 }

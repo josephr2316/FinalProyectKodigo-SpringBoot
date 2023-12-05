@@ -1,3 +1,6 @@
+
+USE DATABASE shoppingCartDB;
+
 -- Insert data into the User table
 INSERT INTO user (first_name, last_name, email, address, phone_number, username, password, is_active) VALUES
 ('John', 'Doe', 'john.doe@email.com', '123 Main St', '123-456-7890', 'josephr2316', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true),
@@ -33,7 +36,7 @@ INSERT INTO user (first_name, last_name, email, address, phone_number, username,
 ('Grace', 'Martin', 'grace.martin@example.com', '345 Pine St, Villagetown', '555-777-8888', 'grace_martin', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true),
 ('Henry', 'Turner', 'henry.turner@example.com', '678 Elm St, Citytown', '777-999-0000', 'henry_turner', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true);
 
-
+-- Insert data into the roles table
 INSERT INTO user_roles (user_user_id, roles) VALUES
 (1, 'ADMIN'),
 (2, 'BUYER'),

@@ -55,20 +55,19 @@ public class CategoryController {
     }
 
     @PutMapping("/disable/{categoryId}")
-    public ResponseEntity<Void> disableCategory(@PathVariable Long categoryId) {
-        // Call the service method to disable the category and get the result
-        boolean success = categoryService.disableCategory(categoryId);
+    public ResponseEntity<String> disableEnableCategory(@PathVariable Long categoryId) {
+        // Call the service method to disable the category and get the result message
+        String resultMessage = categoryService.disableEnableCategory(categoryId);
 
         // Check if the operation was successful
-        if (success) {
-            // If successful, return a response with HTTP status 204 (No Content)
-            return ResponseEntity.noContent().build();
+        if (resultMessage != null) {
+            // If successful, return a response with HTTP status 200 (OK) and the message in the body
+            return ResponseEntity.ok(resultMessage);
         } else {
             // If the category was not found, return a response with HTTP status 404 (Not Found)
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {

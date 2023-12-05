@@ -10,6 +10,7 @@ import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,8 +94,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
+    @Transactional
     @Override
-    public boolean disableCategory(long categoryId) {
+    public String disableEnableCategory(long categoryId) {
         // Try to find the category with the given ID in the database
         Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
 
@@ -103,19 +105,28 @@ public class CategoryServiceImpl implements CategoryService {
             // If the category is found, get its instance
             Category category = optionalCategory.get();
 
-            // Toggle the 'isActive' attribute (change it to the opposite value)
-            category.setActive(!category.isActive());
+            // Determine the current state of the category before toggling
+            boolean isEnabled = category.isActive();
 
+            // Toggle the 'isActive' attribute (change it to the opposite value)
+            category.setActive(!isEnabled);
+
+            // Disable all products associated with this category (we don´t call disableProduct method to avoid multiple response messages of disabled product
+            if(!category.isActive()){
+                category.getProductList().forEach(product -> product.setActive(false));
+            }
             // Since we're using @Transactional, changes will be automatically
             // saved to the database when the transaction is committed
 
-            // Return true to indicate that the category was successfully disabled
-            return true;
+            // Return a message indicating whether the category was successfully disabled or enabled
+            return "Category: " + category.getCategoryName() + " with ID: " + category.getCategoryId() +
+                    " has been successfully " + (isEnabled ? "disabled" : "enabled");
+        }else {
+            throw new EntityNotFoundException("Cannot find Category with ID " + categoryId);
         }
-
-        // If the category is not found, return false to indicate failure
-        return false;
     }
+
+
 
     public void validateCategoryDTO(CategoryDTO categoryDTO) {
 
