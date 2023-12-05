@@ -68,6 +68,15 @@ public class AuthenticationController {
         }
     }
 
+    @GetMapping("/")
+    public String getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        String roles = authentication.getAuthorities().toString();
+
+        return "Username: " + username + ", Roles: " + roles;
+    }
+
     /*@PostMapping("/sign-up")
     public AuthResponse authenticateAndGetToken(@RequestBody UserDTO UserDTO) {
         logger.info("Request Token Generation: "+authRequest.toString());

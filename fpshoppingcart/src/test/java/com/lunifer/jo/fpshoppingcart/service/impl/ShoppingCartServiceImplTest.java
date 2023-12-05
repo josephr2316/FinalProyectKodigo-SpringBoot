@@ -1,4 +1,3 @@
-/*
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
@@ -135,4 +134,3 @@ class ShoppingCartServiceImplTest {
         verify(shoppingCartMapper).shoppingCartEntityToShoppingCartDTO(shoppingCartEntity);
     }
 }
-*/

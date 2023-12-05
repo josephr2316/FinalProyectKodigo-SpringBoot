@@ -60,7 +60,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
             for (String role : roles.split(",")){
                 logger.info("Filter Role : " + role);
-                grantedAuthorityList.add(new SimpleGrantedAuthority(role));
+                grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_"+role));
             }
             logger.info("JWT USER : " + jwtService.extractUsername(jwtToken));
 
