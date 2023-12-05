@@ -7,6 +7,7 @@ import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -117,15 +118,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public boolean disableProduct(Long productId) {
+    @Transactional
+    public String DisableEnableProduct(Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
 
         if (optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
-            product.setActive(!product.isActive());
-            return true;
-        }
 
-        return false;
+            // Check if the category of the product is not active before allowing the activation of the product
+            if (product.getCategory() != null && !product.getCategory().isActive()) {
+                throw new IllegalStateException("Cannot activate the product '" + product.getProductName() +
+                        "' with ID: " + product.getProductId() +
+                        " because its category '" + product.getCategory().getCategoryName() +
+                        "' with ID: " + product.getCategory().getCategoryId() + " is not active");
+            }
+
+            // Toggle the 'isActive' attribute (change it to the opposite value)
+            product.setActive(!product.isActive());
+
+            // Since we're using @Transactional, changes will be automatically
+            // saved to the database when the transaction is committed
+
+            // Return a message indicating whether the product was successfully disabled or enabled
+            return "Product: " + product.getProductName() + " with ID: " + product.getProductId() +
+                    " has been successfully " + (product.isActive() ? "enabled" : "disabled");
+        } else {
+            throw new EntityNotFoundException("Cannot find product with ID " + productId);
+        }
     }
+
+
 }

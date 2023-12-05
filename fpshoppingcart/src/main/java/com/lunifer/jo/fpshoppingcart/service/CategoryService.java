@@ -1,7 +1,6 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 
 import java.util.List;
 
@@ -11,6 +10,6 @@ public interface CategoryService {
     CategoryDTO getCategoryById(long categoryId);
     CategoryDTO updateCategory(CategoryDTO categoryDTO, long categoryId);
     void deleteCategory(long categoryId);
-    boolean disableCategory(long categoryId);
+    String disableEnableCategory(long categoryId);
 
 }
