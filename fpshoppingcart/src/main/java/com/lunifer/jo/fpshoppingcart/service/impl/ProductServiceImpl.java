@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDTO getProductById(long productId) {
         return productRepository.findById(productId)
-                .map(productMapper::productEntityToProductDTO)
+                .map(this::mapProductToDTOWithCategory)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
     }
 
@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
         Product updatedProductEntity = productRepository.save(existingProduct);
 
         // 4. Map the updated productEntity to a ProductDTO and return it
-        return productMapper.productEntityToProductDTO(updatedProductEntity);
+        return mapProductToDTOWithCategory(updatedProductEntity);
 
     }
 
@@ -83,10 +83,12 @@ public class ProductServiceImpl implements ProductService {
 
         // Map the DTO to an entity and save it to the database
         Product productEntityToSave = productMapper.productDTOToProductEntity(productDTO);
+        productEntityToSave.setCategory(categoryMapper.categoryDTOToCategoryEntity(categoryService.getCategoryById(productDTO.getCategoryId())));
+
         Product savedProductEntity = productRepository.save(productEntityToSave);
 
         // Map the saved entity back to a DTO and return it
-        return productMapper.productEntityToProductDTO(savedProductEntity);
+        return mapProductToDTOWithCategory(savedProductEntity);
 
     }
 
@@ -116,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Check if the category is provided (assuming you have a CategoryDTO in ProductDTO)
-        if (productDTO.getCategoryId() != 0) {
+        if (productDTO.getCategoryId() == 0) {
             throw new IllegalArgumentException("Product category is required");
         }
     }
