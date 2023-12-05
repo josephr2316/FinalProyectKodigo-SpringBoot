@@ -65,6 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDTO updateCategory(CategoryDTO categoryDTO, long categoryId) {
         // 1. Check whether the category with the given ID exists in DB or not
         //Throw exception
