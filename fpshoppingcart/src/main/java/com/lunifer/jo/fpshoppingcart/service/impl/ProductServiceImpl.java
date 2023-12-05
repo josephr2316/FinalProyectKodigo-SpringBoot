@@ -86,6 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Transactional
     @Override
     public void deleteProduct(long productId) {
         // Throw exception

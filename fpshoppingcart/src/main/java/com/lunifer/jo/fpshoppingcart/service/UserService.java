@@ -31,4 +31,6 @@ public interface UserService  {
 
     void initializeUser();
 
+    String disableEnableUser(Long userId);
+
 }
