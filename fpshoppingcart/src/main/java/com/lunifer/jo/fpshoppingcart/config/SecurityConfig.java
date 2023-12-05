@@ -43,8 +43,9 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( authorization ->{
-                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher("/**")).permitAll();
-                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/categories")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll();
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/categories")).hasAuthority("ROLE_ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/categories/**")).hasAuthority("ROLE_ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/categories/**")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/categories/disable/**")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/products")).hasRole("ADMIN");

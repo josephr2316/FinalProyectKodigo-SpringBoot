@@ -54,7 +54,7 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/disable/{categoryId}")
+    @PutMapping("/disable/{categoryId}")
     public ResponseEntity<Void> disableCategory(@PathVariable Long categoryId) {
         // Call the service method to disable the category and get the result
         boolean success = categoryService.disableCategory(categoryId);

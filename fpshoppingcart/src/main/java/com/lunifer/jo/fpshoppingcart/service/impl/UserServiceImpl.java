@@ -145,8 +145,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
 
         for (String role : user.getRoles()) {
-            logger.info("Role: "+role);
-            roles.add(new SimpleGrantedAuthority(role));
+            logger.info("ROLE_"+role);
+            roles.add(new SimpleGrantedAuthority("ROLE_"+role));
         }
 
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
