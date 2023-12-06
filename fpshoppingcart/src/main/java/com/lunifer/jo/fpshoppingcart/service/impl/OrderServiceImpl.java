@@ -132,6 +132,15 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    @Override
+    @Transactional
+    public List<OrderDTO> getAllOrdersByUserId(Long userId) {
+        return orderRepository.findOrdersByUserUserId(userId)
+                .stream()
+                .map(this::mapOrderToDTOWithUser)
+                .toList();
+    }
+
     private OrderDTO mapOrderToDTOWithUser(Order order) {
         OrderDTO orderDTO = orderMapper.orderEntityToOrderDTO(order);
         UserDTO userDTO = userMapper.userEntityToUserDTO(order.getUser());

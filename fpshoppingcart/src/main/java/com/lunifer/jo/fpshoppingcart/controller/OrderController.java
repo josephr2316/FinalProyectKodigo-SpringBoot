@@ -60,15 +60,15 @@ public class OrderController {
             return ResponseEntity.notFound().build();
         }
     }
-/*    @GetMapping("/user{userId}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long userId) {
-        OrderDTO orderDTO = orderService.;
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<OrderDTO>> getOrderByUserId(@PathVariable Long userId) {
+        List<OrderDTO> orderDTO = orderService.getAllOrdersByUserId(userId);
         if (orderDTO != null) {
             return ResponseEntity.ok(orderDTO);
         } else {
             return ResponseEntity.notFound().build();
         }
-    }*/
+    }
 
     @PostMapping()
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {

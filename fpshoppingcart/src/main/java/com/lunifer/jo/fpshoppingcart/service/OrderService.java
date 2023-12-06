@@ -18,4 +18,5 @@ public interface OrderService {
     OrderResponse getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir);
 
     List<OrderDTO> getAllOrdersByUser(User user);
+    List<OrderDTO> getAllOrdersByUserId(Long userId);
 }
