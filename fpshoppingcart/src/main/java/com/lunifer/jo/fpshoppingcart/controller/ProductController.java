@@ -4,7 +4,6 @@ import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
-import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,9 +57,10 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
-        return ResponseEntity.noContent().build();
+        String successMessage = "Product with ID " + productId + " has been successfully deleted.";
+        return ResponseEntity.ok(successMessage);
     }
 
     @PutMapping("/disable/{productId}")

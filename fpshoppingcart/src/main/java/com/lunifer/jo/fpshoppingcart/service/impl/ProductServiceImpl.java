@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
@@ -137,20 +138,24 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Override
+    @Transactional
     public void deleteProduct(long productId) {
-        List<Review> reviewList = reviewRepository.findReviewsByProductId(productId);
-        if (!reviewList.isEmpty()) {
-            reviewList.forEach(review -> reviewRepository.delete(review));
-        }
-
-
-
-        // Delete the product
-        productRepository.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
-        productRepository.deleteById(productId);
+
+        for (Order order : product.getOrder()) {
+            order.getProductList().remove(product);
+        }
+        // Buscar las revisiones asociadas
+        List<Review> reviews = reviewRepository.findReviewsByProductId(productId);
+
+        // Eliminar las revisiones asociadas
+        reviewRepository.deleteAll(reviews);
+
+        // Eliminar el producto
+        productRepository.delete(product);
     }
+
 
     private void validateProductDTO(ProductDTO productDTO) {
 

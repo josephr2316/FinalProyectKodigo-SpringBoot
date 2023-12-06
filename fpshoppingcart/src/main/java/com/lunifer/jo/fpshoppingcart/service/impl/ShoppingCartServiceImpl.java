@@ -3,6 +3,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
 import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
+import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
@@ -24,13 +25,11 @@ import java.util.stream.Collectors;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
-    private final ProductMapper productMapper;
     private final ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
-    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ProductMapper productMapper, ShoppingCartMapper shoppingCartMapper) {
+    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, ShoppingCartMapper shoppingCartMapper) {
         this.shoppingCartRepository = shoppingCartRepository;
-        this.productMapper = productMapper;
         this.shoppingCartMapper = shoppingCartMapper;
     }
 
@@ -59,7 +58,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         // 2. Map the updated fields from shoppingCartDTO to the existing shoppingCartEntity
         existingShoppingCart.setProductList(
                 shoppingCartDTO.getProductList().stream()
-                        .map(productMapper::productDTOToProductEntity)
+                        .map(ProductMapper.INSTANCE::productDTOToProductEntity)
                         .collect(Collectors.toList())
         );
         existingShoppingCart.setTotalPrice(shoppingCartDTO.getTotalPrice());
