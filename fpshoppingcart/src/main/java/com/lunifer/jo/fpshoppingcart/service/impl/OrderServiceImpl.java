@@ -1,11 +1,13 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
+import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +33,15 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
     private final OrderMapper orderMapper;
     private final UserMapper userMapper;
+    private final ProductMapper productMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, UserMapper userMapper, UserService userService) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, UserMapper userMapper, UserService userService, ProductMapper productMapper) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.userMapper = userMapper;
         this.userService = userService;
+        this.productMapper = productMapper;
     }
 
     @Override
@@ -139,6 +144,15 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(this::mapOrderToDTOWithUser)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrderByProducts(List<ProductDTO> productDTOS) {
+        List<Product> products = productDTOS.stream()
+                .map(productMapper::productDTOToProductEntity)
+                .collect(Collectors.toList());
+        orderRepository.deleteAllByProductListIn(products);
     }
 
     private OrderDTO mapOrderToDTOWithUser(Order order) {

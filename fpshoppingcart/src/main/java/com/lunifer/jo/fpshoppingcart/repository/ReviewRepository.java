@@ -1,5 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.repository;
 
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,4 +13,5 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r FROM Review r WHERE r.product.productId = :productId")
     List<Review> findReviewsByProductId(Long productId);
+    void deleteAllByProduct(Product product);
 }

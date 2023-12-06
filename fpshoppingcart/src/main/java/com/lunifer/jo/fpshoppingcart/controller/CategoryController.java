@@ -1,7 +1,9 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
-import com.lunifer.jo.fpshoppingcart.service.CategoryService;
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
+import com.lunifer.jo.fpshoppingcart.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,18 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final ProductService productService;
+    private final ReviewService reviewService;
+    private final OrderService orderService;
+    private final ShoppingCartService shoppingCartService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, ProductService productService, ReviewService reviewService, OrderService orderService, ShoppingCartService shoppingCartService) {
         this.categoryService = categoryService;
+        this.productService = productService;
+        this.reviewService = reviewService;
+        this.orderService = orderService;
+        this.shoppingCartService = shoppingCartService;
     }
 
     @GetMapping
@@ -72,7 +82,13 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-        categoryService.deleteCategory(categoryId);
-        return ResponseEntity.noContent().build();
+
+       List<ProductDTO> products = productService.findAllProductsByCategoryId(categoryId);
+       reviewService.deleteReviewByProducts(products);
+       shoppingCartService.deleteShoppingCartByProducts(products);
+       orderService.deleteOrderByProducts(products);
+       productService.deleteAllByCategoryId(categoryId);
+       categoryService.deleteCategory(categoryId);
+       return ResponseEntity.noContent().build();
     }
 }

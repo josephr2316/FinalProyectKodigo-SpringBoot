@@ -1,5 +1,6 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
@@ -19,4 +20,6 @@ public interface ShoppingCartService {
 
     ShoppingCartResponse getAllShoppingCarts(int pageNo, int pageSize, String sortBy, String sortDir);
     void deleteShoppingCartsForUser(User user);
+    void deleteShoppingCartByProducts(List<ProductDTO> productDTOS);
+
 }

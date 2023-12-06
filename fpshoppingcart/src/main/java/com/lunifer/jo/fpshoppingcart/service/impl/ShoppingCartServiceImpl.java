@@ -1,6 +1,8 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
+import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.net.ContentHandler;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,6 +115,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     public void deleteShoppingCartsForUser(User user) {
         shoppingCartRepository.deleteShoppingCartByUser(user);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteShoppingCartByProducts(List<ProductDTO> productDTOS) {
+        List<Product> products = productDTOS.stream()
+                .map(productMapper::productDTOToProductEntity)
+                .collect(Collectors.toList());
+        shoppingCartRepository.deleteAllByProductListIn(products);
 
     }
 }

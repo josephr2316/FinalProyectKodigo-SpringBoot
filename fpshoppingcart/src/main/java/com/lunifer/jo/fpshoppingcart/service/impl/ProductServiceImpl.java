@@ -12,10 +12,12 @@ import com.lunifer.jo.fpshoppingcart.service.CategoryService;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -136,6 +138,21 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return false;
+    }
+
+    @Override
+    @Transactional
+    public List<ProductDTO> findAllProductsByCategoryId(long category) {
+        return productRepository.findAllByCategoryCategoryId(category)
+                .stream()
+                .map(productMapper::productEntityToProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllByCategoryId(long category) {
+        productRepository.deleteAllByCategoryCategoryId(category);
     }
 
     private ProductDTO mapProductToDTOWithCategory(Product product) {
