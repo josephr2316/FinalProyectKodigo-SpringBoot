@@ -5,6 +5,7 @@ import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
+import com.lunifer.jo.fpshoppingcart.service.InvoiceService;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
 import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
@@ -25,22 +26,30 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final ShoppingCartService shoppingCartService;
+    private final InvoiceService invoiceService;
 
     @Autowired
-    public OrderController(OrderService orderService, ShoppingCartService shoppingCartService, UserService userService) {
+    public OrderController(OrderService orderService, ShoppingCartService shoppingCartService, UserService userService, InvoiceService invoiceService) {
         this.orderService = orderService;
         this.shoppingCartService = shoppingCartService;
         this.userService = userService;
+        this.invoiceService = invoiceService;
     }
-/*    @GetMapping()
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long userId) {
-        OrderDTO orderDTO = orderService.;
+    @GetMapping("/user")
+    public ResponseEntity<List<OrderDTO>> getOrderLoggedUser() {
+        // Get the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Extract username and role from the token
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+       List <OrderDTO> orderDTO = orderService.getAllOrdersByUser(user);
         if (orderDTO != null) {
             return ResponseEntity.ok(orderDTO);
         } else {
             return ResponseEntity.notFound().build();
         }
-    }*/
+    }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
@@ -50,8 +59,8 @@ public class OrderController {
         } else {
             return ResponseEntity.notFound().build();
         }
-/*    }
-    @GetMapping("/{userId}")
+    }
+/*    @GetMapping("/user{userId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long userId) {
         OrderDTO orderDTO = orderService.;
         if (orderDTO != null) {
@@ -86,6 +95,7 @@ public class OrderController {
 
     @DeleteMapping("/{orderId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
+        invoiceService.deleteInvoiceByOrderId(orderId);
         orderService.deleteOrder(orderId);
         return ResponseEntity.noContent().build();
     }

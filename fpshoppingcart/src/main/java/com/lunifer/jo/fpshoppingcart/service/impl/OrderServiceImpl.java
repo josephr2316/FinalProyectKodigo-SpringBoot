@@ -1,7 +1,5 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
-import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
@@ -121,6 +119,16 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setTotalPages(orderList.getTotalPages());
         orderResponse.setLast(orderList.isLast());
         return orderResponse;
+    }
+
+    @Override
+    public List<OrderDTO> getAllOrdersByUser(User user) {
+        return orderRepository.findOrdersByUser(user)
+                .stream()
+                .map(this::mapOrderToDTOWithUser)
+                .toList();
+
+
     }
 
     private OrderDTO mapOrderToDTOWithUser(Order order) {

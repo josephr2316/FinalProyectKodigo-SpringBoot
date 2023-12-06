@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface InvoiceRepository extends JpaRepository<Invoice,Long> {
     @Query("SELECT i FROM Invoice i WHERE i.order.orderId = :orderId")
     Invoice findByOrderId(Long orderId);
+    void deleteInvoiceByOrderOrderId(long orderId);
 }

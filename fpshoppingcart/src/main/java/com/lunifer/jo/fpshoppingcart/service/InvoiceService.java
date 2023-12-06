@@ -8,4 +8,5 @@ public interface InvoiceService {
     public InvoiceDTO getInvoiceByOrderId(Long orderId);
     public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO, Long invoiceId);
     public void deleteInvoice(Long invoiceId);
+    public void deleteInvoiceByOrderId(long orderId);
 }

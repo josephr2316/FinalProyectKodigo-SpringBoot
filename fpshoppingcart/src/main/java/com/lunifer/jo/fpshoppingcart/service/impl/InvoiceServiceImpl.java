@@ -66,4 +66,10 @@ public class InvoiceServiceImpl implements InvoiceService {
         }
 
     }
+
+    @Override
+    @Transactional
+    public void deleteInvoiceByOrderId(long orderId) {
+        invoiceRepository.deleteInvoiceByOrderOrderId(orderId);
+    }
 }
