@@ -7,9 +7,12 @@ import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +35,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
+
+
+    @Value("a")
+    private String jwtSecret;
 
     private final UserRepository userRepository;
 
@@ -193,6 +201,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             throw new EntityNotFoundException("Cannot find user with ID " + userId);
         }
+    }
+
+
+    // Method to extract user from the token
+    @Transactional(readOnly = true)
+    @Override
+    public User getUserFromToken(String token) {
+        String username = extractUsername(token);
+        // Here, call the actual implementation of your user repository
+        return userRepository.findByUsername(username);
+    }
+
+    // Method to extract the username from the token
+    @Override
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    // Generic method to extract information from the token
+    @Override
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    // Method to extract all claims from the token
+    @Override
+    public Claims extractAllClaims(String token) {
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
     }
 
 }
