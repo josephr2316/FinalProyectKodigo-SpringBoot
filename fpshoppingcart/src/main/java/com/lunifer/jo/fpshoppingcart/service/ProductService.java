@@ -8,6 +8,7 @@ public interface ProductService {
     ProductDTO saveProduct(ProductDTO productDTO);
     List<ProductDTO> getAllProducts();
     ProductDTO getProductById(long productId);
+    ProductDTO getProductByName(String productName);
     ProductDTO updateProduct(ProductDTO productDTO, long productId);
     void deleteProduct(long productId);
      String DisableEnableProduct(Long productId);

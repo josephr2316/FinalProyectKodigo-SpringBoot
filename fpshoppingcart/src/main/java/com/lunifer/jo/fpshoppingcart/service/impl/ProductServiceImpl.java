@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,15 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(productId)
                 .map(this::mapProductToDTOWithCategory)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+    }
+
+    @Override
+    @Transactional
+    public ProductDTO getProductByName(String productName) {
+        return productRepository.findByProductName(productName)
+                .map(this::mapProductToDTOWithCategory)
+                .orElseThrow(() -> new NoSuchElementException("Product with name " + productName + " not found"));
+
     }
 
     @Override

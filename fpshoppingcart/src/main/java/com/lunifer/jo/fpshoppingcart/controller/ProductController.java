@@ -1,6 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,16 @@ public class ProductController {
             return ResponseEntity.ok(message);
         } else {
             // If the product was not found, return a response with HTTP status 404 (Not Found)
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/byname/{productName}")
+    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
+        try {
+            ProductDTO productDTO = productService.getProductByName(productName);
+            return ResponseEntity.ok(productDTO);
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.notFound().build();
         }
     }
