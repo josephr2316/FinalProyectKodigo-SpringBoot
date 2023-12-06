@@ -1,13 +1,19 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
+import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
+import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
+import com.lunifer.jo.fpshoppingcart.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,10 +29,16 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final OrderMapper orderMapper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, UserMapper userMapper, UserService userService) {
         this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
+        this.userMapper = userMapper;
+        this.userService = userService;
     }
 
     @Override
@@ -34,14 +46,16 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
-        return OrderMapper.INSTANCE.orderEntityToOrderDTO(order);
+        return mapOrderToDTOWithUser(order);
     }
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order newOrder = OrderMapper.INSTANCE.orderDTOToOrderEntity(orderDTO);
+        newOrder.setUser(userMapper.userDTOToUserEntity(userService.getUserById(orderDTO.getUserId())));
         Order savedOrder = orderRepository.save(newOrder);
-        return OrderMapper.INSTANCE.orderEntityToOrderDTO(savedOrder);
+
+        return mapOrderToDTOWithUser(savedOrder);
     }
 
     @Override
@@ -53,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
         if (existingOrder != null) {
             // Convert the list of ProductDTO to Product using OrderMapper
             List<Product> productList = orderDTO.getProductList().stream()
-                    .map(productDTO -> OrderMapper.INSTANCE.mapToProductEntity(productDTO))
+                    .map(OrderMapper.INSTANCE::mapToProductEntity)
                     .collect(Collectors.toList());
 
             // Update products
@@ -65,8 +79,10 @@ public class OrderServiceImpl implements OrderService {
             // Update status
             existingOrder.setStatus(orderDTO.getStatus());
 
+            existingOrder.setUser(userMapper.userDTOToUserEntity(userService.getUserById(orderDTO.getUserId())));
+
             Order updatedOrder = orderRepository.save(existingOrder);
-            return OrderMapper.INSTANCE.orderEntityToOrderDTO(updatedOrder);
+            return mapOrderToDTOWithUser(updatedOrder);
         } else {
             return null;
         }
@@ -94,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> listOfOrder = orderList.getContent();
 
         List<OrderDTO> content = listOfOrder.stream()
-                .map(OrderMapper.INSTANCE::orderEntityToOrderDTO)
+                .map(this::mapOrderToDTOWithUser)
                 .collect(Collectors.toList());
 
         OrderResponse orderResponse = new OrderResponse();
@@ -105,5 +121,12 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setTotalPages(orderList.getTotalPages());
         orderResponse.setLast(orderList.isLast());
         return orderResponse;
+    }
+
+    private OrderDTO mapOrderToDTOWithUser(Order order) {
+        OrderDTO orderDTO = orderMapper.orderEntityToOrderDTO(order);
+        UserDTO userDTO = userMapper.userEntityToUserDTO(order.getUser());
+        orderDTO.setUserId(userDTO.getUserId());
+        return orderDTO;
     }
 }

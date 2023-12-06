@@ -10,6 +10,7 @@ import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final ProductMapper productMapper;
     private final CategoryMapper categoryMapper;
+
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
