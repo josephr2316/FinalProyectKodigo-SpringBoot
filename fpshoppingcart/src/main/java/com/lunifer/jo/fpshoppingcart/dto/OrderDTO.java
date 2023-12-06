@@ -1,13 +1,17 @@
 package com.lunifer.jo.fpshoppingcart.dto;
 
 import com.lunifer.jo.fpshoppingcart.entity.OrderStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data //Incluye getter Setter, constructor vacío, constructor llena, hash, String, equal
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class OrderDTO {
 

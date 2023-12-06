@@ -133,7 +133,7 @@ class DTOTest {
         productDTO.setPrice(price);
         productDTO.setStock(stock);
         productDTO.setActive(isActive);
-        productDTO.setCategoryDTO(categoryDTO);
+        productDTO.setCategoryId(categoryDTO.getCategoryId());
 
         assertEquals(productId, productDTO.getProductId());
         assertEquals(productName, productDTO.getProductName());
@@ -141,7 +141,7 @@ class DTOTest {
         assertEquals(price, productDTO.getPrice());
         assertEquals(stock, productDTO.getStock());
         assertEquals(isActive, productDTO.isActive());
-        assertNotNull(productDTO.getCategoryDTO());
+        assertNotNull(productDTO.getCategoryId());
     }
 
     @Test
@@ -171,8 +171,8 @@ class DTOTest {
     @Test
     void testShoppingCartDTOGettersAndSetters() {
 
-        ProductDTO produc1 = new ProductDTO(101L, "Product1", "Description1", BigDecimal.valueOf(19.99), 10, true, null);
-        ProductDTO produc2 = new ProductDTO(102L, "Product2", "Description2", BigDecimal.valueOf(29.99), 5, true, null);
+        ProductDTO produc1 = new ProductDTO(101L, "Product1", "Description1", BigDecimal.valueOf(19.99), 10, true, 1);
+        ProductDTO produc2 = new ProductDTO(102L, "Product2", "Description2", BigDecimal.valueOf(29.99), 5, true, 2);
         Long cartId = 1L;
         Long userId = 2L;
         List<ProductDTO> productList = Arrays.asList(produc1
