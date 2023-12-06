@@ -5,8 +5,11 @@ import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
+import com.lunifer.jo.fpshoppingcart.mapper.ReviewMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
+import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,10 +89,10 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Transactional
     @Override
     public void deleteProduct(long productId) {
-        // Throw exception
+
+        // Delete the product
         productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
         productRepository.deleteById(productId);
