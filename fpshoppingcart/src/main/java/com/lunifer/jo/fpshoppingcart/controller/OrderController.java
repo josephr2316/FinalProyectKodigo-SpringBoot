@@ -11,13 +11,10 @@ import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -109,4 +106,15 @@ public class OrderController {
     ) {
         return orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir);
     }
+
+    @PutMapping("/cancel/{orderId}")
+    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
+        // Call the service method to cancel the order and get the result
+        String message = orderService.cancelOrder(orderId);
+
+        // If successful, return a response with HTTP status 204 (No Content)
+        return ResponseEntity.ok(message);
+
+    }
+
 }

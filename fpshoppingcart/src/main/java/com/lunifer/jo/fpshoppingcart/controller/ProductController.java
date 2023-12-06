@@ -1,12 +1,17 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
+import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -19,9 +24,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+    public ProductResponse getAllProducts(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "productId", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        return productService.getAllProducts(pageNo, pageSize, sortBy, sortDir);
     }
 
     @GetMapping("/{productId}")
@@ -34,7 +43,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO createdProduct = productService.saveProduct(productDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
@@ -54,18 +63,42 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/disable/{productId}")
-    public ResponseEntity<Void> disableProduct(@PathVariable Long productId) {
+    @PutMapping("/disable/{productId}")
+    public ResponseEntity<String> disableEnableProduct(@PathVariable Long productId) {
         // Call the service method to disable the product and get the result
-        boolean success = productService.disableProduct(productId);
+        String message = productService.DisableEnableProduct(productId);
 
         // Check if the operation was successful
-        if (success) {
-            // If successful, return a response with HTTP status 204 (No Content)
-            return ResponseEntity.noContent().build();
+        if (message != null) {
+            // If successful, return a response with HTTP status 200 (OK) and the message in the body
+            return ResponseEntity.ok(message);
         } else {
             // If the product was not found, return a response with HTTP status 404 (Not Found)
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/byname/{productName}")
+    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
+        try {
+            ProductDTO productDTO = productService.getProductByName(productName);
+            return ResponseEntity.ok(productDTO);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
+        List<ProductDTO> products = productService.getProductsByKeyword(keyword);
+
+        if (!products.isEmpty()) {
+            return ResponseEntity.ok(products);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+
+
 }

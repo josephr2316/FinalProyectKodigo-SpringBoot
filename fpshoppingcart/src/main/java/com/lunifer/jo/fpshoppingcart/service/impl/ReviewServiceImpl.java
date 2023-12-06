@@ -11,6 +11,7 @@ import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
+@Lazy
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
-    private final ProductMapper productMapper;
+        private final ProductMapper productMapper;
+
     @Autowired
     public ReviewServiceImpl(ReviewRepository reviewRepository, ReviewMapper reviewMapper, ProductMapper productMapper) {
         this.reviewRepository = reviewRepository;
@@ -38,7 +41,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional
     public void deleteReview(long reviewId) {
         if (reviewRepository.existsById(reviewId)) {
             reviewRepository.deleteById(reviewId);
@@ -56,7 +58,6 @@ public class ReviewServiceImpl implements ReviewService {
                 .map(reviewMapper::reviewEntityToReviewDTO)
                 .collect(Collectors.toList());
     }
-
     @Override
     @Transactional
     public void deleteReviewByProducts(List<ProductDTO> productDTOS) {
@@ -64,6 +65,14 @@ public class ReviewServiceImpl implements ReviewService {
             Product product = productMapper.productDTOToProductEntity(productDTO);
             reviewRepository.deleteAllByProduct(product);
         }
-
     }
+    
+    public void deleteReviewsByProductId(long productId) {
+        List<Review> reviews = reviewRepository.findReviewsByProductId(productId);
+
+        for (Review review : reviews) {
+            reviewRepository.delete(review);
+        }
+    }
+
 }
