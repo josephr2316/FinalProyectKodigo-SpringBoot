@@ -50,8 +50,9 @@ public class SecurityConfig {
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/products")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/products/**")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"/api/products/**")).hasRole("ADMIN");
-                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/products/disable/**")).hasRole("ADMIN");
-                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/invoices/order/**")).hasAnyRole("USER","ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/products/disable/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/invoices/order")).hasAnyRole("USER","ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher("/api/invoices/order/**")).hasRole("ADMIN");
 
 
                     authorization.anyRequest().authenticated();
