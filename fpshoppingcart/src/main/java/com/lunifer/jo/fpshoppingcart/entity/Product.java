@@ -33,7 +33,7 @@ public class Product {
     @Column(columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @ManyToMany(mappedBy ="productList")
+    @ManyToMany(mappedBy ="productList", fetch = FetchType.EAGER)
     private List<ShoppingCart> shoppingCart;
 
     @ManyToMany(mappedBy = "productList")

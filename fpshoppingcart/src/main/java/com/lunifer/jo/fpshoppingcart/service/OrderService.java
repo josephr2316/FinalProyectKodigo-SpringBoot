@@ -15,4 +15,5 @@ public interface OrderService {
     void deleteOrder(Long orderId);
 
     OrderResponse getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir);
+    String cancelOrder(Long orderId);
 }
