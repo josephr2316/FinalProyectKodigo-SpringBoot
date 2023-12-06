@@ -122,6 +122,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public List<OrderDTO> getAllOrdersByUser(User user) {
         return orderRepository.findOrdersByUser(user)
                 .stream()
