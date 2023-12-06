@@ -6,9 +6,10 @@ import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
     void deleteShoppingCartByUser(User user);
-    void deleteAllByProductListIn(List<Product>products);
+    void deleteAllByProductListIn(Collection<List<Product>> productList);
 }

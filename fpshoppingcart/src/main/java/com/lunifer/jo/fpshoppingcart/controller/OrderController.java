@@ -16,6 +16,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -40,7 +42,7 @@ public class OrderController {
         // Extract username and role from the token
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-       List <OrderDTO> orderDTO = orderService.getAllOrdersByUser(user);
+       List<OrderDTO> orderDTO = orderService.getAllOrdersByUser(user);
         if (orderDTO != null) {
             return ResponseEntity.ok(orderDTO);
         } else {

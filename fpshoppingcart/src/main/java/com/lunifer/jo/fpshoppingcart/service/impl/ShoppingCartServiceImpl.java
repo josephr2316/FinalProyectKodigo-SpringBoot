@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.ContentHandler;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,8 +124,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void deleteShoppingCartByProducts(List<ProductDTO> productDTOS) {
         List<Product> products = productDTOS.stream()
                 .map(productMapper::productDTOToProductEntity)
-                .collect(Collectors.toList());
-        shoppingCartRepository.deleteAllByProductListIn(products);
+                .toList();
+        shoppingCartRepository.deleteAllByProductListIn(Collections.singleton(products));
 
     }
 }

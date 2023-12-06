@@ -25,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -179,8 +180,8 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrderByProducts(List<ProductDTO> productDTOS) {
         List<Product> products = productDTOS.stream()
                 .map(productMapper::productDTOToProductEntity)
-                .collect(Collectors.toList());
-        orderRepository.deleteAllByProductListIn(products);
+                .toList();
+        orderRepository.deleteAllByProductListIn(Collections.singleton(products));
     }
 
     private OrderDTO mapOrderToDTOWithUser(Order order) {

@@ -78,7 +78,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/byname/{productName}")
+    @GetMapping("/byName/{productName}")
     public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
         try {
             ProductDTO productDTO = productService.getProductByName(productName);

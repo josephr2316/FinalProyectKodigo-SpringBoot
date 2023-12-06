@@ -44,9 +44,52 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( authorization ->{
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll();
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/categories")).hasAnyRole("ADMIN", "BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/categories/**")).hasAnyRole("ADMIN", "BUYER");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/categories")).hasAuthority("ROLE_ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/categories/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"/api/categories/**")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/categories/disable/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"api/invoices/**")).hasAnyRole("ADMIN", "BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"api/invoices/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"api/invoices/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"api/invoices")).hasAnyRole("ADMIN", "BUYER");
+
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/orders/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/orders/user")).hasAnyRole("ADMIN","BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/orders/user/**")).hasAnyRole("ADMIN","BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/orders")).hasAnyRole("ADMIN","BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/orders/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"/api/orders/**")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/orders")).hasRole("ADMIN");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/products")).hasAnyRole("ADMIN","BUYER" );
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/products/**")).hasAnyRole("ADMIN","BUYER" );
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/products/Create")).hasRole("ADMIN" );
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/products/**")).hasRole("ADMIN" );
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"/api/products/**")).hasRole("ADMIN" );
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/products/{disable}/**")).hasRole("ADMIN" );
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/products/byName/**")).hasAnyRole("ADMIN", "BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"/api/products/search")).hasAnyRole("ADMIN", "BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"api/reviews")).hasAnyRole("ADMIN", "BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"api/reviews/**")).hasAnyRole("ADMIN", "BUYER");
+                    authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,"api/reviews/product/**")).hasAnyRole("ADMIN", "BUYER");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST,"/api/products")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT,"/api/products/**")).hasRole("ADMIN");
                     authorization.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,"/api/products/**")).hasRole("ADMIN");

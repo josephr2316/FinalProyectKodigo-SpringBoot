@@ -2,7 +2,6 @@ package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
-import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

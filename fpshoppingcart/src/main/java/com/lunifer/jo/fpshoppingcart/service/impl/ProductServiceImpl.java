@@ -63,13 +63,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> listOfProduct = productList.getContent();
 
         List<ProductDTO> content = listOfProduct.stream()
-                .map(productMapper::productEntityToProductDTO);
-    }
-    @Transactional
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(this::mapProductToDTOWithCategory)
-                .collect(Collectors.toList());
+                .map(productMapper::productEntityToProductDTO).toList();
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(content);
@@ -198,6 +192,11 @@ public class ProductServiceImpl implements ProductService {
         } else {
             throw new EntityNotFoundException("Cannot find product with ID " + productId);
         }
+    }
+
+    @Override
+    public boolean disableProduct(Long productId) {
+        return false;
     }
 
     @Override
