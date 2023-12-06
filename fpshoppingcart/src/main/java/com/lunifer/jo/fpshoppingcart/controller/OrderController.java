@@ -1,11 +1,19 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
+import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
+import com.lunifer.jo.fpshoppingcart.repository.ShoppingCartRepository;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
+import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
+import com.lunifer.jo.fpshoppingcart.service.UserService;
+import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +23,24 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
+    private final ShoppingCartService shoppingCartService;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ShoppingCartService shoppingCartService, UserService userService) {
         this.orderService = orderService;
+        this.shoppingCartService = shoppingCartService;
+        this.userService = userService;
     }
+/*    @GetMapping()
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long userId) {
+        OrderDTO orderDTO = orderService.;
+        if (orderDTO != null) {
+            return ResponseEntity.ok(orderDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }*/
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
@@ -29,10 +50,26 @@ public class OrderController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
+/*    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long userId) {
+        OrderDTO orderDTO = orderService.;
+        if (orderDTO != null) {
+            return ResponseEntity.ok(orderDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }*/
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+        // Get the security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Extract username and role from the token
+        String username = authentication.getName();
+        User user = userService.findByUsername(username);
+        shoppingCartService.deleteShoppingCartsForUser(user);
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
         return ResponseEntity.ok(createdOrder);
     }

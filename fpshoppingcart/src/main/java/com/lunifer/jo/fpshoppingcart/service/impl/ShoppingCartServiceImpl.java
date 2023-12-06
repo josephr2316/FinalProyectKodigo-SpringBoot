@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
 import com.lunifer.jo.fpshoppingcart.entity.ShoppingCart;
+import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
@@ -105,5 +106,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCartResponse.setTotalPages(shoppingCarts.getTotalPages());
         shoppingCartResponse.setLast(shoppingCarts.isLast());
         return shoppingCartResponse;
+    }
+
+    @Override
+    @Transactional
+    public void deleteShoppingCartsForUser(User user) {
+        shoppingCartRepository.deleteShoppingCartByUser(user);
+
     }
 }
