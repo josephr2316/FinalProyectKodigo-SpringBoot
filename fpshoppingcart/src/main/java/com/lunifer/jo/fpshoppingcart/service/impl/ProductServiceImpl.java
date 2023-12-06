@@ -1,15 +1,14 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
+import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
-import com.lunifer.jo.fpshoppingcart.mapper.ReviewMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
-import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
+import com.lunifer.jo.fpshoppingcart.service.CategoryService;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
-import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,22 +23,24 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private final CategoryService categoryService;
     private final ProductMapper productMapper;
     private final CategoryMapper categoryMapper;
 
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
-                              CategoryMapper categoryMapper) {
+                              CategoryMapper categoryMapper, CategoryService categoryService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.categoryMapper = categoryMapper;
+        this.categoryService = categoryService;
     }
 
     @Override
     @Transactional
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
-                .map(productMapper::productEntityToProductDTO)
+                .map(this::mapProductToDTOWithCategory)
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDTO getProductById(long productId) {
         return productRepository.findById(productId)
-                .map(productMapper::productEntityToProductDTO)
+                .map(this::mapProductToDTOWithCategory)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
     }
 
@@ -65,13 +66,13 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setPrice(productDTO.getPrice());
         existingProduct.setStock(productDTO.getStock());
         existingProduct.setActive(productDTO.isActive());
-        existingProduct.setCategory(categoryMapper.categoryDTOToCategoryEntity(productDTO.getCategoryDTO()));
+        existingProduct.setCategory(categoryMapper.categoryDTOToCategoryEntity(categoryService.getCategoryById(productDTO.getCategoryId())));
 
         // 3. Save the updated productEntity back to the database
         Product updatedProductEntity = productRepository.save(existingProduct);
 
         // 4. Map the updated productEntity to a ProductDTO and return it
-        return productMapper.productEntityToProductDTO(updatedProductEntity);
+        return mapProductToDTOWithCategory(updatedProductEntity);
 
     }
 
@@ -82,10 +83,12 @@ public class ProductServiceImpl implements ProductService {
 
         // Map the DTO to an entity and save it to the database
         Product productEntityToSave = productMapper.productDTOToProductEntity(productDTO);
+        productEntityToSave.setCategory(categoryMapper.categoryDTOToCategoryEntity(categoryService.getCategoryById(productDTO.getCategoryId())));
+
         Product savedProductEntity = productRepository.save(productEntityToSave);
 
         // Map the saved entity back to a DTO and return it
-        return productMapper.productEntityToProductDTO(savedProductEntity);
+        return mapProductToDTOWithCategory(savedProductEntity);
 
     }
 
@@ -116,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // Check if the category is provided (assuming you have a CategoryDTO in ProductDTO)
-        if (productDTO.getCategoryDTO() == null) {
+        if (productDTO.getCategoryId() == 0) {
             throw new IllegalArgumentException("Product category is required");
         }
     }
@@ -151,5 +154,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-
+    private ProductDTO mapProductToDTOWithCategory(Product product) {
+        ProductDTO productDTO = productMapper.productEntityToProductDTO(product);
+        CategoryDTO categoryDTO = categoryMapper.categoryEntityToCategoryDTO(product.getCategory());
+        productDTO.setCategoryId(categoryDTO.getCategoryId());
+        return productDTO;
+    }
 }

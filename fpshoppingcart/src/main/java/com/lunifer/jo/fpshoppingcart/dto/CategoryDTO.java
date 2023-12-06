@@ -1,9 +1,11 @@
 package com.lunifer.jo.fpshoppingcart.dto;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class CategoryDTO {
 
     private long categoryId;
