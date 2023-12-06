@@ -6,12 +6,18 @@ import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
+import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
+import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -38,11 +44,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponse getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // Create a Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        // Retrieve a page of posts
+        Page<Product> productList = productRepository.findAll(pageable);
+
+        // Get content for page object
+        List<Product> listOfProduct = productList.getContent();
+
+        List<ProductDTO> content = listOfProduct.stream()
+                .map(productMapper::productEntityToProductDTO)
     @Transactional
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(this::mapProductToDTOWithCategory)
                 .collect(Collectors.toList());
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(content);
+        productResponse.setPageNo(productList.getNumber());
+        productResponse.setPageSize(productList.getSize());
+        productResponse.setTotalElements(productList.getTotalElements());
+        productResponse.setTotalPages(productList.getTotalPages());
+        productResponse.setLast(productList.isLast());
+        return productResponse;
     }
 
     @Override
