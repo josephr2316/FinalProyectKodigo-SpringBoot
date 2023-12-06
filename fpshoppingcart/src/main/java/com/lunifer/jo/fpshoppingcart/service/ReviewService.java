@@ -2,6 +2,7 @@ package com.lunifer.jo.fpshoppingcart.service;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ReviewDTO;
+import com.lunifer.jo.fpshoppingcart.entity.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,4 +13,4 @@ public interface ReviewService {
     List<ReviewDTO> getAllReviewsByProductId(long productId);
     void deleteReviewByProducts(List<ProductDTO> productDTOS);
     void deleteReviewsByProductId(long productId);
-}
+    }

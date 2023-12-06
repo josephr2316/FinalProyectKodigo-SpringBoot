@@ -13,5 +13,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r FROM Review r WHERE r.product.productId = :productId")
     List<Review> findReviewsByProductId(Long productId);
+
     void deleteAllByProduct(Product product);
 }

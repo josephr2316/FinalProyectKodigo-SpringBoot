@@ -21,11 +21,11 @@ public class ShoppingCart {
     @Column(updatable = false)
     private Long cartId;
 
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
-    @ManyToOne
     private User user;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "cart_product",
             joinColumns =@JoinColumn(name = "cart_id"),

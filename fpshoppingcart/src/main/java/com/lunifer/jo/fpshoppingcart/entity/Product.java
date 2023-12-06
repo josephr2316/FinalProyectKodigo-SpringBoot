@@ -36,7 +36,7 @@ public class Product {
     @ManyToMany(mappedBy ="productList", fetch = FetchType.EAGER)
     private List<ShoppingCart> shoppingCart;
 
-    @ManyToMany(mappedBy = "productList")
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
     private List<Order> order;
 
     @JoinColumn(nullable = false)

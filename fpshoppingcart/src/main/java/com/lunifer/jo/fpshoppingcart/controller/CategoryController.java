@@ -1,6 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,16 @@ public class CategoryController {
     private final ReviewService reviewService;
     private final OrderService orderService;
     private final ShoppingCartService shoppingCartService;
+    private final InvoiceService invoiceService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, ProductService productService, ReviewService reviewService, OrderService orderService, ShoppingCartService shoppingCartService) {
+    public CategoryController(CategoryService categoryService, ProductService productService, ReviewService reviewService, OrderService orderService, ShoppingCartService shoppingCartService, InvoiceService invoiceService) {
         this.categoryService = categoryService;
         this.productService = productService;
         this.reviewService = reviewService;
         this.orderService = orderService;
         this.shoppingCartService = shoppingCartService;
+        this.invoiceService = invoiceService;
     }
 
     @GetMapping
@@ -81,12 +84,15 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
 
-       List<ProductDTO> products = productService.findAllProductsByCategoryId(categoryId);
+      /* List<ProductDTO> products = productService.findAllProductsByCategoryId(categoryId);
        reviewService.deleteReviewByProducts(products);
        shoppingCartService.deleteShoppingCartByProducts(products);
+
+       List<OrderDTO> orderDTOS = orderService.getAllOrdersByProducs(products);
+       invoiceService.deleteInvoicesByOrders(orderDTOS);
        orderService.deleteOrderByProducts(products);
        productService.deleteAllByCategoryId(categoryId);
-       categoryService.deleteCategory(categoryId);
+       categoryService.deleteCategory(categoryId);*/
        return ResponseEntity.noContent().build();
     }
 }

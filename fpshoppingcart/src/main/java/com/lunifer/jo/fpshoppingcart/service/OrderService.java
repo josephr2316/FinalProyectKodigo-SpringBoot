@@ -23,4 +23,5 @@ public interface OrderService {
     void deleteOrderByProducts(List<ProductDTO> productDTOS);
 
     String cancelOrder(Long orderId);
+    List<OrderDTO> getAllOrdersByProducs(List<ProductDTO> productDTOS);
 }

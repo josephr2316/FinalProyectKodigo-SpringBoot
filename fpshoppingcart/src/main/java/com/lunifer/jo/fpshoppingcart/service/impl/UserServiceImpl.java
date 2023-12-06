@@ -1,6 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
+import com.lunifer.jo.fpshoppingcart.entity.Review;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -108,8 +110,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         existingUser.setPassword(userDTO.getPassword());
         existingUser.setActive(userDTO.isActive());
         existingUser.setOrderHistory(userDTO.getOrderHistory());
-        existingUser.setReviewHistory(userDTO.getReviewHistory());
-
+        existingUser.setReviewHistory((Set<Review>) userDTO.getReviewHistory());
         User updatedUser = userRepository.save(existingUser);
 
         return UserMapper.INSTANCE.userEntityToUserDTO(updatedUser);

@@ -1,23 +1,33 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.InvoiceDTO;
+import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Invoice;
+import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.mapper.InvoiceMapper;
+import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.repository.InvoiceRepository;
+import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.service.InvoiceService;
+import com.lunifer.jo.fpshoppingcart.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
+    private final OrderMapper  orderMapper;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper) {
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper, OrderMapper orderMapper) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceMapper = invoiceMapper;
+        this.orderMapper = orderMapper;
     }
 
 
@@ -72,4 +82,14 @@ public class InvoiceServiceImpl implements InvoiceService {
     public void deleteInvoiceByOrderId(long orderId) {
         invoiceRepository.deleteInvoiceByOrderOrderId(orderId);
     }
+
+    @Override
+    public void deleteInvoicesByOrders(List<OrderDTO> orders) {
+        List<Order> orderList = new ArrayList<>();
+        orderList = orders.stream().map(orderMapper::orderDTOToOrderEntity).toList();
+        List<Invoice> invoicesToDelete = invoiceRepository.findInvoicesByOrders(orderList);
+        invoiceRepository.deleteAll(invoicesToDelete);
+    }
+
 }
+

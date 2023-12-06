@@ -119,13 +119,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     }
 
-    @Override
+/*    @Override
     @Transactional
     public void deleteShoppingCartByProducts(List<ProductDTO> productDTOS) {
         List<Product> products = productDTOS.stream()
                 .map(productMapper::productDTOToProductEntity)
                 .toList();
-        shoppingCartRepository.deleteAllByProductListIn(Collections.singleton(products));
 
-    }
+        for (Product product : products){
+            shoppingCartRepository.deleteAllByProductListIn(product);
+        }
+
+    }*/
 }
