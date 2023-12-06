@@ -3,10 +3,12 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service // Explicarle esto a nico
+@Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -28,8 +30,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDTO getOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElse(null);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
         return OrderMapper.INSTANCE.orderEntityToOrderDTO(order);
     }
 
@@ -41,8 +45,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
-        Order existingOrder = orderRepository.findById(orderId).orElse(null);
+        Order existingOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 
         if (existingOrder != null) {
             // Convert the list of ProductDTO to Product using OrderMapper
@@ -72,6 +78,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderResponse getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()

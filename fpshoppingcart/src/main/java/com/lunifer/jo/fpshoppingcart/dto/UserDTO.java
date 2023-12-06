@@ -3,11 +3,13 @@ package com.lunifer.jo.fpshoppingcart.dto;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
 import com.lunifer.jo.fpshoppingcart.entity.UserRol;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class UserDTO {
     private Long userId;
 
@@ -25,7 +27,7 @@ public class UserDTO {
 
     private String password;
 
-    private UserRol userRol;
+    List<String> roles;
 
     private boolean isActive;
 

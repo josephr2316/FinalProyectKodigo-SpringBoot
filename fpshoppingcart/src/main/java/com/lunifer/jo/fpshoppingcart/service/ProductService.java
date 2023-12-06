@@ -18,5 +18,7 @@ public interface ProductService {
     void deleteProduct(long productId);
 
     boolean disableProduct(Long productId);
-
+    
+     String DisableEnableProduct(Long productId);
+  
 }
