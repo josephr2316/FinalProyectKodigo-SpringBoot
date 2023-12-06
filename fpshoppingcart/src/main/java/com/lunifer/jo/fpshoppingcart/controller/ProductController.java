@@ -1,8 +1,10 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         ProductDTO createdProduct = productService.saveProduct(productDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
@@ -75,6 +77,28 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/byname/{productName}")
+    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
+        try {
+            ProductDTO productDTO = productService.getProductByName(productName);
+            return ResponseEntity.ok(productDTO);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
+        List<ProductDTO> products = productService.getProductsByKeyword(keyword);
+
+        if (!products.isEmpty()) {
+            return ResponseEntity.ok(products);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
 
 
 }

@@ -2,12 +2,14 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.entity.OrderStatus;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,5 +108,30 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setTotalPages(orderList.getTotalPages());
         orderResponse.setLast(orderList.isLast());
         return orderResponse;
+    }
+
+    @Transactional
+    @Override
+    public String cancelOrder(Long orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+
+            // Check if the order is cancellable (e.g., not already canceled or delivered)
+            if (OrderStatus.PENDING.equals(order.getStatus()) || OrderStatus.PROCESSING.equals(order.getStatus())) {
+                order.setStatus(OrderStatus.CANCELLED);
+                // You may want to update other attributes or perform additional logic here
+
+                // Since we're using @Transactional, changes will be automatically
+                // saved to the database when the transaction is committed
+
+                return "Order with ID " + orderId + " has been successfully canceled.";
+            } else {
+                throw new IllegalStateException("Order with ID " + orderId + " cannot be canceled because it is already in a non-cancellable state.");
+            }
+        } else {
+            throw new EntityNotFoundException("Cannot find order with ID " + orderId);
+        }
     }
 }

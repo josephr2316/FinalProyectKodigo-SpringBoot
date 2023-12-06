@@ -12,10 +12,13 @@ public interface ProductService {
     ProductResponse getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir);
 
     ProductDTO getProductById(long productId);
-
+    ProductDTO getProductByName(String productName);
+ 
     ProductDTO updateProduct(ProductDTO productDTO, long productId);
 
     void deleteProduct(long productId);
+
+    List<ProductDTO> getProductsByKeyword(String keyword);
 
     boolean disableProduct(Long productId);
     
