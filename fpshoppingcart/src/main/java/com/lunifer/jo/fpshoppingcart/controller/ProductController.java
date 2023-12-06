@@ -1,12 +1,15 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -19,9 +22,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
+    public ProductResponse getAllProducts(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "productId", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+    ) {
+        return productService.getAllProducts(pageNo, pageSize, sortBy, sortDir);
     }
 
     @GetMapping("/{productId}")
