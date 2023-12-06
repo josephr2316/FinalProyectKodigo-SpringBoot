@@ -78,7 +78,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/byname/{productName}")
+    @GetMapping("/byName/{productName}")
     public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
         try {
             ProductDTO productDTO = productService.getProductByName(productName);
@@ -89,14 +89,13 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
+    public ResponseEntity<?> searchProducts(@RequestParam String keyword) {
         List<ProductDTO> products = productService.getProductsByKeyword(keyword);
 
         if (!products.isEmpty()) {
             return ResponseEntity.ok(products);
         } else {
-            return ResponseEntity.noContent().build();
-        }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Your search did not return any results.");        }
     }
 
 

@@ -13,15 +13,12 @@ public interface ProductService {
 
     ProductDTO getProductById(long productId);
     ProductDTO getProductByName(String productName);
- 
+
     ProductDTO updateProduct(ProductDTO productDTO, long productId);
 
     void deleteProduct(long productId);
-
     List<ProductDTO> getProductsByKeyword(String keyword);
-
-    boolean disableProduct(Long productId);
-    
-     String DisableEnableProduct(Long productId);
-  
+    String DisableEnableProduct(Long productId);
+    List<ProductDTO> findAllProductsByCategoryId(long category);
+    void deleteAllByCategoryId(long category);
 }

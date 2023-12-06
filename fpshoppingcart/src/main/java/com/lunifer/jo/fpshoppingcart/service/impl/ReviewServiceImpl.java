@@ -40,7 +40,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (reviewRepository.existsById(reviewId)) {
             reviewRepository.deleteById(reviewId);
         } else {
-            throw new EntityNotFoundException("No se encontro review con ID " + reviewId);
+            throw new EntityNotFoundException("Cannot find Review " + reviewId);
         }
 
     }

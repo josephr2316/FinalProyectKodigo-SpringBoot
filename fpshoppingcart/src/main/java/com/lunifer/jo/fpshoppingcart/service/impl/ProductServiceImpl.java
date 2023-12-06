@@ -3,16 +3,20 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.entity.Review;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
 import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
+import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,13 +39,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CategoryMapper categoryMapper;
 
+    private final ReviewRepository reviewRepository;
+
+
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
-                              CategoryMapper categoryMapper, CategoryService categoryService) {
+                              CategoryMapper categoryMapper, CategoryService categoryService, ReviewRepository reviewRepository) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.categoryMapper = categoryMapper;
         this.categoryService = categoryService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -59,12 +68,7 @@ public class ProductServiceImpl implements ProductService {
         List<Product> listOfProduct = productList.getContent();
 
         List<ProductDTO> content = listOfProduct.stream()
-                .map(productMapper::productEntityToProductDTO)
-    @Transactional
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(this::mapProductToDTOWithCategory)
-                .collect(Collectors.toList());
+                .map(productMapper::productEntityToProductDTO).toList();
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(content);
@@ -135,6 +139,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(long productId) {
+        List<Review> reviewList = reviewRepository.findReviewsByProductId(productId);
+        if (!reviewList.isEmpty()) {
+            reviewList.forEach(review -> reviewRepository.delete(review));
+        }
+
+
 
         // Delete the product
         productRepository.findById(productId)
@@ -193,6 +203,22 @@ public class ProductServiceImpl implements ProductService {
         } else {
             throw new EntityNotFoundException("Cannot find product with ID " + productId);
         }
+    }
+
+
+    @Override
+    @Transactional
+    public List<ProductDTO> findAllProductsByCategoryId(long category) {
+        return productRepository.findAllByCategoryCategoryId(category)
+                .stream()
+                .map(productMapper::productEntityToProductDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllByCategoryId(long category) {
+        productRepository.deleteAllByCategoryCategoryId(category);
     }
 
     private ProductDTO mapProductToDTOWithCategory(Product product) {
