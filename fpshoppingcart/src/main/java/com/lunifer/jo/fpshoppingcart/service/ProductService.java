@@ -13,4 +13,6 @@ public interface ProductService {
     void deleteProduct(long productId);
      String DisableEnableProduct(Long productId);
 
+    List<ProductDTO> getProductsByKeyword(String keyword);
+
 }

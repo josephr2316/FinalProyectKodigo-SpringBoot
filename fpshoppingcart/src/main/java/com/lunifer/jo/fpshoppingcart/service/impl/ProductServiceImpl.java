@@ -170,4 +170,14 @@ public class ProductServiceImpl implements ProductService {
         productDTO.setCategoryId(categoryDTO.getCategoryId());
         return productDTO;
     }
+
+    @Override
+    @Transactional
+    public List<ProductDTO> getProductsByKeyword(String keyword) {
+        List<Product> products = productRepository.findByKeyword(keyword);
+        return products.stream()
+                .map(this::mapProductToDTOWithCategory)
+                .collect(Collectors.toList());
+    }
+
 }

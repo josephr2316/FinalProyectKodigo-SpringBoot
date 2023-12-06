@@ -81,5 +81,17 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String keyword) {
+        List<ProductDTO> products = productService.getProductsByKeyword(keyword);
+
+        if (!products.isEmpty()) {
+            return ResponseEntity.ok(products);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+
 
 }
