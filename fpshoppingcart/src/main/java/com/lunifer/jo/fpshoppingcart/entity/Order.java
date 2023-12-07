@@ -19,7 +19,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "orders_product",
             joinColumns =@JoinColumn(name = "orders_id"),
@@ -31,11 +31,10 @@ public class Order {
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "order_status")
     private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "user_id", referencedColumnName = "user_id")
     @JoinColumn(nullable = false)
     private User user;
 

@@ -33,10 +33,10 @@ public class Product {
     @Column(columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @ManyToMany(mappedBy ="productList", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy ="productList", fetch = FetchType.LAZY)
     private List<ShoppingCart> shoppingCart;
 
-    @ManyToMany(mappedBy = "productList", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY)
     private List<Order> order;
 
     @JoinColumn(nullable = false)

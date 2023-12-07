@@ -22,7 +22,6 @@ public class Invoice {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    //@JoinColumn(name = "orderId")
     private Order order;
 
     @Column(nullable = false)
