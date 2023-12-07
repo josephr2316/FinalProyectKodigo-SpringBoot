@@ -6,6 +6,7 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class Order {
             joinColumns =@JoinColumn(name = "orders_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private List<Product> productList;
+    private Set<Product> productList;
 
     @Column(nullable = false)
     private LocalDateTime orderDate;

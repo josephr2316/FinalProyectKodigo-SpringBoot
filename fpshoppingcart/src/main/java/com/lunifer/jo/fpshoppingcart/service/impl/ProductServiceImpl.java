@@ -7,14 +7,11 @@ import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
-import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
-import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -135,9 +131,25 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(long productId) {
 
-        // Delete the product
-        productRepository.findById(productId)
+        // Retrieve the product from the repository by its ID, or throw an exception if not found
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+
+        // Remove associations with Shopping Carts
+        // Iterate through shopping carts containing the product and remove the product from each cart
+        product.getShoppingCart().forEach(cart -> cart.getProductList().remove(product));
+
+        // Clear the list of shopping carts associated with the product
+        product.getShoppingCart().clear();
+
+        // Remove associations with Orders
+        // Iterate through orders containing the product and remove the product from each order
+        product.getOrder().forEach(order -> order.getProductList().remove(product));
+
+        // Clear the list of orders associated with the product
+        product.getOrder().clear();
+
+        // Now you can safely delete the product from the repository
         productRepository.deleteById(productId);
     }
 
@@ -193,27 +205,6 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityNotFoundException("Cannot find product with ID " + productId);
         }
     }
-
-    @Override
-    public boolean disableProduct(Long productId) {
-        return false;
-    }
-
-    @Override
-    @Transactional
-    public List<ProductDTO> findAllProductsByCategoryId(long category) {
-        return productRepository.findAllByCategoryCategoryId(category)
-                .stream()
-                .map(productMapper::productEntityToProductDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional
-    public void deleteAllByCategoryId(long category) {
-        productRepository.deleteAllByCategoryCategoryId(category);
-    }
-    
     private ProductDTO mapProductToDTOWithCategory(Product product) {
         ProductDTO productDTO = productMapper.productEntityToProductDTO(product);
         CategoryDTO categoryDTO = categoryMapper.categoryEntityToCategoryDTO(product.getCategory());

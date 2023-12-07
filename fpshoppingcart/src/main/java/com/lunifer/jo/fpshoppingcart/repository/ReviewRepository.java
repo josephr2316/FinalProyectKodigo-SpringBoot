@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("SELECT r FROM Review r WHERE r.product.productId = :productId")
     List<Review> findReviewsByProductId(Long productId);

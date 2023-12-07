@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -33,8 +34,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categories = categoryService.getAllCategories();
+    public ResponseEntity<Set<CategoryDTO>> getAllCategories() {
+        Set<CategoryDTO> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 

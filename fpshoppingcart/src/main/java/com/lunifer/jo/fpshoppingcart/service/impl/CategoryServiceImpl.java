@@ -1,24 +1,20 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Category;
-import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
-import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
 import com.lunifer.jo.fpshoppingcart.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -53,10 +49,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public List<CategoryDTO> getAllCategories() {
+    public Set<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::categoryEntityToCategoryDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -77,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         // 2. Map the updated fields from categoryDTO to the existing categoryEntity
         existingCategory.setCategoryName(categoryDTO.getCategoryName());
-        existingCategory.setProductList(categoryDTO.getProductList().stream().map(productMapper::productDTOToProductEntity).collect(Collectors.toList()));
+        existingCategory.setProductList(categoryDTO.getProductList().stream().map(productMapper::productDTOToProductEntity).collect(Collectors.toSet()));
         existingCategory.setActive(categoryDTO.isActive());
 
         // 3. Save the updated categoryEntity back to the database
@@ -88,12 +84,22 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(long categoryId) {
-        // Throw exception
-        categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-        categoryRepository.deleteById(categoryId);
 
+        // Retrieve the category from the repository by its ID, or throw an exception if not found
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+
+        // Remove the association of products with the category
+        // Set the category reference of each associated product to null
+        category.getProductList().forEach(product -> product.setCategory(null));
+
+        // Clear the list of products associated with the category
+        category.getProductList().clear();
+
+        // Now you can safely delete the category from the repository
+        categoryRepository.deleteById(categoryId);
     }
 
     @Transactional
@@ -127,9 +133,6 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException("Cannot find Category with ID " + categoryId);
         }
     }
-
-
-
     public void validateCategoryDTO(CategoryDTO categoryDTO) {
 
         // Check if category name is not null and not empty

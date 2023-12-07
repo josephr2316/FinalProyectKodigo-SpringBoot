@@ -29,8 +29,6 @@ public interface UserService  {
 
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    void initializeUser();
-
     String disableEnableUser(Long userId);
 
 }

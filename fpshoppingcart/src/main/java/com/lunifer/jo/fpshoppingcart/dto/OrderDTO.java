@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data //Incluye getter Setter, constructor vacío, constructor llena, hash, String, equal
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class OrderDTO {
 
     private Long orderId;
     private Long userId;
-    private  List<ProductDTO> productList;
+    private Set<ProductDTO> productList;
     private LocalDateTime orderDate;
     private OrderStatus status;
 

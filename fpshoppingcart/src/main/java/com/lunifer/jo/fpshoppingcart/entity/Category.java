@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -13,7 +15,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    private long categoryId;
+    private Long categoryId;
 
     @Column(nullable = false)
     private String categoryName;
@@ -21,7 +23,8 @@ public class Category {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Product> productList;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Product> productList;
 
 }

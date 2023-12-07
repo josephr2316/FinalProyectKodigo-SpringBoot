@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -35,7 +36,7 @@ public class UserDTO {
 
     private boolean isActive;
 
-    private List<Order> orderHistory;
+    private Set<Order> orderHistory;
 
-    private List<Review> reviewHistory;
+    private Set<Review> reviewHistory;
 }

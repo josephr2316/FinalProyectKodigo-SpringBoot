@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable=false)
-    private long productId;
+    private Long productId;
 
     @Column(nullable = false)
     private String productName;
@@ -34,10 +35,10 @@ public class Product {
     private boolean isActive;
 
     @ManyToMany(mappedBy ="productList", fetch = FetchType.LAZY)
-    private List<ShoppingCart> shoppingCart;
+    private Set<ShoppingCart> shoppingCart;
 
     @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY)
-    private List<Order> order;
+    private Set<Order> order;
 
     @JoinColumn(nullable = false)
     @ManyToOne

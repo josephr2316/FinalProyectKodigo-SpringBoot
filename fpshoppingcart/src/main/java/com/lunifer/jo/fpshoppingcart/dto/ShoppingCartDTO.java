@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class ShoppingCartDTO {
 
     private Long cartId;
     private Long userId;
-    private List<ProductDTO> productList;
+    private Set<ProductDTO> productList;
     private BigDecimal totalPrice;
 
 }

@@ -1,6 +1,5 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
@@ -8,13 +7,11 @@ import com.lunifer.jo.fpshoppingcart.entity.OrderStatus;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
-import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
-import com.lunifer.jo.fpshoppingcart.service.ProductService;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -24,32 +21,25 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductService productService;
     private final UserService userService;
     private final OrderMapper orderMapper;
     private final UserMapper userMapper;
-    private final ProductMapper productMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, UserMapper userMapper, UserService userService, ProductMapper productMapper, ProductService productService) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, UserMapper userMapper, UserService userService) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
         this.userMapper = userMapper;
         this.userService = userService;
-        this.productMapper = productMapper;
-        this.productService = productService;
     }
 
     @Override
@@ -77,9 +67,9 @@ public class OrderServiceImpl implements OrderService {
 
         if (existingOrder != null) {
             // Convert the list of ProductDTO to Product using OrderMapper
-            List<Product> productList = orderDTO.getProductList().stream()
+            Set<Product> productList = orderDTO.getProductList().stream()
                     .map(OrderMapper.INSTANCE::mapToProductEntity)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             // Update products
             existingOrder.setProductList(productList);
@@ -158,51 +148,25 @@ public class OrderServiceImpl implements OrderService {
             throw new EntityNotFoundException("Cannot find order with ID " + orderId);
         }
     }
-
-    @Override
-    public List<OrderDTO> getAllOrdersByProducs(List<ProductDTO> productDTOS) {
-        List<Product> products = productDTOS.stream()
-                .map(productMapper::productDTOToProductEntity )
-                .toList();
-        List<Order> orders = orderRepository.findDistinctByProductsIn(products);
-        return orders.stream()
-                .map(orderMapper::orderEntityToOrderDTO )
-                .toList();
-
-
-    }
-
     @Override
     @Transactional
-    public List<OrderDTO> getAllOrdersByUser(User user) {
+    public Set<OrderDTO> getAllOrdersByUser(User user) {
         return orderRepository.findOrdersByUser(user)
                 .stream()
                 .map(this::mapOrderToDTOWithUser)
-                .toList();
+                .collect(Collectors.toSet());
 
 
     }
 
     @Override
     @Transactional
-    public List<OrderDTO> getAllOrdersByUserId(Long userId) {
+    public Set<OrderDTO> getAllOrdersByUserId(Long userId) {
         return orderRepository.findOrdersByUserUserId(userId)
                 .stream()
                 .map(this::mapOrderToDTOWithUser)
-                .toList();
+                .collect(Collectors.toSet());
     }
-
-    @Override
-    @Transactional
-    public void deleteOrderByProducts(List<ProductDTO> productDTOS) {
-        List<Product> products = productDTOS.stream()
-                .map(productMapper::productDTOToProductEntity)
-                .toList();
-        for (Product product : products){
-            orderRepository.deleteByProduct(product);
-        }
-    }
-
     private OrderDTO mapOrderToDTOWithUser(Order order) {
         OrderDTO orderDTO = orderMapper.orderEntityToOrderDTO(order);
         UserDTO userDTO = userMapper.userEntityToUserDTO(order.getUser());

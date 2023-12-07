@@ -13,5 +13,4 @@ public interface InvoiceService {
     public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO, Long invoiceId);
     public void deleteInvoice(Long invoiceId);
     public void deleteInvoiceByOrderId(long orderId);
-    public void deleteInvoicesByOrders(List<OrderDTO> orders);
 }

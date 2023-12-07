@@ -6,6 +6,7 @@ import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 
 import java.util.List;
+import java.util.Set;
 
 public interface OrderService {
     OrderDTO getOrderById(Long orderId);
@@ -18,10 +19,6 @@ public interface OrderService {
 
     OrderResponse getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir);
 
-    List<OrderDTO> getAllOrdersByUser(User user);
-    List<OrderDTO> getAllOrdersByUserId(Long userId);
-    void deleteOrderByProducts(List<ProductDTO> productDTOS);
-
-    String cancelOrder(Long orderId);
-    List<OrderDTO> getAllOrdersByProducs(List<ProductDTO> productDTOS);
-}
+    Set<OrderDTO> getAllOrdersByUser(User user);
+    Set<OrderDTO> getAllOrdersByUserId(Long userId);
+    String cancelOrder(Long orderId);}

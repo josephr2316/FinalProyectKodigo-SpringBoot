@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,5 +16,5 @@ public class CategoryDTO {
     private long categoryId;
     private String categoryName;
     private boolean isActive;
-    private List<ProductDTO> productList;
+    private Set<ProductDTO> productList;
 }

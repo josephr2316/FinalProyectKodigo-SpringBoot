@@ -20,6 +20,4 @@ public interface ShoppingCartService {
 
     ShoppingCartResponse getAllShoppingCarts(int pageNo, int pageSize, String sortBy, String sortDir);
     void deleteShoppingCartsForUser(User user);
-   /* void deleteShoppingCartByProducts(List<ProductDTO> productDTOS);*/
-
 }

@@ -19,7 +19,4 @@ public interface ProductService {
     void deleteProduct(long productId);
     List<ProductDTO> getProductsByKeyword(String keyword);
      String DisableEnableProduct(Long productId);
-    boolean disableProduct(Long productId);
-    List<ProductDTO> findAllProductsByCategoryId(long category);
-    void deleteAllByCategoryId(long category);
 }

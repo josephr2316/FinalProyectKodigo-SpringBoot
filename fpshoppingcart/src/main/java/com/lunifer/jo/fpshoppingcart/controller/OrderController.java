@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -35,14 +36,14 @@ public class OrderController {
         this.invoiceService = invoiceService;
     }
     @GetMapping("/user")
-    public ResponseEntity<List<OrderDTO>> getOrderLoggedUser() {
+    public ResponseEntity<Set<OrderDTO>> getOrderLoggedUser() {
         // Get the security context
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // Extract username and role from the token
         String username = authentication.getName();
         User user = userService.findByUsername(username);
-       List<OrderDTO> orderDTO = orderService.getAllOrdersByUser(user);
+       Set<OrderDTO> orderDTO = orderService.getAllOrdersByUser(user);
         if (orderDTO != null) {
             return ResponseEntity.ok(orderDTO);
         } else {
@@ -60,8 +61,8 @@ public class OrderController {
         }
     }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderDTO>> getOrderByUserId(@PathVariable Long userId) {
-        List<OrderDTO> orderDTO = orderService.getAllOrdersByUserId(userId);
+    public ResponseEntity<Set<OrderDTO>> getOrderByUserId(@PathVariable Long userId) {
+        Set<OrderDTO> orderDTO = orderService.getAllOrdersByUserId(userId);
         if (orderDTO != null) {
             return ResponseEntity.ok(orderDTO);
         } else {
