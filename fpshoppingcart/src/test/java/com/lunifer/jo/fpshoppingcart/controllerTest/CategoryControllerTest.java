@@ -89,7 +89,7 @@ class CategoryControllerTest {
         long categoryId = 1L;
 
         // Act
-        ResponseEntity<Void> responseEntity = categoryController.deleteCategory(categoryId);
+        ResponseEntity<String> responseEntity = categoryController.deleteCategory(categoryId);
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());

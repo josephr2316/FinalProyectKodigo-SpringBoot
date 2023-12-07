@@ -21,7 +21,7 @@ public class Category {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean isActive;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Product> productList;
 
 }

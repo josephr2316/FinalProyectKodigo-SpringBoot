@@ -3,13 +3,17 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Category;
+import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
+import com.lunifer.jo.fpshoppingcart.entity.Review;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
 import com.lunifer.jo.fpshoppingcart.repository.CategoryRepository;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
+import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
+import com.lunifer.jo.fpshoppingcart.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -27,13 +31,17 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
     private final ProductMapper productMapper;
+    private final ProductRepository productRepository;
+    private final ReviewRepository reviewRepository;
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper,
-                               ProductMapper productMapper) {
+                               ProductMapper productMapper, ProductRepository productRepository, ReviewRepository reviewRepository){
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
         this.productMapper = productMapper;
+        this.productRepository = productRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -86,12 +94,29 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(long categoryId) {
         // Throw exception
         categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-        categoryRepository.deleteById(categoryId);
 
+        Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+        categoryOptional.ifPresent(category -> {
+
+        for (Product product : category.getProductList()) {
+            for (Order order : product.getOrder()) {
+                order.getProductList().remove(product);
+            }
+            // Buscar las revisiones asociadas
+            List<Review> reviews = reviewRepository.findReviewsByProductId(product.getProductId());
+
+            // Eliminar las revisiones asociadas
+            reviewRepository.deleteAll(reviews);
+
+            productRepository.delete(product);
+        }
+    });
+                categoryRepository.deleteById(categoryId);
     }
 
     @Transactional
