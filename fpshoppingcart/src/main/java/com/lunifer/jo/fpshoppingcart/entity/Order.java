@@ -18,15 +18,21 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable=false)
     private Long orderId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "orders_product",
-            joinColumns =@JoinColumn(name = "orders_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Product> productList;
+    //@ManyToMany(fetch = FetchType.LAZY)
+    //@JoinTable(
+    //        name = "orders_product",
+    //        joinColumns =@JoinColumn(name = "orders_id"),
+    //        inverseJoinColumns = @JoinColumn(name = "product_id")
+    //)
+    //private Set<Product> productList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private User user;
+
 
     @Column(nullable = false)
     private LocalDateTime orderDate;
@@ -35,9 +41,7 @@ public class Order {
     @Column(nullable = false, name = "order_status")
     private OrderStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private User user;
+
 
 
 

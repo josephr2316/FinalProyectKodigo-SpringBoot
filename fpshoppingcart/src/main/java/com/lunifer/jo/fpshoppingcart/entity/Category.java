@@ -2,6 +2,8 @@ package com.lunifer.jo.fpshoppingcart.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -23,6 +25,6 @@ public class Category {
 
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private Set<Product> products;
+    private Set<Product> products = new HashSet<>();
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -44,5 +45,5 @@ public class Product {
     private Category category;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER) // OneToMany the is explicit the lazy fetch
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 }
