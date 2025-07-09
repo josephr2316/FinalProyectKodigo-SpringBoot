@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -32,15 +31,18 @@ public class Product {
     private int stock;
 
     @Column(columnDefinition = "boolean default true")
-    private boolean isActive;
+    private boolean Active;
 
-    @ManyToMany(mappedBy ="productList", fetch = FetchType.LAZY)
-    private Set<ShoppingCart> shoppingCart;
+   // @ManyToMany(mappedBy ="productList", fetch = FetchType.LAZY)
+    //private Set<ShoppingCart> shoppingCart;
 
-    @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY)
-    private Set<Order> order;
+   // @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY)
+    //private Set<Order> order;*/
 
     @JoinColumn(nullable = false)
     @ManyToOne
     private Category category;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER) // OneToMany the is explicit the lazy fetch
+    private List<Review> reviews;
 }
