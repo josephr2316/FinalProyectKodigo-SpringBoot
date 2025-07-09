@@ -15,10 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,7 +76,7 @@ public class CategoryServiceImplTest {
         when(categoryMapper.categoryEntityToCategoryDTO(any(Category.class))).thenReturn(new CategoryDTO());
 
         // Call the method and verify the result
-        List<CategoryDTO> result = categoryService.getAllCategories();
+        Set<CategoryDTO> result = categoryService.getAllCategories();
 
         // Verify that methods are called correctly
         verify(categoryRepository).findAll();
@@ -117,7 +114,7 @@ public class CategoryServiceImplTest {
         long categoryId = 1L;
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setCategoryName("Updated Category");
-        List<ProductDTO> productList = new ArrayList<>();
+        Set<ProductDTO> productList = new HashSet<>();
         categoryDTO.setProductList(productList);
         Category existingCategory = new Category();
         existingCategory.setCategoryName("Old Category");

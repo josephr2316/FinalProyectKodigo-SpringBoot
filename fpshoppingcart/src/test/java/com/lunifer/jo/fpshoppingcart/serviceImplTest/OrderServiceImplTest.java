@@ -2,8 +2,11 @@ package com.lunifer.jo.fpshoppingcart.serviceImplTest;
 
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
+import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
+import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.payload.OrderResponse;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
+import com.lunifer.jo.fpshoppingcart.service.UserService;
 import com.lunifer.jo.fpshoppingcart.service.impl.OrderServiceImpl;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,8 +29,19 @@ public class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private UserMapper userMapper;
+
+    @Mock
+    private OrderMapper orderMapper;
+
     @InjectMocks
     private OrderServiceImpl orderService;
+
+
 
     public OrderServiceImplTest() {
         MockitoAnnotations.openMocks(this);
@@ -73,7 +87,7 @@ public class OrderServiceImplTest {
         orderDTO.setOrderId(orderId);
 
         // Inicializar la lista de productos para evitar el NullPointerException
-        orderDTO.setProductList(new ArrayList<>());
+        orderDTO.setProductList(new HashSet<>());
 
         Order existingOrder = new Order();
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(existingOrder));

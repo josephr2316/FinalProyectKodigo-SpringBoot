@@ -90,7 +90,7 @@ class ShoppingCartServiceImplTest {
         productDTO.setPrice(BigDecimal.valueOf(50.0));
         productDTO.setStock(10);
 
-        shoppingCartDTO.setProductList(Collections.singletonList(productDTO));
+        shoppingCartDTO.setProductList(Collections.singleton(productDTO));
 
         ShoppingCart existingShoppingCart = new ShoppingCart();
         existingShoppingCart.setCartId(cartId);

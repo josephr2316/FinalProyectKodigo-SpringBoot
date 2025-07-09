@@ -13,9 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,10 +24,10 @@ class DTOTest {
     private UserDTO userDTO;
 
     @Mock
-    private List<Order> orderHistory;
+    private Set<Order> orderHistory;
 
     @Mock
-    private List<Review> reviewHistory;
+    private Set<Review> reviewHistory;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +53,7 @@ class DTOTest {
         String categoryName = "Electronics";
         boolean isActive = true;
 
-        List<ProductDTO> productList = new ArrayList<>();
+        Set<ProductDTO> productList = new HashSet<>();
         productList.add(new ProductDTO());
 
         CategoryDTO categoryDTO = new CategoryDTO();
@@ -96,7 +94,7 @@ class DTOTest {
 
         Long orderId = 1L;
         Long userId = 101L;
-        List<ProductDTO> productList = Arrays.asList(new ProductDTO(), new ProductDTO());
+        Set<ProductDTO> productList = new HashSet<>(Arrays.asList(new ProductDTO(), new ProductDTO()));
         LocalDateTime orderDate = LocalDateTime.now();
         OrderStatus status = OrderStatus.PENDING;
 
@@ -175,8 +173,8 @@ class DTOTest {
         ProductDTO produc2 = new ProductDTO(102L, "Product2", "Description2", BigDecimal.valueOf(29.99), 5, true, 2);
         Long cartId = 1L;
         Long userId = 2L;
-        List<ProductDTO> productList = Arrays.asList(produc1
-                ,produc2);
+        Set<ProductDTO> productList = new HashSet<>(Arrays.asList(produc1
+                ,produc2));
         BigDecimal totalPrice = BigDecimal.valueOf(49.98);
 
         ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();

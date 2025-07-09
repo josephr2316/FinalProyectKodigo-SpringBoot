@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +18,7 @@ class EntitiesTest {
     @Test
     void CategoryTestConstructorWithParameters() {
 
-        Category category = new Category(1, "Electronics", true, new ArrayList<>());
+        Category category = new Category(1L, "Electronics", true, new HashSet<>());
 
         assertEquals(1, category.getCategoryId());
         assertEquals("Electronics", category.getCategoryName());
@@ -87,7 +89,7 @@ class EntitiesTest {
     void OrderTestGettersAndSetters() {
 
         Order order = new Order();
-        List<Product> productList = new ArrayList<>();
+        Set<Product> productList = new HashSet<>();
         LocalDateTime orderDate = LocalDateTime.now();
         OrderStatus status = OrderStatus.PENDING;
         User user = new User();
@@ -121,7 +123,7 @@ class EntitiesTest {
     @Test
     void OrderTestConstructorWithParameters() {
         // Arrange
-        List<Product> productList = new ArrayList<>();
+        Set<Product> productList = new HashSet<>();
         LocalDateTime orderDate = LocalDateTime.of(2023, 1, 1, 10, 30);
         OrderStatus status = OrderStatus.PROCESSING;
         User user = new User();
@@ -142,8 +144,8 @@ class EntitiesTest {
         // Arrange
         Product product = new Product();
         Category category = new Category();
-        List<ShoppingCart> shoppingCartList = new ArrayList<>();
-        List<Order> orderList = new ArrayList<>();
+        Set<ShoppingCart> shoppingCartList = new HashSet<>();
+        Set<Order> orderList = new HashSet<>();
 
         // Act
         product.setProductId(1L);
@@ -224,7 +226,7 @@ class EntitiesTest {
         // Arrange
         ShoppingCart shoppingCart = new ShoppingCart();
         User user = new User();
-        List<Product> productList = new ArrayList<>();
+        HashSet<Product> productList = new HashSet<>();
 
         // Act
         shoppingCart.setCartId(1L);
@@ -256,9 +258,9 @@ class EntitiesTest {
         // Arrange
         User user = new User();
         List<String> roles = new ArrayList<>();
-        List<Order> orderHistory = new ArrayList<>();
-        List<Review> reviewHistory = new ArrayList<>();
-        List<ShoppingCart> shoppingCartHistory = new ArrayList<>();
+        Set<Order> orderHistory = new HashSet<>();
+        Set<Review> reviewHistory = new HashSet<>();
+        Set<ShoppingCart> shoppingCartHistory = new HashSet<>();
 
         // Act
         user.setUserId(1L);

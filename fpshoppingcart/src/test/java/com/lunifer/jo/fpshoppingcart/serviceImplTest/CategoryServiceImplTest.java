@@ -15,10 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,7 +100,7 @@ public class CategoryServiceImplTest {
         when(categoryMapper.categoryEntityToCategoryDTO(categoryEntities.get(0))).thenReturn(expectedCategoryDTOs.get(0));
         when(categoryMapper.categoryEntityToCategoryDTO(categoryEntities.get(1))).thenReturn(expectedCategoryDTOs.get(1));
 
-        List<CategoryDTO> result = categoryService.getAllCategories();
+        Set<CategoryDTO> result = categoryService.getAllCategories();
 
         assertEquals(expectedCategoryDTOs, result);
     }
@@ -138,19 +135,19 @@ public class CategoryServiceImplTest {
         CategoryDTO inputCategoryDTO = new CategoryDTO();
         inputCategoryDTO.setCategoryName("Updated Category");
         inputCategoryDTO.setActive(false);
-        inputCategoryDTO.setProductList(Collections.emptyList());
+        inputCategoryDTO.setProductList(Collections.emptySet());
 
         Category existingCategory = new Category();
         existingCategory.setCategoryId(categoryIdToUpdate);
         existingCategory.setCategoryName("Original Category");
         existingCategory.setActive(true);
-        existingCategory.setProductList(Collections.emptyList());
+        existingCategory.setProductList(Collections.emptySet());
 
         Category updatedCategoryEntity = new Category();
         updatedCategoryEntity.setCategoryId(categoryIdToUpdate);
         updatedCategoryEntity.setCategoryName("Updated Category");
         updatedCategoryEntity.setActive(false);
-        updatedCategoryEntity.setProductList(Collections.emptyList());
+        updatedCategoryEntity.setProductList(Collections.emptySet());
 
 
         when(categoryRepository.findById(categoryIdToUpdate)).thenReturn(Optional.of(existingCategory));

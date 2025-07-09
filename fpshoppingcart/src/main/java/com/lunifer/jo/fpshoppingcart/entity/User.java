@@ -41,15 +41,16 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-   // @Enumerated(EnumType.STRING)
+   //
    // @Column(nullable = false)
-    @ElementCollection(targetClass = String.class,fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = UserRol.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    List<String> roles;
+    Set<UserRol> roles;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isActive;
+    private boolean Active;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
     private Set<Order> orderHistory;

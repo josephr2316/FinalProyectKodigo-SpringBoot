@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -37,11 +39,12 @@ class CategoryControllerTest {
     @Test
     @DisplayName("Test getAllCategories method")
     void getAllCategories() {
-            List<CategoryDTO> dummyCategories = Arrays.asList(new CategoryDTO(), new CategoryDTO());
+            Set<CategoryDTO> dummyCategories = new HashSet<>(Arrays.asList(new CategoryDTO(), new CategoryDTO()));
         when(categoryService.getAllCategories()).thenReturn(dummyCategories);
 
 
-        ResponseEntity<List<CategoryDTO>> responseEntity = categoryController.getAllCategories();
+        ResponseEntity<Set<CategoryDTO>> responseEntity = categoryController.getAllCategories();
+
 
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

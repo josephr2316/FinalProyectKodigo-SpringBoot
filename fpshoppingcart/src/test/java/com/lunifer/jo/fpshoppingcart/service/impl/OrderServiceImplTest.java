@@ -12,9 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +39,7 @@ public class OrderServiceImplTest {
     public void testUpdateOrder() {
         long orderId = 1L;
         OrderDTO orderDTO = new OrderDTO();
-        List<ProductDTO> productDTOListTest = new ArrayList<>();
+        Set<ProductDTO> productDTOListTest = new HashSet<>();
         orderDTO.setProductList(productDTOListTest);
 
         // Set up mocks

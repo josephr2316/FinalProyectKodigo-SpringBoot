@@ -1,5 +1,5 @@
 
-USE DATABASE shoppingCartDB;
+USE shoppingCartDB;
 
 -- Insert data into the User table
 INSERT INTO user (first_name, last_name, email, address, phone_number, username, password, is_active) VALUES
@@ -37,7 +37,7 @@ INSERT INTO user (first_name, last_name, email, address, phone_number, username,
 ('Henry', 'Turner', 'henry.turner@example.com', '678 Elm St, Citytown', '777-999-0000', 'henry_turner', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true);
 
 -- Insert data into the roles table
-INSERT INTO user_roles (user_user_id, roles) VALUES
+INSERT INTO user_roles (user_id, role) VALUES
 (1, 'ADMIN'),
 (2, 'BUYER'),
 (3, 'BUYER'),
@@ -272,7 +272,7 @@ INSERT INTO cart_product (cart_id, product_id) VALUES
 
 
 -- Insertar datos en la tabla orders
-INSERT INTO orders (order_date, status, user_user_id) VALUES
+INSERT INTO orders (order_date, order_status, user_user_id) VALUES
 ('2023-11-01 10:30:00', 'DELIVERED', 1),
 ('2023-11-02 11:45:00', 'PROCESSING', 2),
 ('2023-11-03 09:15:00', 'PENDING', 3),
