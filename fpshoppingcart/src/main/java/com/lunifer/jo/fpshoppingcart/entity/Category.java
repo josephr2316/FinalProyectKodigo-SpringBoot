@@ -2,8 +2,6 @@ package com.lunifer.jo.fpshoppingcart.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,14 +15,14 @@ public class Category {
     @Column(updatable = false)
     private Long categoryId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private boolean isActive;
+    private boolean Active;
 
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Product> productList;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private Set<Product> products;
 
 }
