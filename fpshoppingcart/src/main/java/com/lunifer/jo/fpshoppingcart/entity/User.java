@@ -41,7 +41,6 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-   //
    // @Column(nullable = false)
     @ElementCollection(targetClass = UserRol.class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
@@ -53,12 +52,12 @@ public class User {
     private boolean Active;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
-    private Set<Order> orderHistory;
+    private List<Order> orderHistory;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user", orphanRemoval = true)
-    private Set<Review> reviewHistory;
+    private List<Review> reviewHistory;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<ShoppingCart> shoppingCartHistory;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 
 }
