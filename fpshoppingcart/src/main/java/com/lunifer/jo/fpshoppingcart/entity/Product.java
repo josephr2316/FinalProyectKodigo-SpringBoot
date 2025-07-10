@@ -21,7 +21,7 @@ import java.util.List;
         @Index(name = "idx_product_price", columnList = "price")
 })
 @BatchSize(size = 25) // Improves performance when fetching collections in batches.
-public class Product {
+public class Product extends BaseAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
