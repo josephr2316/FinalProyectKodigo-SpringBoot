@@ -49,6 +49,7 @@ public class Product extends BaseAuditEntity {
    // @ManyToMany(mappedBy = "productList", fetch = FetchType.LAZY)
     //private Set<Order> order;*/
 
+    // --- Relationships ---
     // Many products can belong to one category
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -59,6 +60,7 @@ public class Product extends BaseAuditEntity {
     @BatchSize(size = 15)
     private List<Review> reviews = new ArrayList<>();
 
+    // --- Calculated fields with Hibernate Formula ---
     // Formula fields for average rating and review count (calculated on the fly by the DB)
     @Formula("(SELECT AVG(CASE WHEN r.like_dislike = true THEN r.rating ELSE 0 END) FROM reviews r WHERE r.product_id = product_id)")
     private Double averageRating;
@@ -69,8 +71,26 @@ public class Product extends BaseAuditEntity {
     // Convenience methods
 
     /**
+     * Adds a review to this product, setting both sides of the relationship.
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setProduct(this);
+    }
+
+    /**
+     * Removes a review from this product, clearing both sides.
+     */
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setProduct(null);
+    }
+
+
+    /**
      * Checks if the product is in stock.
      */
+    // Stock management methods
     public boolean isInStock() {
         return stock > 0;
     }
