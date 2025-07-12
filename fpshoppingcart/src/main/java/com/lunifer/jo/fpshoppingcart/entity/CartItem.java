@@ -7,12 +7,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.xml.stream.FactoryConfigurationError;
+import java.math.BigDecimal;
 
-@Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "cart_items", indexes = {
+        @Index(name = "idx_cart_item_cart", columnList = "cart_id"),
+        @Index(name = "idx_cart_item_product", columnList = "product_id")
+})
 public class CartItem {
 
     @Id
@@ -20,15 +26,24 @@ public class CartItem {
     @Column(updatable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
     private int quantity;
 
+    public BigDecimal getSubtotal() {
+        return product != null && product.getPrice() != null
+                ? product.getPrice().multiply(BigDecimal.valueOf(quantity))
+                : BigDecimal.ZERO;
+    }
+
+    public boolean isValidQuantity() {
+        return product != null && product.hasStock(quantity);
+    }
 }

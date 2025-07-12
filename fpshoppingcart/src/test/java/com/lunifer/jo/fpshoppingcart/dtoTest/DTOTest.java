@@ -2,7 +2,7 @@ package com.lunifer.jo.fpshoppingcart.dtoTest;
 
 import com.lunifer.jo.fpshoppingcart.dto.*;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
-import com.lunifer.jo.fpshoppingcart.entity.OrderStatus;
+import com.lunifer.jo.fpshoppingcart.enums.OrderStatus;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

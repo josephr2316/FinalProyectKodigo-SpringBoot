@@ -2,7 +2,6 @@ package com.lunifer.jo.fpshoppingcart.dto;
 
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
-import com.lunifer.jo.fpshoppingcart.entity.UserRol;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

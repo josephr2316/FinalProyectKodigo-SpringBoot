@@ -1,5 +1,6 @@
 package com.lunifer.jo.fpshoppingcart.entity;
 
+import com.lunifer.jo.fpshoppingcart.enums.UserRol;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

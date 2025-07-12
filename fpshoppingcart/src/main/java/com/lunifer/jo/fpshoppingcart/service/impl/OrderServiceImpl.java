@@ -3,7 +3,7 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
 import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
-import com.lunifer.jo.fpshoppingcart.entity.OrderStatus;
+import com.lunifer.jo.fpshoppingcart.enums.OrderStatus;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;

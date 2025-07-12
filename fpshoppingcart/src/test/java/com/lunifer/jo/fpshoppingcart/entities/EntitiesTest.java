@@ -1,6 +1,8 @@
 package com.lunifer.jo.fpshoppingcart.entities;
 
 import com.lunifer.jo.fpshoppingcart.entity.*;
+import com.lunifer.jo.fpshoppingcart.enums.OrderStatus;
+import com.lunifer.jo.fpshoppingcart.enums.UserRol;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

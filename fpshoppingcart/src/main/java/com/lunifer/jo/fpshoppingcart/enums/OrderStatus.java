@@ -1,4 +1,4 @@
-package com.lunifer.jo.fpshoppingcart.entity;
+package com.lunifer.jo.fpshoppingcart.enums;
 
 public enum OrderStatus {
     PENDING,

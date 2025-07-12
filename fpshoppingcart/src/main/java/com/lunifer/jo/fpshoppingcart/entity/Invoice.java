@@ -8,26 +8,54 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Invoice {
+@Table(name = "invoices", indexes = {
+        @Index(name = "idx_invoice_number", columnList = "invoice_number"),
+        @Index(name = "idx_invoice_order", columnList = "order_id"),
+        @Index(name = "idx_invoice_payment_status", columnList = "payment_status")
+})
+public class Invoice extends BaseAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable=false)
+    @Column(name = "invoice_id", updatable = false)
     private Long invoiceId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(nullable = false)
+    @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(nullable = false)
-    private LocalDate issueDate;
+    @Column(name = "invoice_number", unique = true, length = 50)
+    private String invoiceNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", nullable = false)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+
+    @Column(name = "tax_amount", precision = 12, scale = 2)
+    private BigDecimal taxAmount = BigDecimal.ZERO;
+
+    @Column(name = "discount_amount", precision = 12, scale = 2)
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    // Se autogenera el número de factura si no se especifica
+    @PrePersist
+    public void generateInvoiceNumber() {
+        if (invoiceNumber == null) {
+            invoiceNumber = "INV-" + System.currentTimeMillis();
+        }
+    }
+
+    // Método de utilidad para obtener el monto neto
+    public BigDecimal getNetAmount() {
+        return totalAmount.subtract(taxAmount).subtract(discountAmount);
+    }
 }

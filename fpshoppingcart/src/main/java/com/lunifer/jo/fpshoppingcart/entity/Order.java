@@ -1,4 +1,5 @@
 package com.lunifer.jo.fpshoppingcart.entity;
+import com.lunifer.jo.fpshoppingcart.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,10 +8,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.BatchSize;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
