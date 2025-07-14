@@ -12,9 +12,12 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class CategoryDTO {
-
-    private long categoryId;
+    private Long categoryId;
     private String categoryName;
-    private boolean isActive;
-    private Set<ProductDTO> productList;
+    private String description;
+    private boolean active;
+    private Long productCount;        // Optional: cantidad total de productos en esta categoría
+    private Long activeProductCount;  // Optional: cantidad de productos activos
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
