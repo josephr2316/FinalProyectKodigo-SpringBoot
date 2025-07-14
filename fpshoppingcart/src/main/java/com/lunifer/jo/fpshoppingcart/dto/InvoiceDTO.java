@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +14,14 @@ import java.time.LocalDate;
 @Builder
 public class InvoiceDTO {
     private Long invoiceId;
+    private String invoiceNumber;
     private Long orderId;
+    private String orderNumber;
     private BigDecimal totalAmount;
-    private LocalDate issueDate;
+    private BigDecimal taxAmount;
+    private BigDecimal discountAmount;
+    private BigDecimal netAmount;
+    private String paymentStatus; // Usualmente es un Enum en la entidad
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
