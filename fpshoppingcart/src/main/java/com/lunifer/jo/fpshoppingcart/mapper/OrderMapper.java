@@ -1,19 +1,15 @@
 package com.lunifer.jo.fpshoppingcart.mapper;
 
-import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.dto.*;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
-import com.lunifer.jo.fpshoppingcart.entity.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {OrderItemMapper.class})
 public interface OrderMapper {
 
-    OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
-
-    OrderDTO orderEntityToOrderDTO(Order order);
-    Order orderDTOToOrderEntity(OrderDTO orderDTO);
-
-    Product mapToProductEntity(ProductDTO productDTO);
+    @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "username", source = "user.username")
+    @Mapping(target = "userFullName", expression = "java(order.getUser().getFullName())")
+    @Mapping(target = "canBeCancelled", expression = "java(order.canBeCancelled())")
+    OrderDTO toOrderDTO(Order order);
 }
