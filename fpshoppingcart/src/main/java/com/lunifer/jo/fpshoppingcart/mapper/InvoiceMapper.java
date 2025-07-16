@@ -1,18 +1,14 @@
 package com.lunifer.jo.fpshoppingcart.mapper;
 
-import com.lunifer.jo.fpshoppingcart.dto.InvoiceDTO;
+import com.lunifer.jo.fpshoppingcart.dto.*;
 import com.lunifer.jo.fpshoppingcart.entity.Invoice;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", uses = OrderMapper.class)
+@Mapper(componentModel = "spring")
 public interface InvoiceMapper {
 
-    InvoiceMapper INSTANCE = Mappers.getMapper(InvoiceMapper.class);
     @Mapping(target = "orderId", source = "order.orderId")
-    InvoiceDTO invoiceEntityToInvoiceDTO(Invoice invoiceEntity);
-
-    @Mapping(target = "order.orderId", source = "orderId")
-    Invoice InvoiceDTOToInvoiceEntity(InvoiceDTO invoiceDTO);
+    @Mapping(target = "orderNumber", source = "order.orderNumber")
+    @Mapping(target = "paymentStatus", source = "paymentStatus")
+    InvoiceDTO toInvoiceDTO(Invoice invoice);
 }
