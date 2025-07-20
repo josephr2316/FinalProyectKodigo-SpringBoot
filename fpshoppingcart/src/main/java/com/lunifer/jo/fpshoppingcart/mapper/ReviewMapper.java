@@ -15,4 +15,6 @@ public interface ReviewMapper {
     @Mapping(target = "positive", expression = "java(review.isPositive())")
     @Mapping(target = "negative", expression = "java(review.isNegative())")
     @Mapping(target = "neutral", expression = "java(review.isNeutral())")
+     ReviewDTO toReviewDTO(Review review);
+}
   
