@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review,Long> {
-    @Query("SELECT r FROM Review r WHERE r.product.productId = :productId")
-    List<Review> findReviewsByProductId(Long productId);
 
-    void deleteAllByProduct(Product product);
+    Page<Review> findByProduct_ProductId(Long productId, Pageable pageable);
+    Page<Review> findByUser_UserId(Long userId, Pageable pageable);
+     
 }

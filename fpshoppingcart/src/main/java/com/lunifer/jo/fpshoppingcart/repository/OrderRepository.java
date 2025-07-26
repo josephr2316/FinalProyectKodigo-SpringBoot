@@ -13,12 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findOrdersByUser(User user);
-    List<Order> findOrdersByUserUserId(long userId);
-    @Modifying
-    @Query("DELETE FROM ShoppingCart s WHERE :product MEMBER OF s.productList")
-    void deleteByProduct(@Param("product") Product product);
 
-    @Query("SELECT DISTINCT o FROM Order o JOIN o.productList p WHERE p IN :productList")
-    List<Order> findDistinctByProductsIn(@Param("productList") List<Product> products);
+    Page<Order> findByUser_UserId(Long userId, Pageable pageable);     
+
 }
