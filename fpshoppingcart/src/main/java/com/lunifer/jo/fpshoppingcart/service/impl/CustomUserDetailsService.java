@@ -1,4 +1,4 @@
-package com.lunifer.jo.fpshoppingcart.security;
+package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
             .username(user.getUsername())
             .password(user.getPassword())
-            .authorities(user.getRoles().stream().map(Enum::name).toArray(String[]::new))
+            .authorities(user.getRoles().stream().map(role -> "ROLE_" + role.name()).toArray(String[]::new))
             .accountLocked(!user.isActive())
             .disabled(!user.isActive())
             .build();

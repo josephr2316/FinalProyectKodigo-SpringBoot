@@ -3,7 +3,6 @@ package com.lunifer.jo.fpshoppingcart.serviceImplTest;
 import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
-import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,12 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Null;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

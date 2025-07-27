@@ -1,9 +1,10 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
-
-import java.util.List;
-import java.util.Set;
+import com.lunifer.jo.fpshoppingcart.dto.CreateCategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateCategoryDTO;
+import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
     CategoryDTO getCategoryById(Long id);

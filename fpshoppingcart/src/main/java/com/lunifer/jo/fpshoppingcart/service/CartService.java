@@ -1,10 +1,8 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
-import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
-import com.lunifer.jo.fpshoppingcart.entity.User;
-import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
-import org.springframework.data.domain.Sort;
+import com.lunifer.jo.fpshoppingcart.dto.AddToCartDTO;
+import com.lunifer.jo.fpshoppingcart.dto.CartDTO;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateCartItemDTO;
 
 import java.util.List;
 

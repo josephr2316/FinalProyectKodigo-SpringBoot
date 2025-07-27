@@ -1,6 +1,9 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.CreateCategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateCategoryDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Category;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
@@ -10,7 +13,9 @@ import com.lunifer.jo.fpshoppingcart.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +34,21 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(id)
                 .map(categoryMapper::categoryEntityToCategoryDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+    }
+
+    @Override
+    public PagedResponse<CategoryDTO> getAllCategories(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public CategoryDTO createCategory(CreateCategoryDTO dto) {
+        return null;
+    }
+
+    @Override
+    public CategoryDTO updateCategory(Long id, UpdateCategoryDTO dto) {
+        return null;
     }
 
     @Override

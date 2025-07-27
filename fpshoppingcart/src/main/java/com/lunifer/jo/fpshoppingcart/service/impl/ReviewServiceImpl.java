@@ -1,5 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
+import com.lunifer.jo.fpshoppingcart.dto.CreateReviewDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
 import com.lunifer.jo.fpshoppingcart.dto.ReviewDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
 import com.lunifer.jo.fpshoppingcart.mapper.ReviewMapper;
@@ -7,8 +9,10 @@ import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +30,16 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewRepository.findById(id)
                 .map(reviewMapper::reviewEntityToReviewDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
+    }
+
+    @Override
+    public PagedResponse<ReviewDTO> getAllReviews(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public ReviewDTO createReview(CreateReviewDTO dto) {
+        return null;
     }
 
     @Override

@@ -1,11 +1,9 @@
 package com.lunifer.jo.fpshoppingcart.service;
 
+import com.lunifer.jo.fpshoppingcart.dto.CreateInvoiceDTO;
 import com.lunifer.jo.fpshoppingcart.dto.InvoiceDTO;
-import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
-import com.lunifer.jo.fpshoppingcart.entity.Order;
-
-import java.util.List;
-
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import org.springframework.data.domain.Pageable;
 
 public interface InvoiceService {
     InvoiceDTO getInvoiceById(Long id);

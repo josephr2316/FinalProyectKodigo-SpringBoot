@@ -1,28 +1,18 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
-import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.CreateProductDTO;
 import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateProductDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Product;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
-import com.lunifer.jo.fpshoppingcart.mapper.CategoryMapper;
 import com.lunifer.jo.fpshoppingcart.mapper.ProductMapper;
-import com.lunifer.jo.fpshoppingcart.payload.ProductResponse;
 import com.lunifer.jo.fpshoppingcart.repository.ProductRepository;
-import com.lunifer.jo.fpshoppingcart.service.CategoryService;
-import com.lunifer.jo.fpshoppingcart.service.ProductService;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.math.BigDecimal;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.List;
+import com.lunifer.jo.fpshoppingcart.service.ProductService;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +32,16 @@ public class ProductServiceImpl implements ProductService {
     public PagedResponse<ProductDTO> getAllProducts(Pageable pageable) {
         Page<Product> products = productRepository.findAll(pageable);
         return PagedResponse.of(products.map(productMapper::productEntityToProductDTO));
+    }
+
+    @Override
+    public ProductDTO createProduct(CreateProductDTO createProductDTO) {
+        return null;
+    }
+
+    @Override
+    public ProductDTO updateProduct(Long id, UpdateProductDTO updateProductDTO) {
+        return null;
     }
 
     @Override

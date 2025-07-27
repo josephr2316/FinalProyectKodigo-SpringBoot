@@ -1,12 +1,16 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 
+import com.lunifer.jo.fpshoppingcart.dto.CreateInvoiceDTO;
 import com.lunifer.jo.fpshoppingcart.dto.InvoiceDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
 import com.lunifer.jo.fpshoppingcart.entity.Invoice;
 import com.lunifer.jo.fpshoppingcart.mapper.InvoiceMapper;
 import com.lunifer.jo.fpshoppingcart.repository.InvoiceRepository;
 import com.lunifer.jo.fpshoppingcart.service.InvoiceService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +25,16 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoiceRepository.findById(id)
                 .map(invoiceMapper::invoiceEntityToInvoiceDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
+    }
+
+    @Override
+    public PagedResponse<InvoiceDTO> getAllInvoices(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public InvoiceDTO createInvoice(CreateInvoiceDTO dto) {
+        return null;
     }
 
     @Override
