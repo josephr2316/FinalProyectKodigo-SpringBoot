@@ -21,103 +21,36 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-    private final UserService userService;
-    private final ShoppingCartService shoppingCartService;
-    private final InvoiceService invoiceService;
 
-    @Autowired
-    public OrderController(OrderService orderService, ShoppingCartService shoppingCartService, UserService userService, InvoiceService invoiceService) {
-        this.orderService = orderService;
-        this.shoppingCartService = shoppingCartService;
-        this.userService = userService;
-        this.invoiceService = invoiceService;
-    }
-    @GetMapping("/user")
-    public ResponseEntity<Set<OrderDTO>> getOrderLoggedUser() {
-        // Get the security context
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Extract username and role from the token
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
-       Set<OrderDTO> orderDTO = orderService.getAllOrdersByUser(user);
-        if (orderDTO != null) {
-            return ResponseEntity.ok(orderDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
-        OrderDTO orderDTO = orderService.getOrderById(orderId);
-        if (orderDTO != null) {
-            return ResponseEntity.ok(orderDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Set<OrderDTO>> getOrderByUserId(@PathVariable Long userId) {
-        Set<OrderDTO> orderDTO = orderService.getAllOrdersByUserId(userId);
-        if (orderDTO != null) {
-            return ResponseEntity.ok(orderDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping()
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        // Get the security context
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Extract username and role from the token
-        String username = authentication.getName();
-        User user = userService.findByUsername(username);
-        shoppingCartService.deleteShoppingCartsForUser(user);
-        OrderDTO createdOrder = orderService.createOrder(orderDTO);
-        return ResponseEntity.ok(createdOrder);
-    }
-
-    @PutMapping("/{orderId}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDTO) {
-        OrderDTO updatedOrder = orderService.updateOrder(orderId, orderDTO);
-        if (updatedOrder != null) {
-            return ResponseEntity.ok(updatedOrder);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId) {
-        invoiceService.deleteInvoiceByOrderId(orderId);
-        orderService.deleteOrder(orderId);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
     @GetMapping
-    public OrderResponse getAllOrders(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "orderId", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
-    ) {
-        return orderService.getAllOrders(pageNo, pageSize, sortBy, sortDir);
+    public ResponseEntity<PagedResponse<OrderDTO>> getAllOrders(Pageable pageable) {
+        return ResponseEntity.ok(orderService.getAllOrders(pageable));
     }
 
-    @PutMapping("/cancel/{orderId}")
-    public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
-        // Call the service method to cancel the order and get the result
-        String message = orderService.cancelOrder(orderId);
-
-        // If successful, return a response with HTTP status 204 (No Content)
-        return ResponseEntity.ok(message);
-
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody CreateOrderDTO dto) {
+        return ResponseEntity.ok(orderService.createOrder(dto));
     }
 
+    // Métodos adicionales:
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderDTO> updateOrderStatus(
+            @PathVariable Long id, @RequestParam String newStatus) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, newStatus));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
+        return ResponseEntity.noContent().build();
+    }
 }

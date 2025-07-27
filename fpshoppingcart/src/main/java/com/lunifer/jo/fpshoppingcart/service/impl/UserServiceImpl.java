@@ -20,146 +20,82 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
-
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder; // Para hash de password
+
     @Override
-    public UserDTO saveUser(UserDTO userDTO) {
-        User user = UserMapper.INSTANCE.userDTOToUserEntity(userDTO);
-        User savedUser = userRepository.save(user);
-        return UserMapper.INSTANCE.userEntityToUserDTO(savedUser);
+    public UserDTO getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(userMapper::userEntityToUserDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
-    @Transactional
-    public UserResponse getAllUsers(int pageNo, int pageSize, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        // Sorting Support
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-
-        // Retrieve a page of users
-        Page<User> userList = userRepository.findAll(pageable);
-
-        // Get content for user object
-        List<User> listOfUsers = userList.getContent();
-
-        List<UserDTO> content = listOfUsers.stream()
-                .map(UserMapper.INSTANCE::userEntityToUserDTO)
-                .collect(Collectors.toList());
-
-        UserResponse userResponse = new UserResponse();
-        userResponse.setContent(content);
-        userResponse.setPageNo(userList.getNumber());
-        userResponse.setPageSize(userList.getSize());
-        userResponse.setTotalElements(userList.getTotalElements());
-        userResponse.setTotalPages(userList.getTotalPages());
-        userResponse.setLast(userList.isLast());
-        return userResponse;
+    public PagedResponse<UserDTO> getAllUsers(Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable);
+        return PagedResponse.of(users.map(userMapper::userEntityToUserDTO));
     }
 
     @Override
-    @Transactional
-    public UserDTO getUserById(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-        return UserMapper.INSTANCE.userEntityToUserDTO(user);
+    public UserDTO createUser(CreateUserDTO dto) {
+        User user = userMapper.createUserDTOToUser(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword())); // Hashing
+        return userMapper.userEntityToUserDTO(userRepository.save(user));
     }
 
     @Override
-    @Transactional
-    public UserDTO updateUser(Long userId, UserDTO userDTO) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
-
-        existingUser.setFirstName(userDTO.getFirstName());
-        existingUser.setLastName(userDTO.getLastName());
-        existingUser.setEmail(userDTO.getEmail());
-        existingUser.setAddress(userDTO.getPhoneNumber());
-        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
-        existingUser.setUsername(userDTO.getUserName());
-        existingUser.setPassword(userDTO.getPassword());
-        existingUser.setActive(userDTO.isActive());
-        existingUser.setOrderHistory(userDTO.getOrderHistory());
-        existingUser.setReviewHistory(userDTO.getReviewHistory());
-        User updatedUser = userRepository.save(existingUser);
-
-        return UserMapper.INSTANCE.userEntityToUserDTO(updatedUser);
+    public UserDTO updateUser(Long id, UpdateUserDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userMapper.updateUserFromDTO(dto, user);
+        return userMapper.userEntityToUserDTO(userRepository.save(user));
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         userRepository.delete(user);
     }
 
     @Override
-    @Transactional
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public UserDTO getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::userEntityToUserDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserDTO login(LoginDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new UnauthorizedException("Invalid credentials");
+        }
+        return userMapper.userEntityToUserDTO(user);
+        // Aquí deberías retornar también un JWT/token si usas autenticación basada en tokens.
     }
 
     @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        logger.info("Querying the user: " + username);
-
-        User user = userRepository.findByUsername(username);
-        if(user==null){
-            throw new UsernameNotFoundException("User not found");
+    public void changePassword(Long userId, ChangePasswordDTO dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new UnauthorizedException("Current password is incorrect");
         }
-
-        Set<GrantedAuthority> roles = new HashSet<>();
-
-        for (String role : user.getRoles()) {
-            logger.info("ROLE_"+role);
-            roles.add(new SimpleGrantedAuthority("ROLE_"+role));
+        if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+            throw new IllegalArgumentException("New password and confirm password do not match");
         }
-
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
-
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true, true, true, grantedAuthorities);
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
     }
-    @Override
-    @Transactional
-    public String disableEnableUser(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setActive(!user.isActive());
-
-            // Since we're using @Transactional, changes will be automatically
-            // saved to the database when the transaction is committed
-
-            // Return a message indicating whether the user was successfully disabled or enabled
-            return "User: " + user.getUsername() +
-                    " with ID: " + user.getUserId() +
-                    " has been successfully " + (user.isActive() ? "enabled" : "disabled");
-        } else {
-            throw new EntityNotFoundException("Cannot find user with ID " + userId);
-        }
-    }
-
 }
-

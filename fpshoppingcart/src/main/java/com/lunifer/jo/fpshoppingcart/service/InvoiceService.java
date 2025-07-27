@@ -8,9 +8,8 @@ import java.util.List;
 
 
 public interface InvoiceService {
-    public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO);
-    public InvoiceDTO getInvoiceByOrderId(Long orderId);
-    public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO, Long invoiceId);
-    public void deleteInvoice(Long invoiceId);
-    public void deleteInvoiceByOrderId(long orderId);
+    InvoiceDTO getInvoiceById(Long id);
+    PagedResponse<InvoiceDTO> getAllInvoices(Pageable pageable);
+    InvoiceDTO createInvoice(CreateInvoiceDTO dto);
+    void deleteInvoice(Long id);
 }

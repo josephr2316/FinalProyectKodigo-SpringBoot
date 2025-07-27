@@ -14,30 +14,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/reviews")
+@RequestMapping("/api/reviews")
+@RequiredArgsConstructor
 public class ReviewController {
+
     private final ReviewService reviewService;
 
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ReviewDTO>> getReviewById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(reviewService.getReviewById(id)));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PagedResponse<ReviewDTO>>> getAllReviews(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.success(reviewService.getAllReviews(PageRequest.of(page, size))));
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDTO> saveReview(@RequestBody ReviewDTO reviewDTO) {
-        ReviewDTO savedReview = reviewService.saveReview(reviewDTO);
-        return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<ReviewDTO>> createReview(@RequestBody CreateReviewDTO dto) {
+        return ResponseEntity.ok(ApiResponse.success("Review created successfully", reviewService.createReview(dto)));
     }
 
-    @DeleteMapping("/{reviewId}")
-    ResponseEntity<Void> deleteReview(@PathVariable long reviewId) {
-        reviewService.deleteReview(reviewId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/product/{productId}")
-    
-    public ResponseEntity<List<ReviewDTO>> getAllReviewsByProductId(@PathVariable long productId) {
-        List<ReviewDTO> reviews = reviewService.getAllReviewsByProductId(productId);
-        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteReview(@PathVariable Long id) {
+        reviewService.deleteReview(id);
+        return ResponseEntity.ok(ApiResponse.success("Review deleted successfully", null));
     }
 }

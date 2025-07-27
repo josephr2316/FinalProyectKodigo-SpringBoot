@@ -17,128 +17,44 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Getter
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final ProductMapper productMapper;
-
-
-    @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper,
-                               ProductMapper productMapper) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-        this.productMapper = productMapper;
-
-    }
 
     @Override
-    public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
-        // Perform validation or transformation logic before saving to the database
-        validateCategoryDTO(categoryDTO); // Your custom validation method
-
-        // Map the DTO to an entity and save it to the database
-        Category categoryEntityToSave = categoryMapper.categoryDTOToCategoryEntity(categoryDTO);
-        Category savedCategoryEntity = categoryRepository.save(categoryEntityToSave);
-
-        // Map the saved entity back to a DTO and return it
-        return categoryMapper.categoryEntityToCategoryDTO(savedCategoryEntity);
-    }
-
-    @Override
-    @Transactional
-    public Set<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll().stream()
+    public CategoryDTO getCategoryById(Long id) {
+        return categoryRepository.findById(id)
                 .map(categoryMapper::categoryEntityToCategoryDTO)
-                .collect(Collectors.toSet());
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     @Override
-    @Transactional
-    public CategoryDTO getCategoryById(long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .map(categoryMapper::categoryEntityToCategoryDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+    public PagedResponse<CategoryDTO> getAllCategories(Pageable pageable) {
+        Page<Category> categories = categoryRepository.findAll(pageable);
+        return PagedResponse.of(categories.map(categoryMapper::categoryEntityToCategoryDTO));
     }
 
     @Override
-    @Transactional
-    public CategoryDTO updateCategory(CategoryDTO categoryDTO, long categoryId) {
-        // 1. Check whether the category with the given ID exists in DB or not
-        //Throw exception
-        Category existingCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-
-        // 2. Map the updated fields from categoryDTO to the existing categoryEntity
-        existingCategory.setCategoryName(categoryDTO.getCategoryName());
-        existingCategory.setProductList(categoryDTO.getProductList().stream().map(productMapper::productDTOToProductEntity).collect(Collectors.toSet()));
-        existingCategory.setActive(categoryDTO.isActive());
-
-        // 3. Save the updated categoryEntity back to the database
-        Category updatedCategoryEntity = categoryRepository.save(existingCategory);
-
-        // 4. Map the updated categoryEntity to a ProductDTO and return it
-        return categoryMapper.categoryEntityToCategoryDTO(updatedCategoryEntity);
+    public CategoryDTO createCategory(CreateCategoryDTO dto) {
+        Category category = categoryMapper.createCategoryDTOToCategory(dto);
+        return categoryMapper.categoryEntityToCategoryDTO(categoryRepository.save(category));
     }
 
     @Override
-    @Transactional
-    public void deleteCategory(long categoryId) {
-
-        // Retrieve the category from the repository by its ID, or throw an exception if not found
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-
-        // Remove the association of products with the category
-        // Set the category reference of each associated product to null
-        category.getProductList().forEach(product -> product.setCategory(null));
-
-        // Clear the list of products associated with the category
-        category.getProductList().clear();
-
-        // Now you can safely delete the category from the repository
-        categoryRepository.deleteById(categoryId);
+    public CategoryDTO updateCategory(Long id, UpdateCategoryDTO dto) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        categoryMapper.updateCategoryFromDTO(dto, category);
+        return categoryMapper.categoryEntityToCategoryDTO(categoryRepository.save(category));
     }
 
-    @Transactional
     @Override
-    public String disableEnableCategory(long categoryId) {
-        // Try to find the category with the given ID in the database
-        Optional<Category> optionalCategory = categoryRepository.findById(categoryId);
-
-        // Check if the category was found
-        if (optionalCategory.isPresent()) {
-            // If the category is found, get its instance
-            Category category = optionalCategory.get();
-
-            // Determine the current state of the category before toggling
-            boolean isEnabled = category.isActive();
-
-            // Toggle the 'isActive' attribute (change it to the opposite value)
-            category.setActive(!isEnabled);
-
-            // Disable all products associated with this category (we don´t call disableProduct method to avoid multiple response messages of disabled product
-            if(!category.isActive()){
-                category.getProductList().forEach(product -> product.setActive(false));
-            }
-            // Since we're using @Transactional, changes will be automatically
-            // saved to the database when the transaction is committed
-
-            // Return a message indicating whether the category was successfully disabled or enabled
-            return "Category: " + category.getCategoryName() + " with ID: " + category.getCategoryId() +
-                    " has been successfully " + (isEnabled ? "disabled" : "enabled");
-        }else {
-            throw new EntityNotFoundException("Cannot find Category with ID " + categoryId);
-        }
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        categoryRepository.delete(category);
     }
-    public void validateCategoryDTO(CategoryDTO categoryDTO) {
-
-        // Check if category name is not null and not empty
-        if (categoryDTO.getCategoryName() == null || categoryDTO.getCategoryName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
-        }
-    }
-
 }

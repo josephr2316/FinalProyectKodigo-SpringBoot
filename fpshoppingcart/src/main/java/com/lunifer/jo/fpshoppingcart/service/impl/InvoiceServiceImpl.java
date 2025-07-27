@@ -10,68 +10,35 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final InvoiceMapper invoiceMapper;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository, InvoiceMapper invoiceMapper) {
-        this.invoiceRepository = invoiceRepository;
-        this.invoiceMapper = invoiceMapper;
-    }
-
-
     @Override
-    public InvoiceDTO createInvoice(InvoiceDTO invoiceDTO) {
-        Invoice invoice = invoiceMapper.InvoiceDTOToInvoiceEntity(invoiceDTO);
-        invoice = invoiceRepository.save(invoice);
-        return invoiceMapper.invoiceEntityToInvoiceDTO(invoice);
+    public InvoiceDTO getInvoiceById(Long id) {
+        return invoiceRepository.findById(id)
+                .map(invoiceMapper::invoiceEntityToInvoiceDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
     }
 
     @Override
-    @Transactional
-    public InvoiceDTO getInvoiceByOrderId(Long orderId) {
-        Invoice invoice = invoiceRepository.findByOrderId(orderId);
-
-        if (invoice != null) {
-            return invoiceMapper.invoiceEntityToInvoiceDTO(invoice);
-        } else {
-            return null;
-        }
+    public PagedResponse<InvoiceDTO> getAllInvoices(Pageable pageable) {
+        Page<Invoice> invoices = invoiceRepository.findAll(pageable);
+        return PagedResponse.of(invoices.map(invoiceMapper::invoiceEntityToInvoiceDTO));
     }
 
     @Override
-    @Transactional
-    public InvoiceDTO updateInvoice(InvoiceDTO invoiceDTO, Long invoiceId) {
-
-        Invoice existingInvoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró la factura #: " + invoiceId));
-
-
-        existingInvoice.setTotalAmount(invoiceDTO.getTotalAmount());
-
-        Invoice updatedInvoiceEntity = invoiceRepository.save(existingInvoice);
-
-        return invoiceMapper.invoiceEntityToInvoiceDTO(updatedInvoiceEntity);
+    public InvoiceDTO createInvoice(CreateInvoiceDTO dto) {
+        Invoice invoice = invoiceMapper.createInvoiceDTOToInvoice(dto);
+        return invoiceMapper.invoiceEntityToInvoiceDTO(invoiceRepository.save(invoice));
     }
 
     @Override
-    public void deleteInvoice(Long invoiceId) {
-        if (invoiceRepository.existsById(invoiceId)) {
-            invoiceRepository.deleteById(invoiceId);
-        } else {
-
-            throw new EntityNotFoundException("No se encontró la factura #: " + invoiceId);
-        }
-
+    public void deleteInvoice(Long id) {
+        Invoice invoice = invoiceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
+        invoiceRepository.delete(invoice);
     }
-
-    @Override
-    @Transactional
-    public void deleteInvoiceByOrderId(long orderId) {
-        invoiceRepository.deleteInvoiceByOrderOrderId(orderId);
-    }
-
-
 }
-

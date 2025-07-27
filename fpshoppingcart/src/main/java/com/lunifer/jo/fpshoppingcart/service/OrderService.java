@@ -9,16 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 public interface OrderService {
-    OrderDTO getOrderById(Long orderId);
+    OrderDTO getOrderById(Long id);
+    PagedResponse<OrderDTO> getAllOrders(Pageable pageable);
+    OrderDTO createOrder(CreateOrderDTO dto);
 
-    OrderDTO createOrder(OrderDTO orderDTO);
-
-    OrderDTO updateOrder(Long orderId, OrderDTO orderDTO);
-
-    void deleteOrder(Long orderId);
-
-    OrderResponse getAllOrders(int pageNo, int pageSize, String sortBy, String sortDir);
-
-    Set<OrderDTO> getAllOrdersByUser(User user);
-    Set<OrderDTO> getAllOrdersByUserId(Long userId);
-    String cancelOrder(Long orderId);}
+    // Métodos adicionales recomendados:
+    OrderDTO updateOrderStatus(Long id, String newStatus);
+    void cancelOrder(Long id);
+}

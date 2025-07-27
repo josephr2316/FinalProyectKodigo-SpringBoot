@@ -13,22 +13,16 @@ import com.lunifer.jo.fpshoppingcart.payload.UserResponse;
 import java.util.List;
 
 public interface UserService  {
-    UserDTO saveUser(UserDTO userDTO);
+    
+    UserDTO getUserById(Long id);
+    PagedResponse<UserDTO> getAllUsers(Pageable pageable);
+    UserDTO createUser(CreateUserDTO dto);
+    UserDTO updateUser(Long id, UpdateUserDTO dto);
+    void deleteUser(Long id);
 
-    UserResponse getAllUsers(int page, int pageSize, String sortBy, String sortDir);
-
-    UserDTO getUserById(Long userId);
-
-    UserDTO updateUser(Long userId, UserDTO userDTO);
-
-    void deleteUser(Long userId);
-
-    User findByUsername(String username);
-
-    User saveUser(User user);
-
-    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
-
-    String disableEnableUser(Long userId);
+        // Métodos adicionales recomendados:
+    UserDTO getUserByUsername(String username);
+    UserDTO login(LoginDTO dto); // Si no usas Spring Security/JWT nativo, sino autenticación manual
+    void changePassword(Long userId, ChangePasswordDTO dto);
 
 }

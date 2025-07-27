@@ -25,98 +25,99 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     @Value("${token.jwt}")
-    private String SECRET;
-    @Value("${token.time}")
-    private long EXPIRATION_TIME;
-    private final UserService userService;
+        private String SECRET;
+            @Value("${token.time}")
+                private long EXPIRATION_TIME;
+                    private final UserService userService;
 
-    public JwtService(UserService userService){
-        this.userService = userService;
-    }
+                        public JwtService(UserService userService){
+                                this.userService = userService;
+                                    }
 
-    private final Logger logger =  LoggerFactory.getLogger(JwtService.class);
+                                        private final Logger logger =  LoggerFactory.getLogger(JwtService.class);
 
-    private Key getSignKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(SECRET);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+                                            private Key getSignKey() {
+                                                    byte[] keyBytes= Decoders.BASE64.decode(SECRET);
+                                                            return Keys.hmacShaKeyFor(keyBytes);
+                                                                }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
+                                                                    public String extractUsername(String token) {
+                                                                            return extractClaim(token, Claims::getSubject);
+                                                                                }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-    public String extractClaim(String token, String name){
-        Claims claims = extractAllClaims(token);
-        // Get the claim value as an Object
-        Object claimValue = claims.get(name);
+                                                                                    public Date extractExpiration(String token) {
+                                                                                            return extractClaim(token, Claims::getExpiration);
+                                                                                                }
+                                                                                                    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+                                                                                                            final Claims claims = extractAllClaims(token);
+                                                                                                                    return claimsResolver.apply(claims);
+                                                                                                                        }
+                                                                                                                            public String extractClaim(String token, String name){
+                                                                                                                                    Claims claims = extractAllClaims(token);
+                                                                                                                                            // Get the claim value as an Object
+                                                                                                                                                    Object claimValue = claims.get(name);
 
-        // Check if the claim value is an ArrayList
-        if (claimValue instanceof ArrayList) {
-            // Handle ArrayList type, e.g., convert it to a String representation
-            // For example, join the elements into a comma-separated string
-            return  claimValue.toString();
-        }
-        return claims.get(name, String.class);
-    }
+                                                                                                                                                            // Check if the claim value is an ArrayList
+                                                                                                                                                                    if (claimValue instanceof ArrayList) {
+                                                                                                                                                                                // Handle ArrayList type, e.g., convert it to a String representation
+                                                                                                                                                                                            // For example, join the elements into a comma-separated string
+                                                                                                                                                                                                        return  claimValue.toString();
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                                        return claims.get(name, String.class);
+                                                                                                                                                                                                                            }
 
-    private Claims extractAllClaims(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET));
+                                                                                                                                                                                                                                private Claims extractAllClaims(String token) {
+                                                                                                                                                                                                                                        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET));
 
-        return Jwts.
-                parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-    public AuthResponse generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
+                                                                                                                                                                                                                                                return Jwts.
+                                                                                                                                                                                                                                                                parser()
+                                                                                                                                                                                                                                                                                .verifyWith(key)
+                                                                                                                                                                                                                                                                                                .build()
+                                                                                                                                                                                                                                                                                                                .parseSignedClaims(token)
+                                                                                                                                                                                                                                                                                                                                .getPayload();
+                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                        public AuthResponse generateToken(String username) {
+                                                                                                                                                                                                                                                                                                                                                Map<String, Object> claims = new HashMap<>();
 
-        //Getting the user's roles
-        User user = userService.findByUsername(username);
-        claims.put("roles", String.join(",", user.getRoles()));
-        //
-        return createToken(claims, username);
-    }
-    private AuthResponse createToken(Map<String, Object> claims, String username) {
-        logger.info("Generating JWT for the user: "+username);
-        //Generating the valid date
-        LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(EXPIRATION_TIME);
-        logger.info("The current date: "+localDateTime);
-        //
-        Date expirationDate = Date.from(localDateTime.toInstant(ZoneOffset.ofHours(-4)));
-        //Generating the GWT
-        String jwt =  Jwts.builder()
-                //.issuer("PWA-JWT")
-                //.claims().empty().add(claims).and()
-//                .subject(username)
-//                .expiration(expirationDate)
-//                .signWith(getSignKey())
-//                .compact();
-                .claims().add(claims).and()
-                .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(expirationDate)
-                .signWith(getSignKey())
-                .compact();
+                                                                                                                                                                                                                                                                                                                                                        //Getting the user's roles
+                                                                                                                                                                                                                                                                                                                                                                User user = userService.findByUsername(username);
+                                                                                                                                                                                                                                                                                                                                                                        claims.put("roles", String.join(",", user.getRoles()));
+                                                                                                                                                                                                                                                                                                                                                                                //
+                                                                                                                                                                                                                                                                                                                                                                                        return createToken(claims, username);
+                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                private AuthResponse createToken(Map<String, Object> claims, String username) {
+                                                                                                                                                                                                                                                                                                                                                                                                        logger.info("Generating JWT for the user: "+username);
+                                                                                                                                                                                                                                                                                                                                                                                                                //Generating the valid date
+                                                                                                                                                                                                                                                                                                                                                                                                                        LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(EXPIRATION_TIME);
+                                                                                                                                                                                                                                                                                                                                                                                                                                logger.info("The current date: "+localDateTime);
+                                                                                                                                                                                                                                                                                                                                                                                                                                        //
+                                                                                                                                                                                                                                                                                                                                                                                                                                                Date expirationDate = Date.from(localDateTime.toInstant(ZoneOffset.ofHours(-4)));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        //Generating the GWT
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                String jwt =  Jwts.builder()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //.issuer("PWA-JWT")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //.claims().empty().add(claims).and()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //                .subject(username)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //                .expiration(expirationDate)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //                .signWith(getSignKey())
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //                .compact();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .claims().add(claims).and()
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .subject(username)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .issuedAt(new Date(System.currentTimeMillis()))
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .expiration(expirationDate)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .signWith(getSignKey())
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                .compact();
 
-        return new AuthResponse(jwt, expirationDate.getTime());
-    }
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
-    public Boolean validateToken(String token){
-        return !isTokenExpired(token);
-    }
-}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        return new AuthResponse(jwt, expirationDate.getTime());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                private Boolean isTokenExpired(String token) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        return extractExpiration(token).before(new Date());
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                public Boolean validateToken(String token, UserDetails userDetails) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        final String username = extractUsername(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        public Boolean validateToken(String token){
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                return !isTokenExpired(token);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    

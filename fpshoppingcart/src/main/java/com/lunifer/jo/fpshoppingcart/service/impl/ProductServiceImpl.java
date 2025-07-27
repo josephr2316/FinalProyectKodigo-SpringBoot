@@ -18,207 +18,50 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
     private final ProductMapper productMapper;
-    private final CategoryMapper categoryMapper;
 
-
-    @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper,
-                              CategoryMapper categoryMapper, CategoryService categoryService) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-        this.categoryMapper = categoryMapper;
-        this.categoryService = categoryService;
+    @Override
+    public ProductDTO getProductById(Long id) {
+        return productRepository.findById(id)
+                .map(productMapper::productEntityToProductDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
-    public ProductResponse getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        // Create a Pageable instance
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-
-        // Retrieve a page of posts
-        Page<Product> productList = productRepository.findAll(pageable);
-
-        // Get content for page object
-        List<Product> listOfProduct = productList.getContent();
-
-        List<ProductDTO> content = listOfProduct.stream()
-                .map(productMapper::productEntityToProductDTO).toList();
-
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(content);
-        productResponse.setPageNo(productList.getNumber());
-        productResponse.setPageSize(productList.getSize());
-        productResponse.setTotalElements(productList.getTotalElements());
-        productResponse.setTotalPages(productList.getTotalPages());
-        productResponse.setLast(productList.isLast());
-        return productResponse;
+    public PagedResponse<ProductDTO> getAllProducts(Pageable pageable) {
+        Page<Product> products = productRepository.findAll(pageable);
+        return PagedResponse.of(products.map(productMapper::productEntityToProductDTO));
     }
 
     @Override
-    @Transactional
-    public ProductDTO getProductById(long productId) {
-        return productRepository.findById(productId)
-                .map(this::mapProductToDTOWithCategory)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+    public ProductDTO createProduct(CreateProductDTO dto) {
+        Product product = productMapper.createProductDTOToProduct(dto);
+        return productMapper.productEntityToProductDTO(productRepository.save(product));
     }
 
     @Override
-    @Transactional
-    public ProductDTO getProductByName(String productName) {
-        return productRepository.findByProductName(productName)
-                .map(this::mapProductToDTOWithCategory)
-                .orElseThrow(() -> new NoSuchElementException("Product with name " + productName + " not found"));
-
+    public ProductDTO updateProduct(Long id, UpdateProductDTO dto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        productMapper.updateProductFromDTO(dto, product);
+        return productMapper.productEntityToProductDTO(productRepository.save(product));
     }
 
     @Override
-    @Transactional
-    public ProductDTO updateProduct(ProductDTO productDTO, long productId) {
-        // 1. Check whether the product with the given ID exists in DB or not
-        //Throw exception
-        Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
-
-        // 2. Map the updated fields from productDTO to the existing productEntity
-        existingProduct.setProductName(productDTO.getProductName());
-        existingProduct.setDescription(productDTO.getDescription());
-        existingProduct.setPrice(productDTO.getPrice());
-        existingProduct.setStock(productDTO.getStock());
-        existingProduct.setActive(productDTO.isActive());
-        existingProduct.setCategory(categoryMapper.categoryDTOToCategoryEntity(categoryService.getCategoryById(productDTO.getCategoryId())));
-
-        // 3. Save the updated productEntity back to the database
-        Product updatedProductEntity = productRepository.save(existingProduct);
-
-        // 4. Map the updated productEntity to a ProductDTO and return it
-        return mapProductToDTOWithCategory(updatedProductEntity);
-
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        productRepository.delete(product);
     }
-
-    @Override
-    public ProductDTO saveProduct(ProductDTO productDTO) {
-        // Perform validation or transformation logic before saving to the database
-        validateProductDTO(productDTO); // Your custom validation method
-
-        // Map the DTO to an entity and save it to the database
-        Product productEntityToSave = productMapper.productDTOToProductEntity(productDTO);
-        productEntityToSave.setCategory(categoryMapper.categoryDTOToCategoryEntity(categoryService.getCategoryById(productDTO.getCategoryId())));
-
-        Product savedProductEntity = productRepository.save(productEntityToSave);
-
-        // Map the saved entity back to a DTO and return it
-        return mapProductToDTOWithCategory(savedProductEntity);
-
-    }
-
-    @Override
-    public void deleteProduct(long productId) {
-
-        // Retrieve the product from the repository by its ID, or throw an exception if not found
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
-
-        // Remove associations with Shopping Carts
-        // Iterate through shopping carts containing the product and remove the product from each cart
-        product.getShoppingCart().forEach(cart -> cart.getProductList().remove(product));
-
-        // Clear the list of shopping carts associated with the product
-        product.getShoppingCart().clear();
-
-        // Remove associations with Orders
-        // Iterate through orders containing the product and remove the product from each order
-        product.getOrder().forEach(order -> order.getProductList().remove(product));
-
-        // Clear the list of orders associated with the product
-        product.getOrder().clear();
-
-        // Now you can safely delete the product from the repository
-        productRepository.deleteById(productId);
-    }
-
-    private void validateProductDTO(ProductDTO productDTO) {
-
-        // Check if product name is not null and not empty
-        if (productDTO.getProductName() == null || productDTO.getProductName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Product name cannot be null or empty");
-        }
-
-        // Check if price is not null and greater than zero
-        if (productDTO.getPrice() == null || productDTO.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Product price must be greater than zero");
-        }
-
-        // Check if stock is not negative
-        if (productDTO.getStock() < 0) {
-            throw new IllegalArgumentException("Stock cannot be negative");
-        }
-
-        // Check if the category is provided (assuming you have a CategoryDTO in ProductDTO)
-        if (productDTO.getCategoryId() == 0) {
-            throw new IllegalArgumentException("Product category is required");
-        }
-    }
-
-    @Override
-    @Transactional
-    public String DisableEnableProduct(Long productId) {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-
-            // Check if the category of the product is not active before allowing the activation of the product
-            if (product.getCategory() != null && !product.getCategory().isActive()) {
-                throw new IllegalStateException("Cannot activate the product '" + product.getProductName() +
-                        "' with ID: " + product.getProductId() +
-                        " because its category '" + product.getCategory().getCategoryName() +
-                        "' with ID: " + product.getCategory().getCategoryId() + " is not active");
-            }
-
-            // Toggle the 'isActive' attribute (change it to the opposite value)
-            product.setActive(!product.isActive());
-
-            // Since we're using @Transactional, changes will be automatically
-            // saved to the database when the transaction is committed
-
-            // Return a message indicating whether the product was successfully disabled or enabled
-            return "Product: " + product.getProductName() + " with ID: " + product.getProductId() +
-                    " has been successfully " + (product.isActive() ? "enabled" : "disabled");
-        } else {
-            throw new EntityNotFoundException("Cannot find product with ID " + productId);
-        }
-    }
-    private ProductDTO mapProductToDTOWithCategory(Product product) {
-        ProductDTO productDTO = productMapper.productEntityToProductDTO(product);
-        CategoryDTO categoryDTO = categoryMapper.categoryEntityToCategoryDTO(product.getCategory());
-        productDTO.setCategoryId(categoryDTO.getCategoryId());
-        return productDTO;
-    }
-
-    @Override
-    @Transactional
-    public List<ProductDTO> getProductsByKeyword(String keyword) {
-        List<Product> products = productRepository.findByKeyword(keyword);
-        return products.stream()
-                .map(this::mapProductToDTOWithCategory)
-                .collect(Collectors.toList());
-    }
-
 }

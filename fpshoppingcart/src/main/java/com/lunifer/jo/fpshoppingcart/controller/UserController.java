@@ -13,60 +13,77 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/user")
-@AllArgsConstructor
-public class UserController {
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder; // Para hash de password
 
-    @Autowired
-    private UserService userService;
-
-    @PostMapping
-    public ResponseEntity<UserDTO> saveUser(UserDTO userDTO) {
-        UserDTO savedUser = userService.saveUser(userDTO);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
-    }
-    @Transactional
-    @GetMapping
-    public UserResponse getAllUsers(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "userId", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
-    ) {
-        return userService.getAllUsers(pageNo, pageSize, sortBy, sortDir);
+    @Override
+    public UserDTO getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(userMapper::userEntityToUserDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    @GetMapping("{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("userId") long userId) {
-        UserDTO userDTO = userService.getUserById(userId);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    @Override
+    public PagedResponse<UserDTO> getAllUsers(Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable);
+        return PagedResponse.of(users.map(userMapper::userEntityToUserDTO));
     }
 
-    @PutMapping("{userId}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("userId") long userId, @RequestBody UserDTO userDTO) {
-        UserDTO updatedUser = userService.updateUser(userId, userDTO);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    @Override
+    public UserDTO createUser(CreateUserDTO dto) {
+        User user = userMapper.createUserDTOToUser(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword())); // Hashing
+        return userMapper.userEntityToUserDTO(userRepository.save(user));
     }
 
-    @DeleteMapping("{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") long userId) {
-        userService.deleteUser(userId);
-        return new ResponseEntity<>("User was deleted successfully", HttpStatus.OK);
+    @Override
+    public UserDTO updateUser(Long id, UpdateUserDTO dto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userMapper.updateUserFromDTO(dto, user);
+        return userMapper.userEntityToUserDTO(userRepository.save(user));
     }
 
-    @PutMapping("/disable/{userId}")
-    public ResponseEntity<String> disableEnableUser(@PathVariable Long userId) {
-            // Call the service method to disable/enable the user and get the result
-            String message = userService.disableEnableUser(userId);
+    @Override
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        userRepository.delete(user);
+    }
 
-        if (message != null) {
-            // If successful, return a response with HTTP status 200 (OK) and the message in the body
-            return ResponseEntity.ok(message);
-        } else {
-            // If the product was not found, return a response with HTTP status 404 (Not Found)
-            return ResponseEntity.notFound().build();
+    @Override
+    public UserDTO getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(userMapper::userEntityToUserDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserDTO login(LoginDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new UnauthorizedException("Invalid credentials");
         }
+        return userMapper.userEntityToUserDTO(user);
+        // Aquí deberías retornar también un JWT/token si usas autenticación basada en tokens.
     }
 
+    @Override
+    public void changePassword(Long userId, ChangePasswordDTO dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword())) {
+            throw new UnauthorizedException("Current password is incorrect");
+        }
+        if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+            throw new IllegalArgumentException("New password and confirm password do not match");
+        }
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+    }
 }

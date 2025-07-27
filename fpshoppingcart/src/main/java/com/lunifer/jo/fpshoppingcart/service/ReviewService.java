@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public interface ReviewService {
-    ReviewDTO saveReview(ReviewDTO reviewDTO);
-    void deleteReview(long reviewId);
-    List<ReviewDTO> getAllReviewsByProductId(long productId);
-    }
+    ReviewDTO getReviewById(Long id);
+    PagedResponse<ReviewDTO> getAllReviews(Pageable pageable);
+    ReviewDTO createReview(CreateReviewDTO dto);
+    void deleteReview(Long id);
+}

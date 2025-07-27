@@ -7,43 +7,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/invoices")
+@RequestMapping("/api/invoices")
+@RequiredArgsConstructor
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
 
-    public InvoiceController(InvoiceService invoiceService) {
-        this.invoiceService = invoiceService;
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<InvoiceDTO>> getInvoiceById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(invoiceService.getInvoiceById(id)));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PagedResponse<InvoiceDTO>>> getAllInvoices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(ApiResponse.success(invoiceService.getAllInvoices(PageRequest.of(page, size))));
     }
 
     @PostMapping
-    public ResponseEntity<InvoiceDTO> createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
-        InvoiceDTO createdInvoice = invoiceService.createInvoice(invoiceDTO);
-        return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<InvoiceDTO>> createInvoice(@RequestBody CreateInvoiceDTO dto) {
+        return ResponseEntity.ok(ApiResponse.success("Invoice created successfully", invoiceService.createInvoice(dto)));
     }
 
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<InvoiceDTO> getInvoiceByOrderId(@PathVariable Long orderId) {
-        InvoiceDTO invoice = invoiceService.getInvoiceByOrderId(orderId);
-        if (invoice != null) {
-            return new ResponseEntity<>(invoice, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping("/{invoiceId}")
-    public ResponseEntity<InvoiceDTO> updateInvoice(
-            @RequestBody InvoiceDTO invoiceDTO,
-            @PathVariable Long invoiceId
-    ) {
-        InvoiceDTO updatedInvoice = invoiceService.updateInvoice(invoiceDTO, invoiceId);
-        return new ResponseEntity<>(updatedInvoice, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{invoiceId}")
-    public ResponseEntity<Void> deleteInvoice(@PathVariable Long invoiceId) {
-        invoiceService.deleteInvoice(invoiceId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteInvoice(@PathVariable Long id) {
+        invoiceService.deleteInvoice(id);
+        return ResponseEntity.ok(ApiResponse.success("Invoice deleted successfully", null));
     }
 }

@@ -10,7 +10,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
-
+    Optional<User> findByUsernameOrEmail(String username, String email);
+    
     //@Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.shoppingCartHistory sc LEFT JOIN FETCH u.orderHistory o")
     Page<User> findAll(Pageable pageable);
 
