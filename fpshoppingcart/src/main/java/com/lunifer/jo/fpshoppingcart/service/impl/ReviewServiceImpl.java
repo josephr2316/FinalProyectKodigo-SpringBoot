@@ -4,19 +4,14 @@ import com.lunifer.jo.fpshoppingcart.dto.CreateReviewDTO;
 import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
 import com.lunifer.jo.fpshoppingcart.dto.ReviewDTO;
 import com.lunifer.jo.fpshoppingcart.entity.Review;
+import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.ReviewMapper;
 import com.lunifer.jo.fpshoppingcart.repository.ReviewRepository;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,36 +23,26 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDTO getReviewById(Long id) {
         return reviewRepository.findById(id)
-                .map(reviewMapper::reviewEntityToReviewDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
-    }
-
-    @Override
-    public PagedResponse<ReviewDTO> getAllReviews(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public ReviewDTO createReview(CreateReviewDTO dto) {
-        return null;
+                .map(reviewMapper::toReviewDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Review","id",id));
     }
 
     @Override
     public PagedResponse<ReviewDTO> getAllReviews(Pageable pageable) {
         Page<Review> reviews = reviewRepository.findAll(pageable);
-        return PagedResponse.of(reviews.map(reviewMapper::reviewEntityToReviewDTO));
+        return PagedResponse.of(reviews.map(reviewMapper::toReviewDTO));
     }
 
     @Override
     public ReviewDTO createReview(CreateReviewDTO dto) {
-        Review review = reviewMapper.createReviewDTOToReview(dto);
-        return reviewMapper.reviewEntityToReviewDTO(reviewRepository.save(review));
+        Review review = reviewMapper.createReviewDtOToReview(dto);
+        return reviewMapper.toReviewDTO(reviewRepository.save(review));
     }
 
     @Override
     public void deleteReview(Long id) {
         Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Review not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Review","id",id));
         reviewRepository.delete(review);
     }
 }
