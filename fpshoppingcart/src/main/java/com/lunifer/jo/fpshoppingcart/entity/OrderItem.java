@@ -17,7 +17,7 @@ import java.math.BigDecimal;
         @Index(name = "idx_order_item_order", columnList = "order_id"),
         @Index(name = "idx_order_item_product", columnList = "product_id")
 })
-public class OrderItem {
+public class OrderItem extends BaseAuditEntity {
 
 
     @Id

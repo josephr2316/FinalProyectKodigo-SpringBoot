@@ -10,9 +10,13 @@ public interface InvoiceMapper {
     @Mapping(target = "orderId", source = "order.orderId")
     @Mapping(target = "orderNumber", source = "order.orderNumber")
     @Mapping(target = "paymentStatus", source = "paymentStatus")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     InvoiceDTO toInvoiceDTO(Invoice invoice);
 
     @Mapping(target = "invoiceId", ignore = true)
     @Mapping(target = "order", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Invoice toInvoice(CreateInvoiceDTO dto);
 }

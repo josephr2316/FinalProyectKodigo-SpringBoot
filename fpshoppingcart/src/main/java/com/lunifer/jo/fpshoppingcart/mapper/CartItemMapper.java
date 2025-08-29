@@ -11,5 +11,7 @@ public interface CartItemMapper {
     @Mapping(target = "productId", source = "product.productId")
     @Mapping(target = "productName", source = "product.productName")
     @Mapping(target = "productPrice", source = "product.price")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     CartItemDTO toCartItemDTO(CartItem cartItem);
 }

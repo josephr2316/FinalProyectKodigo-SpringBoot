@@ -7,12 +7,18 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     CategoryDTO toCategoryDTO(Category category);
 
     @Mapping(target = "categoryId", ignore = true)
     @Mapping(target = "products", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Category toCategory(CreateCategoryDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void updateCategoryFromDTO(UpdateCategoryDTO dto, @MappingTarget Category category);
 }

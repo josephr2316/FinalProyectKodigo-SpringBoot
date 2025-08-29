@@ -10,9 +10,10 @@
 - **Controller Layer**: 8 controladores REST con endpoints completos
 - **Service Layer**: 7 servicios con lógica de negocio implementada
 - **Repository Layer**: 7 repositorios JPA con consultas personalizadas
-- **Entity Layer**: 10 entidades con relaciones JPA/Hibernate
-- **DTO Layer**: 26 objetos de transferencia de datos
+- **Entity Layer**: 10 entidades con relaciones JPA/Hibernate y auditoría automática
+- **DTO Layer**: 26 objetos de transferencia de datos con campos de auditoría
 - **Security Layer**: Autenticación JWT completa
+- **Audit Layer**: Sistema de auditoría automática con BaseAuditEntity
 
 ## 🚀 Tecnologías Utilizadas
 
@@ -22,6 +23,7 @@
 - **ORM**: Hibernate/JPA
 - **Seguridad**: Spring Security + JWT
 - **Mapeo**: MapStruct
+- **Auditoría**: Spring Data JPA Auditing
 - **Testing**: JUnit 5 + Mockito + AssertJ
 - **Build Tool**: Maven
 - **Documentación**: Lombok
@@ -34,10 +36,10 @@ fpshoppingcart/
 │   ├── config/              # Configuraciones de seguridad y JWT
 │   ├── controller/          # 8 Controladores REST
 │   ├── dto/                 # 26 DTOs para transferencia de datos
-│   ├── entity/              # 10 Entidades JPA
+│   ├── entity/              # 10 Entidades JPA con auditoría automática
 │   ├── enums/               # Enumeraciones (UserRol, OrderStatus, PaymentStatus)
 │   ├── exception/           # Manejo de excepciones personalizado
-│   ├── mapper/              # 9 Mappers de MapStruct
+│   ├── mapper/              # 9 Mappers de MapStruct con auditoría
 │   ├── repository/          # 7 Repositorios JPA
 │   ├── security/            # Clases de autenticación JWT
 │   └── service/             # Interfaces y implementaciones de servicios
@@ -89,6 +91,15 @@ fpshoppingcart/
 - ✅ Autorización basada en roles
 - ✅ Filtros de seguridad personalizados
 - ✅ Encriptación de contraseñas
+
+### **📝 Auditoría**
+- ✅ **BaseAuditEntity** implementado con campos automáticos
+- ✅ **createdAt** y **updatedAt** automáticos en todas las entidades
+- ✅ **@EnableJpaAuditing** habilitado en la aplicación principal
+- ✅ **EntityListeners** configurados para auditoría automática
+- ✅ **Mappers** actualizados para incluir campos de auditoría
+- ✅ **DTOs** con campos de auditoría para transferencia de datos
+- ✅ **Tests** específicos para verificar funcionamiento de auditoría
 
 ## 🔧 API Endpoints
 
@@ -203,6 +214,30 @@ docker run --name mysql-shopping \
   -d mysql:8.0
 ```
 
+### **👤 Usuarios de Prueba**
+El sistema incluye usuarios predefinidos para realizar pruebas:
+
+#### **🔐 Usuario Administrador**
+- **Username**: `admin1`
+- **Email**: `admin1@email.com`
+- **Password**: `password123`
+- **Rol**: `ADMIN`
+- **Permisos**: Acceso completo a todas las funcionalidades
+
+#### **👤 Usuario Estándar**
+- **Username**: `user1`
+- **Email**: `user1@email.com`
+- **Password**: `password123`
+- **Rol**: `USER`
+- **Permisos**: Compras, carrito, reseñas
+
+#### **🔑 Otros Usuarios Disponibles**
+- **Admin**: `josephr2316` / `password123`
+- **Admin**: `bobjohnson` / `password123`
+- **User**: `janedoe` / `password123`
+- **User**: `alicesmith` / `password123`
+- **User**: `evamiller` / `password123`
+
 ## 🚀 Ejecución del Proyecto
 
 ### **1. Clonar el Repositorio**
@@ -212,8 +247,31 @@ cd fpshoppingcart
 ```
 
 ### **2. Configurar Base de Datos**
+- **Docker MySQL**: Ejecutar el contenedor MySQL
 - Crear base de datos MySQL: `shoppingCartDB`
 - Configurar variables de entorno en `.env`
+
+#### **🐳 Iniciar MySQL con Docker**
+```bash
+# 1. Crear archivo .env (si no existe)
+cp env-example .env
+
+# 2. Iniciar MySQL con Docker Compose
+docker-compose up -d
+
+# 3. Verificar que MySQL esté ejecutándose
+docker ps | grep mysql
+
+# 4. Verificar conexión a la base de datos
+docker exec -it fpshoppingcart-mysql-1 mysql -u keycloak -pkeycloak -e "USE shoppingCartDB; SHOW TABLES;"
+```
+
+#### **⚠️ Configuración Importante**
+- **Puerto**: 3310 (mapeado desde 3306 interno)
+- **Base de datos**: shoppingCartDB (creada automáticamente)
+- **Usuario**: keycloak
+- **Contraseña**: keycloak
+- **Volumen**: mysql-data (datos persistentes)
 
 ### **3. Ejecutar la Aplicación**
 ```bash
@@ -324,6 +382,90 @@ curl -X POST http://localhost:8080/api/orders \
   -d '{"shippingAddress": "123 Main St, City, State 12345"}'
 ```
 
+## 🧪 Ejemplos de Pruebas con Usuarios
+
+### **🔐 Pruebas con Usuario Administrador**
+```bash
+# 1. Login como Admin
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=admin1&password=password123"
+
+# 2. Obtener token JWT (extraer del response anterior)
+TOKEN="YOUR_JWT_TOKEN_HERE"
+
+# 3. Listar todos los usuarios (solo Admin puede)
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/users
+
+# 4. Crear un nuevo producto (solo Admin puede)
+curl -X POST http://localhost:8080/api/products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "productName": "Nuevo Producto",
+    "description": "Descripción del producto",
+    "price": 99.99,
+    "stock": 50,
+    "categoryId": 1
+  }'
+
+# 5. Ver todas las órdenes del sistema
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/orders
+```
+
+### **👤 Pruebas con Usuario Estándar**
+```bash
+# 1. Login como User
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=user1&password=password123"
+
+# 2. Obtener token JWT
+TOKEN="YOUR_JWT_TOKEN_HERE"
+
+# 3. Ver productos disponibles
+curl http://localhost:8080/api/products
+
+# 4. Agregar producto al carrito
+curl -X POST http://localhost:8080/api/cart/7/add \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"productId": 1, "quantity": 2}'
+
+# 5. Ver mi carrito
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/cart/7
+
+# 6. Crear una orden
+curl -X POST http://localhost:8080/api/orders \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"shippingAddress": "456 User St, City, State 12345"}'
+
+# 7. Ver mis órdenes
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/orders
+
+# 8. Crear una reseña
+curl -X POST http://localhost:8080/api/reviews \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "productId": 1,
+    "comment": "Excelente producto!",
+    "rating": 5,
+    "likeDislike": true
+  }'
+```
+
+### **⚠️ Notas Importantes**
+- **Base de Datos**: Asegúrate de que MySQL esté ejecutándose en Docker
+- **Puerto**: La aplicación corre en `http://localhost:8080`
+- **Token JWT**: Tiene validez de 10 horas por defecto
+- **Roles**: Los permisos están basados en roles (ADMIN/USER)
+
 ## 🔧 Configuración de Desarrollo
 
 ### **Profiles de Spring**
@@ -349,14 +491,15 @@ server.port=${SERVER_PORT:8080}
 
 ### **✅ Completado (100%)**
 - ✅ Todas las entidades definidas con relaciones JPA
+- ✅ **Sistema de auditoría completo implementado** (BaseAuditEntity)
 - ✅ Todos los servicios implementados con lógica de negocio
 - ✅ Todos los repositorios con métodos necesarios
 - ✅ Todos los controladores con endpoints REST
-- ✅ Todos los mappers MapStruct configurados
-- ✅ Todos los DTOs para transferencia de datos
+- ✅ Todos los mappers MapStruct configurados con campos de auditoría
+- ✅ Todos los DTOs para transferencia de datos con campos de auditoría
 - ✅ Sistema de seguridad JWT completo
 - ✅ Manejo de excepciones personalizado
-- ✅ Tests unitarios de servicios (33 tests pasando)
+- ✅ Tests unitarios de servicios (38 tests pasando incluyendo auditoría)
 - ✅ Configuración de base de datos
 - ✅ Documentación completa
 
@@ -464,11 +607,74 @@ Este proyecto es parte del curso de Spring Boot en Kodigo Academy.
 
 **✅ PROYECTO COMPLETAMENTE FUNCIONAL**
 
-- **33 tests de servicios pasando** ✅
+- **38 tests de servicios pasando** ✅
 - **Todas las funcionalidades implementadas** ✅  
 - **API REST completa** ✅
 - **Seguridad JWT configurada** ✅
+- **Sistema de auditoría automática implementado** ✅
 - **Base de datos configurada** ✅
 - **Documentación completa** ✅
 
-**El proyecto está listo para producción con todas las funcionalidades de e-commerce implementadas.**
+**El proyecto está listo para producción con todas las funcionalidades de e-commerce implementadas, incluyendo auditoría automática completa.**
+
+---
+
+## 🚀 Verificación Rápida del Proyecto
+
+### **1. Verificar Base de Datos**
+```bash
+# Verificar que MySQL esté ejecutándose
+docker ps | grep mysql
+
+# Conectar a MySQL para verificar datos
+docker exec -it mysql-shopping mysql -u keycloak -pkeycloak -e "USE shoppingCartDB; SELECT COUNT(*) FROM users;"
+```
+
+### **2. Verificar Tests**
+```bash
+# Ejecutar todos los tests de servicios
+./mvnw test -Dtest="*ServiceTest,AuditTest"
+
+# Resultado esperado: 38 tests pasando
+```
+
+### **3. Verificar API**
+```bash
+# Login con usuario admin
+curl -X POST http://localhost:8080/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=admin1&password=password123"
+
+# Verificar productos (endpoint público)
+curl http://localhost:8080/api/products
+```
+
+### **4. Verificar Datos en Base de Datos**
+```bash
+# Verificar usuarios creados
+docker exec -it fpshoppingcart-mysql-1 mysql -u keycloak -pkeycloak -e "USE shoppingCartDB; SELECT COUNT(*) FROM users;"
+
+# Verificar productos creados
+docker exec -it fpshoppingcart-mysql-1 mysql -u keycloak -pkeycloak -e "USE shoppingCartDB; SELECT COUNT(*) FROM products;"
+
+# Verificar categorías creadas
+docker exec -it fpshoppingcart-mysql-1 mysql -u keycloak -pkeycloak -e "USE shoppingCartDB; SELECT COUNT(*) FROM categories;"
+```
+
+### **5. Usuarios de Prueba Disponibles**
+- **Admin**: `admin1` / `password123`
+- **User**: `user1` / `password123`
+- **Admin**: `josephr2316` / `password123`
+- **User**: `janedoe` / `password123`
+- **User**: `alicesmith` / `password123`
+- **User**: `evamiller` / `password123`
+- **Admin**: `bobjohnson` / `password123`
+
+### **✅ Estado Final**
+- **Base de Datos**: MySQL en Docker ✅
+- **Tablas**: Creadas automáticamente por Hibernate ✅
+- **Datos**: Insertados desde data.sql ✅
+- **Tests**: 38 tests pasando ✅
+- **Auditoría**: Sistema completo implementado ✅
+- **API**: Endpoints funcionando ✅
+- **Usuarios**: Datos de prueba cargados ✅

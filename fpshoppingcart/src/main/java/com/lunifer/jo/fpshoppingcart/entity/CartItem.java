@@ -19,7 +19,7 @@ import java.math.BigDecimal;
         @Index(name = "idx_cart_item_cart", columnList = "cart_id"),
         @Index(name = "idx_cart_item_product", columnList = "product_id")
 })
-public class CartItem {
+public class CartItem extends BaseAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

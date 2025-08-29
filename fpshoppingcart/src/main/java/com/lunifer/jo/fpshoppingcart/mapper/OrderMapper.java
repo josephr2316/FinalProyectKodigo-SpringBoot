@@ -11,10 +11,14 @@ public interface OrderMapper {
     @Mapping(target = "username", source = "user.username")
     @Mapping(target = "userFullName", expression = "java(order.getUser().getFullName())")
     @Mapping(target = "canBeCancelled", expression = "java(order.canBeCancelled())")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     OrderDTO toOrderDTO(Order order);
 
     @Mapping(target = "orderId", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "status", constant = "PENDING")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Order toOrder(CreateOrderDTO dto);
 }

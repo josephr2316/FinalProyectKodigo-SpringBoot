@@ -10,6 +10,8 @@ public interface ProductMapper {
     // Entity → DTO
     @Mapping(target = "categoryId", source = "category.categoryId")
     @Mapping(target = "categoryName", source = "category.categoryName")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     ProductDTO toProductDTO(Product product);
 
     // Create DTO → Entity
@@ -17,9 +19,13 @@ public interface ProductMapper {
     @Mapping(target = "active", constant = "true")
     @Mapping(target = "reviews", ignore = true)
     @Mapping(target = "category.categoryId", source = "categoryId")
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Product toProduct(CreateProductDTO dto);
 
     // Update DTO → update Entity (update in place)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void updateProductFromDTO(UpdateProductDTO dto, @MappingTarget Product product);
 }

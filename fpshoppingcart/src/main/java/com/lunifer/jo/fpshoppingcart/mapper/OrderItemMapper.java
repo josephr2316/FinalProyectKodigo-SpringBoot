@@ -11,5 +11,7 @@ public interface OrderItemMapper {
     @Mapping(target = "productId", source = "product.productId")
     @Mapping(target = "productName", source = "product.productName")
     @Mapping(target = "unitPrice", source = "unitPrice")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     OrderItemDTO toOrderItemDTO(OrderItem item);
 }

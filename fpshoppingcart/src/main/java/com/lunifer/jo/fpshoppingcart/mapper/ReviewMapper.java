@@ -15,6 +15,8 @@ public interface ReviewMapper {
     @Mapping(target = "positive", expression = "java(review.isPositive())")
     @Mapping(target = "negative", expression = "java(review.isNegative())")
     @Mapping(target = "neutral", expression = "java(review.isNeutral())")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     ReviewDTO toReviewDTO(Review review);
 
     // CreateReviewDTO → Review
@@ -24,6 +26,8 @@ public interface ReviewMapper {
     @Mapping(target = "positive", ignore = true)
     @Mapping(target = "negative", ignore = true)
     @Mapping(target = "neutral", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Review toReview(CreateReviewDTO dto);
 }
   

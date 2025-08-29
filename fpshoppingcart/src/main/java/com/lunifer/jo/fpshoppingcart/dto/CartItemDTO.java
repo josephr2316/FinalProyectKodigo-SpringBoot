@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -22,4 +23,6 @@ public class CartItemDTO {
     private BigDecimal subtotal;
     private boolean validQuantity;
     private int availableStock;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
