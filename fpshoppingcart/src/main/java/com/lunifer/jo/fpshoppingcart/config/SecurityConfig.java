@@ -5,6 +5,7 @@ import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -29,7 +30,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
 
     @Autowired
-    public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter, UserServiceImpl userDetailsService, JwtService jwtService) {
+    public SecurityConfig(@Lazy JwtAuthorizationFilter jwtAuthorizationFilter, UserServiceImpl userDetailsService, JwtService jwtService) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;

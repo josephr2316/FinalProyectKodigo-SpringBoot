@@ -1,5 +1,6 @@
 package com.lunifer.jo.fpshoppingcart.service.impl;
 import com.lunifer.jo.fpshoppingcart.entity.User;
+import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.security.auth.AuthResponse;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -29,9 +30,11 @@ public class JwtService {
             @Value("${token.time}")
                 private long EXPIRATION_TIME;
                     private final UserService userService;
+                    private final UserRepository userRepository;
 
-                        public JwtService(UserService userService){
+                        public JwtService(UserService userService, UserRepository userRepository){
                                 this.userService = userService;
+                                this.userRepository = userRepository;
                                     }
 
                                         private final Logger logger =  LoggerFactory.getLogger(JwtService.class);
@@ -80,8 +83,10 @@ public class JwtService {
                                                                                                                                                                                                                                                                                                                                                 Map<String, Object> claims = new HashMap<>();
 
                                                                                                                                                                                                                                                                                                                                                         //Getting the user's roles
-                                                                                                                                                                                                                                                                                                                                                                User user = userService.findByUsername(username);
-                                                                                                                                                                                                                                                                                                                                                                        claims.put("roles", String.join(",", user.getRoles()));
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                User user = userRepository.findByUsername(username).orElse(null);
+                                                                                                                                                                                                                                                                                                                                                                                        if (user != null) {
+                                                                                                                                                                                                                                                                                                                                                                                            claims.put("roles", user.getRoles().stream().map(Enum::name).reduce("", (a, b) -> a.isEmpty() ? b : a + "," + b));
+                                                                                                                                                                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                                                                                                                                                                 //
                                                                                                                                                                                                                                                                                                                                                                                         return createToken(claims, username);
                                                                                                                                                                                                                                                                                                                                                                                             }

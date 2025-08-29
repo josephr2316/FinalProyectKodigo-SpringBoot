@@ -12,4 +12,9 @@ public interface OrderMapper {
     @Mapping(target = "userFullName", expression = "java(order.getUser().getFullName())")
     @Mapping(target = "canBeCancelled", expression = "java(order.canBeCancelled())")
     OrderDTO toOrderDTO(Order order);
+
+    @Mapping(target = "orderId", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "status", constant = "PENDING")
+    Order toOrder(CreateOrderDTO dto);
 }

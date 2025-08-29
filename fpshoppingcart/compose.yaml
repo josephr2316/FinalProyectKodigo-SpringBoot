@@ -4,12 +4,15 @@ services:
     image: mysql:8.2.0
     command: --default-authentication-plugin=caching_sha2_password
     restart: always
-    env_file:
-      - mysql.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-shoppingCartDB}
+      MYSQL_USER: ${MYSQL_USER:-keycloak}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-keycloak}
     ports:
-      - "3310:3306"
+      - "${MYSQL_PORT:-3310}:3306"
     networks:
-      - dark-scorpion
+      - ${DOCKER_NETWORK:-dark-scorpion}
     volumes:
       - mysql-data:/var/lib/mysql
 

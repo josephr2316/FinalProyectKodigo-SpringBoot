@@ -13,5 +13,6 @@ public interface UserService  {
     UserDTO getUserByUsername(String username);
     UserDTO login(LoginDTO dto); // Si no usas Spring Security/JWT nativo, sino autenticación manual
     void changePassword(Long userId, ChangePasswordDTO dto);
+    UserDTO getCurrentUser(); // Get current authenticated user
 
 }

@@ -24,12 +24,16 @@ public class PagedResponse<T> {
     private boolean hasPrevious;
 
     public static <T> PagedResponse<T> of(Page<T> page) {
-        PagedResponse<T> response = new PagedResponse<>();
-        response.setContent(page.getContent());
-        response.setPageNumber(page.getNumber());
-        response.setPageSize(page.getSize());
-        response.setTotalElements(page.getTotalElements());
-        response.setTotalPages(page.getTotalPages());
-        return response;
+        return PagedResponse.<T>builder()
+                .content(page.getContent())
+                .pageNumber(page.getNumber())
+                .pageSize(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .first(page.isFirst())
+                .last(page.isLast())
+                .hasNext(page.hasNext())
+                .hasPrevious(page.hasPrevious())
+                .build();
     }
 }

@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface CartRepository extends JpaRepository<ShoppingCart, Long> {
+public interface CartRepository extends JpaRepository<Cart, Long> {
 
     Optional<Cart> findByUser_UserId(Long userId);
     

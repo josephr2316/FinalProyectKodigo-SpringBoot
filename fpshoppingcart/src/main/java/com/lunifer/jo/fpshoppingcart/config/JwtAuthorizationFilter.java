@@ -1,6 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.config;
 
 import com.lunifer.jo.fpshoppingcart.service.UserService;
+import com.lunifer.jo.fpshoppingcart.service.impl.CustomUserDetailsService;
 import com.lunifer.jo.fpshoppingcart.service.impl.JwtService;
 import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import jakarta.servlet.FilterChain;
@@ -18,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,13 +29,16 @@ import java.util.List;
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
     private final UserServiceImpl userService;
-
-    private  final JwtService jwtService;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtService jwtService;
+    
     @Autowired
-    public JwtAuthorizationFilter(JwtService jwtService, UserServiceImpl userService) {
+    public JwtAuthorizationFilter(JwtService jwtService, UserServiceImpl userService, CustomUserDetailsService customUserDetailsService) {
         this.jwtService = jwtService;
         this.userService = userService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
 
@@ -65,7 +71,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             logger.info("JWT USER : " + jwtService.extractUsername(jwtToken));
 
             // I can fetch roles from the database, but in a JWT schema, the aim is to be decentralized.
-             UserDetails userDetails = userService.loadUserByUsername(username);
+             UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
             //UserDetails userDetails = new User(jwtService.extractUsername(jwtToken),"null",true, true, true, true, grantedAuthorityList);
 

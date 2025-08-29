@@ -21,11 +21,9 @@ public interface ReviewMapper {
     @Mapping(target = "reviewId", ignore = true)
     @Mapping(target = "user", ignore = true)      // Se asigna en el Service usando el usuario autenticado
     @Mapping(target = "product", ignore = true)   // Se asigna en el Service buscando el producto por ID
-    @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "positive", ignore = true)
     @Mapping(target = "negative", ignore = true)
     @Mapping(target = "neutral", ignore = true)
-    Review createReviewDtoToReview(CreateReviewDTO dto);
+    Review toReview(CreateReviewDTO dto);
 }
   

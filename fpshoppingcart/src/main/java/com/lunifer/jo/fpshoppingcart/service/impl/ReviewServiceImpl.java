@@ -35,7 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDTO createReview(CreateReviewDTO dto) {
-        Review review = reviewMapper.createReviewDtOToReview(dto);
+        Review review = reviewMapper.toReview(dto);
         return reviewMapper.toReviewDTO(reviewRepository.save(review));
     }
 

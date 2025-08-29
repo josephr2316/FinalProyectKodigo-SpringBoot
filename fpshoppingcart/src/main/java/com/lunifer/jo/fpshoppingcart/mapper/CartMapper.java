@@ -10,4 +10,8 @@ public interface CartMapper {
     @Mapping(target = "userId", source = "user.userId")
     @Mapping(target = "username", source = "user.username")
     CartDTO toCartDTO(Cart cart);
+    
+    @Mapping(target = "userId", source = "user.userId")
+    @Mapping(target = "username", source = "user.username")
+    CartDTO cartEntityToCartDTO(Cart cart);
 }

@@ -1,15 +1,11 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
-import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
-import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
-import com.lunifer.jo.fpshoppingcart.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.service.CategoryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/categories")

@@ -1,0 +1,26 @@
+# =================================
+# SPRING BOOT SHOPPING CART - ENV VARIABLES
+# =================================
+
+# Application Configuration
+SPRING_PROFILES_ACTIVE=dev
+
+# Database Configuration
+DB_URL=jdbc:mysql://localhost:3310/shoppingCartDB?useSSL=false
+DB_USERNAME=keycloak
+DB_PASSWORD=keycloak
+
+# JWT Configuration (CHANGE IN PRODUCTION!)
+JWT_SECRET=your_super_secret_jwt_key_at_least_512_bits_change_this_in_production
+JWT_EXPIRATION_HOURS=10
+
+# MySQL Docker Configuration
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=shoppingCartDB
+MYSQL_USER=keycloak
+MYSQL_PASSWORD=keycloak
+MYSQL_PORT=3310
+DOCKER_NETWORK=dark-scorpion
+
+# Server Configuration
+SERVER_PORT=8080

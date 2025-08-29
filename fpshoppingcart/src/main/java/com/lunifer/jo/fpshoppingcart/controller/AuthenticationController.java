@@ -1,17 +1,13 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.security.auth.AuthRequest;
 import com.lunifer.jo.fpshoppingcart.security.auth.AuthResponse;
 import com.lunifer.jo.fpshoppingcart.service.impl.JwtService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,11 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 public class AuthenticationController {
@@ -50,8 +42,8 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> auth(@RequestParam("username") String username, @RequestParam("password") String password){
 
-        User user = userRepository.findByUsername(username);
-        if(user==null || !user.getPassword().equals(passwordEncoder.encode(password))){
+        User user = userRepository.findByUsername(username).orElse(null);
+        if(user == null || !passwordEncoder.matches(password, user.getPassword())){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         AuthResponse token = jwtService.generateToken(username);
@@ -68,7 +60,7 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping("/user-details")
     public String getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();

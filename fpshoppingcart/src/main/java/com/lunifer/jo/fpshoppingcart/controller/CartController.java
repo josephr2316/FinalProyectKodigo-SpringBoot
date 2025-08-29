@@ -1,13 +1,10 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.ShoppingCartDTO;
-import com.lunifer.jo.fpshoppingcart.payload.ShoppingCartResponse;
-import com.lunifer.jo.fpshoppingcart.service.ShoppingCartService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.service.CartService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")

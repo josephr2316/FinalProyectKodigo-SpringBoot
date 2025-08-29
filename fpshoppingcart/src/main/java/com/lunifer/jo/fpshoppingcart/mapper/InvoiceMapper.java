@@ -11,4 +11,8 @@ public interface InvoiceMapper {
     @Mapping(target = "orderNumber", source = "order.orderNumber")
     @Mapping(target = "paymentStatus", source = "paymentStatus")
     InvoiceDTO toInvoiceDTO(Invoice invoice);
+
+    @Mapping(target = "invoiceId", ignore = true)
+    @Mapping(target = "order", ignore = true)
+    Invoice toInvoice(CreateInvoiceDTO dto);
 }
