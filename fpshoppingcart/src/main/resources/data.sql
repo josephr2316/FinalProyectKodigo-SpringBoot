@@ -1,13 +1,13 @@
 
 -- Insert data into the users table
 INSERT INTO users (first_name, last_name, email, address, phone_number, username, password, active, created_at, updated_at) VALUES
-('John', 'Doe', 'john.doe@email.com', '123 Main St', '123-456-7890', 'josephr2316', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Jane', 'Doe', 'jane.doe@email.com', '456 Oak St', '987-654-3210', 'janedoe', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Alice', 'Smith', 'alice.smith@email.com', '789 Elm St', '555-123-4567', 'alicesmith', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Bob', 'Johnson', 'bob.johnson@email.com', '987 Pine St', '111-222-3333', 'bobjohnson', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Eva', 'Miller', 'eva.miller@email.com', '234 Maple St', '444-555-6666', 'evamiller', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Admin1', 'Admin', 'admin1@email.com', '123 Admin St', '777-888-9999', 'admin1', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('User1', 'User', 'user1@email.com', '123 User St', '555-666-7777', 'user1', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('John', 'Doe', 'john.doe@email.com', '123 Main St', '1234567890', 'josephr2316', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Jane', 'Doe', 'jane.doe@email.com', '456 Oak St', '9876543210', 'janedoe', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Alice', 'Smith', 'alice.smith@email.com', '789 Elm St', '5551234567', 'alicesmith', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Bob', 'Johnson', 'bob.johnson@email.com', '987 Pine St', '1112223333', 'bobjohnson', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Eva', 'Miller', 'eva.miller@email.com', '234 Maple St', '4445556666', 'evamiller', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Admin1', 'Admin', 'admin1@email.com', '123 Admin St', '7778889999', 'admin1', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('User1', 'User', 'user1@email.com', '123 User St', '5556667777', 'user1', '$2a$10$ZLUHFUm06kcn.qDH7vLa2upvEbfrMNGCfeQTZ/eQ0ai9iaVaE7bsO', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Insert data into the user_roles table
 INSERT INTO user_roles (user_id, role) VALUES

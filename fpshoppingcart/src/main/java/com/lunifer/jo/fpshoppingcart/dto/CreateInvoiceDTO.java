@@ -21,6 +21,8 @@ public class CreateInvoiceDTO {
     @DecimalMin(value = "0.01", message = "Total amount must be greater than 0")
     private BigDecimal totalAmount;
 
+    @Builder.Default
     private BigDecimal taxAmount = BigDecimal.ZERO;
+    @Builder.Default
     private BigDecimal discountAmount = BigDecimal.ZERO;
 }

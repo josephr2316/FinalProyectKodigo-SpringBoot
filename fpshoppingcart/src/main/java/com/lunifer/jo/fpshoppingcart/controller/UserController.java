@@ -1,6 +1,13 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.ChangePasswordDTO;
+import com.lunifer.jo.fpshoppingcart.dto.CreateUserDTO;
+import com.lunifer.jo.fpshoppingcart.dto.LoginDTO;
+import com.lunifer.jo.fpshoppingcart.dto.LoginResponseDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateUserDTO;
+import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +38,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserDTO>> createUser(@Valid @RequestBody CreateUserDTO dto) {
-        return ResponseEntity.ok(ApiResponse.success("User created successfully", userService.createUser(dto)));
+        return ResponseEntity.ok(ApiResponse.success("User registered successfully", userService.createUser(dto)));
     }
 
     @PutMapping("/{id}")
@@ -55,6 +62,11 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserDTO>> getCurrentUser() {
         return ResponseEntity.ok(ApiResponse.success(userService.getCurrentUser()));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@Valid @RequestBody LoginDTO dto) {
+        return ResponseEntity.ok(ApiResponse.success("Login successful", userService.login(dto)));
     }
 }
 

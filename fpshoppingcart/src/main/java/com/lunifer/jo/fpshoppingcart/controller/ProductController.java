@@ -1,7 +1,12 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.CreateProductDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.ProductDTO;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateProductDTO;
 import com.lunifer.jo.fpshoppingcart.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@RequestBody CreateProductDTO createProductDTO) {
+    public ResponseEntity<ApiResponse<ProductDTO>> createProduct(@Valid @RequestBody CreateProductDTO createProductDTO) {
         ProductDTO dto = productService.createProduct(createProductDTO);
         return ResponseEntity.ok(ApiResponse.success("Product created successfully", dto));
     }
@@ -38,7 +43,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductDTO>> updateProduct(
         @PathVariable Long id,
-        @RequestBody UpdateProductDTO updateProductDTO
+        @Valid @RequestBody UpdateProductDTO updateProductDTO
     ) {
         ProductDTO dto = productService.updateProduct(id, updateProductDTO);
         return ResponseEntity.ok(ApiResponse.success("Product updated successfully", dto));

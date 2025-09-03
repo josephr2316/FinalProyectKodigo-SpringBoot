@@ -47,7 +47,7 @@ public class Invoice extends BaseAuditEntity {
     @Column(name = "discount_amount", precision = 12, scale = 2)
     private BigDecimal discountAmount = BigDecimal.ZERO;
 
-    // Se autogenera el número de factura si no se especifica
+    // Invoice number is auto-generated if not specified
     @PrePersist
     public void generateInvoiceNumber() {
         if (invoiceNumber == null) {
@@ -55,7 +55,7 @@ public class Invoice extends BaseAuditEntity {
         }
     }
 
-    // Método de utilidad para obtener el monto neto
+    // Utility method to get net amount
     public BigDecimal getNetAmount() {
         return totalAmount.subtract(taxAmount).subtract(discountAmount);
     }

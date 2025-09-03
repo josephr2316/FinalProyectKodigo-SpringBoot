@@ -23,6 +23,12 @@ public interface UserMapper {
     @Mapping(target = "roles", source = "roles", qualifiedByName = "stringListToRoles")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "orderHistory", ignore = true)
+    @Mapping(target = "reviewHistory", ignore = true)
+    @Mapping(target = "cart", ignore = true)
     User toUser(UserDTO userDTO);
 
     // Create DTO → Entity
@@ -38,6 +44,13 @@ public interface UserMapper {
 
     // Update DTO → Entity (update in place)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "orderHistory", ignore = true)
+    @Mapping(target = "reviewHistory", ignore = true)
+    @Mapping(target = "cart", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateUserFromDTO(UpdateUserDTO dto, @MappingTarget User user);

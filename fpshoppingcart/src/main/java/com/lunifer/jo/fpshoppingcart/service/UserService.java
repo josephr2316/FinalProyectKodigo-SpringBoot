@@ -11,8 +11,9 @@ public interface UserService  {
     UserDTO updateUser(Long id, UpdateUserDTO dto);
     void deleteUser(Long id);
     UserDTO getUserByUsername(String username);
-    UserDTO login(LoginDTO dto); // Si no usas Spring Security/JWT nativo, sino autenticación manual
+    LoginResponseDTO login(LoginDTO dto); // Returns user data + JWT token
     void changePassword(Long userId, ChangePasswordDTO dto);
     UserDTO getCurrentUser(); // Get current authenticated user
+    void assignDefaultRolesToUsersWithoutRoles(); // Assign default USER role to users without roles
 
 }

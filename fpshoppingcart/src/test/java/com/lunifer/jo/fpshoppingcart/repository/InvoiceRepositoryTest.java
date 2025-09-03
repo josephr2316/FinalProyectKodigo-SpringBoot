@@ -38,6 +38,8 @@ class InvoiceRepositoryTest {
         user.setFirstName("Test");
         user.setLastName("User");
         user.setPassword("password123");
+        user.setPhoneNumber("1234567890"); // Added required field
+        user.setAddress("123 Test St"); // Added required field
         user.setActive(true);
         user.setRoles(Set.of(UserRol.USER));
         
@@ -76,6 +78,8 @@ class InvoiceRepositoryTest {
         user.setFirstName("Test");
         user.setLastName("User");
         user.setPassword("password123");
+        user.setPhoneNumber("1234567890"); // Added required field
+        user.setAddress("123 Test St"); // Added required field
         user.setActive(true);
         user.setRoles(Set.of(UserRol.USER));
         

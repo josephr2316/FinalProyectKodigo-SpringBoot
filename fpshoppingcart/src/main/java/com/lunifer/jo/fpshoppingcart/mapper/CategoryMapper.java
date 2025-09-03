@@ -7,8 +7,11 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
+    @Mapping(target = "active", source = "active")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "productCount", source = "productCount")
+    @Mapping(target = "activeProductCount", source = "activeProductCount")
     CategoryDTO toCategoryDTO(Category category);
 
     @Mapping(target = "categoryId", ignore = true)

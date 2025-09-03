@@ -1,15 +1,14 @@
 package com.lunifer.jo.fpshoppingcart.repository;
 
-import com.lunifer.jo.fpshoppingcart.config.TestSecurityConfig;
 import com.lunifer.jo.fpshoppingcart.entity.Category;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,46 +23,42 @@ class CategoryRepositoryTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private Category testCategory;
+
+    @BeforeEach
+    void setUp() {
+        // Create test category
+        testCategory = new Category();
+        testCategory.setCategoryName("Test Category");
+        testCategory.setDescription("Test category description");
+        testCategory.setActive(true);
+        
+        // Persist the category
+        testCategory = entityManager.persistAndFlush(testCategory);
+    }
+
     @Test
     void shouldFindActiveCategories() {
-        // Given
-        Category activeCategory = new Category();
-        activeCategory.setCategoryName("Electronics");
-        activeCategory.setDescription("Electronic products");
-        activeCategory.setActive(true);
-        
-        Category inactiveCategory = new Category();
-        inactiveCategory.setCategoryName("Discontinued");
-        inactiveCategory.setDescription("Old products");
-        inactiveCategory.setActive(false);
-
-        entityManager.persistAndFlush(activeCategory);
-        entityManager.persistAndFlush(inactiveCategory);
-
         // When
-        Category foundCategory = categoryRepository.findByCategoryName("Electronics").orElse(null);
+        List<Category> allCategories = categoryRepository.findAll();
+        List<Category> activeCategories = allCategories.stream()
+                .filter(Category::isActive)
+                .toList();
 
         // Then
-        assertThat(foundCategory).isNotNull();
-        assertThat(foundCategory.getCategoryName()).isEqualTo("Electronics");
-        assertThat(foundCategory.isActive()).isTrue();
+        assertThat(activeCategories).isNotEmpty();
+        assertThat(activeCategories).anyMatch(category -> 
+            category.getCategoryName().equals("Test Category") && category.isActive());
     }
 
     @Test
     void shouldFindCategoryByCategoryName() {
-        // Given
-        Category category = new Category();
-        category.setCategoryName("Books");
-        category.setDescription("Book products");
-        category.setActive(true);
-        entityManager.persistAndFlush(category);
-
         // When
-        Optional<Category> foundCategory = categoryRepository.findByCategoryName("Books");
+        Optional<Category> found = categoryRepository.findByCategoryName("Test Category");
 
         // Then
-        assertThat(foundCategory).isPresent();
-        assertThat(foundCategory.get().getCategoryName()).isEqualTo("Books");
-        assertThat(foundCategory.get().getDescription()).isEqualTo("Book products");
+        assertThat(found).isPresent();
+        assertThat(found.get().getCategoryName()).isEqualTo("Test Category");
+        assertThat(found.get().getDescription()).isEqualTo("Test category description");
     }
 }

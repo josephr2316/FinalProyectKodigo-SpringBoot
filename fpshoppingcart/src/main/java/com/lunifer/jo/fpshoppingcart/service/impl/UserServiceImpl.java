@@ -2,27 +2,36 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.*;
 import com.lunifer.jo.fpshoppingcart.entity.User;
+import com.lunifer.jo.fpshoppingcart.enums.UserRol;
+import com.lunifer.jo.fpshoppingcart.exception.DuplicateResourceException;
+import com.lunifer.jo.fpshoppingcart.exception.InvalidCredentialsException;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.exception.UnauthorizedException;
 import com.lunifer.jo.fpshoppingcart.mapper.UserMapper;
 import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
+import com.lunifer.jo.fpshoppingcart.security.auth.AuthResponse;
 import com.lunifer.jo.fpshoppingcart.service.UserService;
+import com.lunifer.jo.fpshoppingcart.service.impl.JwtService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder; // Para hash de password
+    private final PasswordEncoder passwordEncoder; // For password hashing
     
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, @Lazy PasswordEncoder passwordEncoder) {
+    private final JwtService jwtService; // For JWT generation
+    
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, @Lazy PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -38,11 +47,29 @@ public class UserServiceImpl implements UserService {
         return PagedResponse.of(users.map(userMapper::toUserDTO));
     }
 
-    @Override
+        @Override
     public UserDTO createUser(CreateUserDTO dto) {
+        // Validate that username doesn't exist
+        if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
+            throw new DuplicateResourceException("User", "username", dto.getUsername());
+        }
+        
+        // Validate that email doesn't exist
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new DuplicateResourceException("User", "email", dto.getEmail());
+        }
+        
         User user = userMapper.toUser(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword())); // Hashing
-        return userMapper.toUserDTO(userRepository.save(user));
+
+        // Assign default role (USER) if not specified
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.addRole(UserRol.USER);
+        }
+        
+        // Save and return the user
+        User savedUser = userRepository.save(user);
+        return userMapper.toUserDTO(savedUser);
     }
 
     @Override
@@ -68,14 +95,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO login(LoginDTO dto) {
+    public LoginResponseDTO login(LoginDTO dto) {
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+                .orElseThrow(() -> new InvalidCredentialsException("User not found"));
+        
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new UnauthorizedException("Invalid credentials");
+            throw new InvalidCredentialsException("Incorrect password");
         }
-        return userMapper.toUserDTO(user);
-        // Aquí deberías retornar también un JWT/token si usas autenticación basada en tokens.
+        
+        if (!user.isActive()) {
+            throw new InvalidCredentialsException("Inactive user");
+        }
+        
+        // Convert to DTO
+        UserDTO userDTO = userMapper.toUserDTO(user);
+        
+        // Generate JWT token
+        AuthResponse authResponse = jwtService.generateToken(user.getUsername());
+        
+        // Return login response with user data and JWT token
+        return LoginResponseDTO.builder()
+                .user(userDTO)
+                .jwtToken(authResponse.token())
+                .expiresAt(authResponse.expiresAt())
+                .message("Login successful")
+                .build();
     }
 
     @Override
@@ -105,5 +149,18 @@ public class UserServiceImpl implements UserService {
         }
         
         throw new UnauthorizedException("User not authenticated");
+    }
+
+    @Override
+    public void assignDefaultRolesToUsersWithoutRoles() {
+        // Find all users and assign default USER role if they don't have roles
+        List<User> allUsers = userRepository.findAll();
+        
+        for (User user : allUsers) {
+            if (user.getRoles() == null || user.getRoles().isEmpty()) {
+                user.addRole(UserRol.USER);
+                userRepository.save(user);
+            }
+        }
     }
 }

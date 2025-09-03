@@ -1,7 +1,7 @@
 package com.lunifer.jo.fpshoppingcart.config;
 
 import com.lunifer.jo.fpshoppingcart.service.UserService;
-import com.lunifer.jo.fpshoppingcart.service.impl.CustomUserDetailsService;
+import com.lunifer.jo.fpshoppingcart.security.CustomUserDetailsService;
 import com.lunifer.jo.fpshoppingcart.service.impl.JwtService;
 import com.lunifer.jo.fpshoppingcart.service.impl.UserServiceImpl;
 import jakarta.servlet.FilterChain;

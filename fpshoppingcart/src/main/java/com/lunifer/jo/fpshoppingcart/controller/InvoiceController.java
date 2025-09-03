@@ -1,7 +1,11 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.CreateInvoiceDTO;
+import com.lunifer.jo.fpshoppingcart.dto.InvoiceDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
 import com.lunifer.jo.fpshoppingcart.service.InvoiceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +31,7 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<InvoiceDTO>> createInvoice(@RequestBody CreateInvoiceDTO dto) {
+    public ResponseEntity<ApiResponse<InvoiceDTO>> createInvoice(@Valid @RequestBody CreateInvoiceDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Invoice created successfully", invoiceService.createInvoice(dto)));
     }
 

@@ -9,6 +9,7 @@ import com.lunifer.jo.fpshoppingcart.enums.OrderStatus;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
+import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.impl.OrderServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private OrderMapper orderMapper;
@@ -119,9 +123,11 @@ class OrderServiceTest {
     void shouldCreateOrder() {
         // Given
         CreateOrderDTO createOrderDTO = new CreateOrderDTO();
+        createOrderDTO.setUserId(1L);
         createOrderDTO.setShippingAddress("123 Main St, City, State 12345");
 
         when(orderMapper.toOrder(createOrderDTO)).thenReturn(order);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(orderMapper.toOrderDTO(order)).thenReturn(orderDTO);
 
@@ -132,6 +138,7 @@ class OrderServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getTotalAmount()).isEqualTo(new BigDecimal("999.99"));
         verify(orderMapper).toOrder(createOrderDTO);
+        verify(userRepository).findById(1L);
         verify(orderRepository).save(any(Order.class));
         verify(orderMapper).toOrderDTO(order);
     }

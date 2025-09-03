@@ -35,6 +35,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDTO createReview(CreateReviewDTO dto) {
+        // TODO: Get authenticated user from security context
+        // For now, we'll need to modify the DTO to include userId
         Review review = reviewMapper.toReview(dto);
         return reviewMapper.toReviewDTO(reviewRepository.save(review));
     }

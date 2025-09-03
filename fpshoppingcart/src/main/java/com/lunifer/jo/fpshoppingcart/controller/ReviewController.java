@@ -1,7 +1,11 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.CreateReviewDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.ReviewDTO;
 import com.lunifer.jo.fpshoppingcart.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +31,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ReviewDTO>> createReview(@RequestBody CreateReviewDTO dto) {
+    public ResponseEntity<ApiResponse<ReviewDTO>> createReview(@Valid @RequestBody CreateReviewDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Review created successfully", reviewService.createReview(dto)));
     }
 

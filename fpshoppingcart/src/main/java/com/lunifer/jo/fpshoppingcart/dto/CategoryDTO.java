@@ -17,8 +17,8 @@ public class CategoryDTO {
     private String categoryName;
     private String description;
     private boolean active;
-    private Long productCount;        // Optional: cantidad total de productos en esta categoría
-    private Long activeProductCount;  // Optional: cantidad de productos activos
+    private Long productCount;        // Optional: total number of products in this category
+    private Long activeProductCount;  // Optional: number of active products
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

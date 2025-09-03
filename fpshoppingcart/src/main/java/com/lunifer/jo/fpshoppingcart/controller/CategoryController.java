@@ -1,7 +1,12 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.CategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.CreateCategoryDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateCategoryDTO;
 import com.lunifer.jo.fpshoppingcart.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +32,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CategoryDTO>> createCategory(@RequestBody CreateCategoryDTO dto) {
+    public ResponseEntity<ApiResponse<CategoryDTO>> createCategory(@Valid @RequestBody CreateCategoryDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Category created successfully", categoryService.createCategory(dto)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryDTO>> updateCategory(@PathVariable Long id, @RequestBody UpdateCategoryDTO dto) {
+    public ResponseEntity<ApiResponse<CategoryDTO>> updateCategory(@PathVariable Long id, @Valid @RequestBody UpdateCategoryDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Category updated successfully", categoryService.updateCategory(id, dto)));
     }
 

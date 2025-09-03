@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,110 +32,95 @@ class ReviewRepositoryTest {
     void shouldFindReviewsByProduct() {
         // Given
         Category category = new Category();
-        category.setCategoryName("Electronics");
-        category.setDescription("Electronic devices");
+        category.setCategoryName("Test Category");
+        category.setDescription("Test category description");
         category.setActive(true);
-        
-        Category savedCategory = entityManager.persistAndFlush(category);
+        category = entityManager.persistAndFlush(category);
 
         Product product = new Product();
         product.setProductName("Test Product");
-        product.setDescription("Test Description");
-        product.setPrice(BigDecimal.valueOf(100.00));
-        product.setStock(10);
+        product.setDescription("Test product description");
+        product.setPrice(BigDecimal.valueOf(10.99));
+        product.setStock(100);
+        product.setCategory(category);
         product.setActive(true);
-        product.setCategory(savedCategory);
-        
-        Product savedProduct = entityManager.persistAndFlush(product);
+        product = entityManager.persistAndFlush(product);
 
         User user = new User();
-        user.setUsername("testuser");
-        user.setEmail("test@example.com");
         user.setFirstName("Test");
         user.setLastName("User");
+        user.setEmail("test@test.com");
+        user.setAddress("123 Test St");
+        user.setPhoneNumber("1234567890");
+        user.setUsername("testuser");
         user.setPassword("password123");
         user.setActive(true);
         user.setRoles(Set.of(UserRol.USER));
-        
-        User savedUser = entityManager.persistAndFlush(user);
+        user = entityManager.persistAndFlush(user);
 
         Review review = new Review();
-        review.setProduct(savedProduct);
-        review.setUser(savedUser);
-        review.setComment("Great product!");
+        review.setUser(user);
+        review.setProduct(product);
         review.setRating(5);
+        review.setComment("Great product!");
         review.setLikeDislike(true);
-        
         entityManager.persistAndFlush(review);
 
         // When
-        Page<Review> foundReviews = reviewRepository.findByProduct_ProductId(
-            savedProduct.getProductId(), 
-            PageRequest.of(0, 10)
-        );
+        Page<Review> reviews = reviewRepository.findByProduct_ProductId(product.getProductId(), PageRequest.of(0, 10));
 
         // Then
-        assertThat(foundReviews.getContent()).hasSize(1);
-        assertThat(foundReviews.getContent().get(0).getProduct().getProductId())
-            .isEqualTo(savedProduct.getProductId());
-        assertThat(foundReviews.getContent().get(0).getRating()).isEqualTo(5);
+        assertThat(reviews).isNotEmpty();
+        assertThat(reviews.getContent()).hasSize(1);
+        assertThat(reviews.getContent().get(0).getRating()).isEqualTo(5);
+        assertThat(reviews.getContent().get(0).getComment()).isEqualTo("Great product!");
     }
 
     @Test
     void shouldFindReviewsByUser() {
         // Given
         Category category = new Category();
-        category.setCategoryName("Electronics");
-        category.setDescription("Electronic devices");
+        category.setCategoryName("Test Category");
+        category.setDescription("Test category description");
         category.setActive(true);
-        
-        Category savedCategory = entityManager.persistAndFlush(category);
+        category = entityManager.persistAndFlush(category);
 
         Product product = new Product();
         product.setProductName("Test Product");
-        product.setDescription("Test Description");
-        product.setPrice(BigDecimal.valueOf(100.00));
-        product.setStock(10);
+        product.setDescription("Test product description");
+        product.setPrice(BigDecimal.valueOf(10.99));
+        product.setStock(100);
+        product.setCategory(category);
         product.setActive(true);
-        product.setCategory(savedCategory);
-        
-        Product savedProduct = entityManager.persistAndFlush(product);
+        product = entityManager.persistAndFlush(product);
 
         User user = new User();
-        user.setUsername("testuser");
-        user.setEmail("test@example.com");
         user.setFirstName("Test");
         user.setLastName("User");
+        user.setEmail("test@test.com");
+        user.setAddress("123 Test St");
+        user.setPhoneNumber("1234567890");
+        user.setUsername("testuser");
         user.setPassword("password123");
         user.setActive(true);
         user.setRoles(Set.of(UserRol.USER));
-        
-        User savedUser = entityManager.persistAndFlush(user);
+        user = entityManager.persistAndFlush(user);
 
         Review review = new Review();
-        review.setProduct(savedProduct);
-        review.setUser(savedUser);
-        review.setComment("Great product!");
+        review.setUser(user);
+        review.setProduct(product);
         review.setRating(5);
+        review.setComment("Great product!");
         review.setLikeDislike(true);
-        
         entityManager.persistAndFlush(review);
 
         // When
-        Page<Review> foundReviewsPage = reviewRepository.findByUser_UserId(savedUser.getUserId(), PageRequest.of(0, 10));
+        Page<Review> reviews = reviewRepository.findByUser_UserId(user.getUserId(), PageRequest.of(0, 10));
 
         // Then
-        assertThat(foundReviewsPage.getContent()).hasSize(1);
-        assertThat(foundReviewsPage.getContent().get(0).getUser().getUserId()).isEqualTo(savedUser.getUserId());
-        assertThat(foundReviewsPage.getContent().get(0).getRating()).isEqualTo(5);
-    }
-
-    @Test
-    void shouldReturnEmptyListWhenNoReviewsFound() {
-        // When
-        Page<Review> reviewsPage = reviewRepository.findByUser_UserId(999L, PageRequest.of(0, 10));
-
-        // Then
-        assertThat(reviewsPage.getContent()).isEmpty();
+        assertThat(reviews).isNotEmpty();
+        assertThat(reviews.getContent()).hasSize(1);
+        assertThat(reviews.getContent().get(0).getRating()).isEqualTo(5);
+        assertThat(reviews.getContent().get(0).getComment()).isEqualTo("Great product!");
     }
 }

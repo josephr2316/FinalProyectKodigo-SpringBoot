@@ -1,7 +1,11 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.AddToCartDTO;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.CartDTO;
+import com.lunifer.jo.fpshoppingcart.dto.UpdateCartItemDTO;
 import com.lunifer.jo.fpshoppingcart.service.CartService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +23,12 @@ public class CartController {
     }
 
     @PostMapping("/{userId}/add")
-    public ResponseEntity<ApiResponse<CartDTO>> addItemToCart(@PathVariable Long userId, @RequestBody AddToCartDTO dto) {
+    public ResponseEntity<ApiResponse<CartDTO>> addItemToCart(@PathVariable Long userId, @Valid @RequestBody AddToCartDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Item added", cartService.addItemToCart(userId, dto)));
     }
 
     @PutMapping("/{userId}/item/{cartItemId}")
-    public ResponseEntity<ApiResponse<CartDTO>> updateCartItem(@PathVariable Long userId, @PathVariable Long cartItemId, @RequestBody UpdateCartItemDTO dto) {
+    public ResponseEntity<ApiResponse<CartDTO>> updateCartItem(@PathVariable Long userId, @PathVariable Long cartItemId, @Valid @RequestBody UpdateCartItemDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Cart item updated", cartService.updateCartItem(userId, cartItemId, dto)));
     }
 

@@ -2,10 +2,12 @@ package com.lunifer.jo.fpshoppingcart.service.impl;
 
 import com.lunifer.jo.fpshoppingcart.dto.*;
 import com.lunifer.jo.fpshoppingcart.entity.Order;
+import com.lunifer.jo.fpshoppingcart.entity.User;
 import com.lunifer.jo.fpshoppingcart.enums.OrderStatus;
 import com.lunifer.jo.fpshoppingcart.exception.ResourceNotFoundException;
 import com.lunifer.jo.fpshoppingcart.mapper.OrderMapper;
 import com.lunifer.jo.fpshoppingcart.repository.OrderRepository;
+import com.lunifer.jo.fpshoppingcart.repository.UserRepository;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
     private final OrderMapper orderMapper;
 
     @Override
@@ -33,8 +36,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public PagedResponse<OrderDTO> getUserOrders(Long userId, Pageable pageable) {
+        // Verify user exists
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User", "id", userId);
+        }
+        
+        // Get orders for specific user
+        Page<Order> orders = orderRepository.findByUser_UserId(userId, pageable);
+        return PagedResponse.of(orders.map(orderMapper::toOrderDTO));
+    }
+
+    @Override
     public OrderDTO createOrder(CreateOrderDTO dto) {
         Order order = orderMapper.toOrder(dto);
+        
+        // Set the user manually since the mapper ignores it
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", dto.getUserId()));
+        order.setUser(user);
+        
         return orderMapper.toOrderDTO(orderRepository.save(order));
     }
 

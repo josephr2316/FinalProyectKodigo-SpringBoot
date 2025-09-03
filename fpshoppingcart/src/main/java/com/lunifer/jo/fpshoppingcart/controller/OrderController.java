@@ -1,10 +1,18 @@
 package com.lunifer.jo.fpshoppingcart.controller;
 
-import com.lunifer.jo.fpshoppingcart.dto.*;
+import com.lunifer.jo.fpshoppingcart.dto.ApiResponse;
+import com.lunifer.jo.fpshoppingcart.dto.CreateOrderDTO;
+import com.lunifer.jo.fpshoppingcart.dto.OrderDTO;
+import com.lunifer.jo.fpshoppingcart.dto.PagedResponse;
+import com.lunifer.jo.fpshoppingcart.dto.UserDTO;
 import com.lunifer.jo.fpshoppingcart.service.OrderService;
+import com.lunifer.jo.fpshoppingcart.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OrderDTO>> getOrder(@PathVariable Long id) {
@@ -26,8 +35,23 @@ public class OrderController {
         return ResponseEntity.ok(ApiResponse.success(orderService.getAllOrders(pageable)));
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<ApiResponse<PagedResponse<OrderDTO>>> getUserOrders(Pageable pageable) {
+        // Get authenticated user from security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        
+        // Get user ID from UserService (robust solution)
+        UserDTO user = userService.getUserByUsername(username);
+        if (user == null) {
+            throw new RuntimeException("User not found: " + username);
+        }
+        
+        return ResponseEntity.ok(ApiResponse.success(orderService.getUserOrders(user.getUserId(), pageable)));
+    }
+
     @PostMapping
-    public ResponseEntity<ApiResponse<OrderDTO>> createOrder(@RequestBody CreateOrderDTO dto) {
+    public ResponseEntity<ApiResponse<OrderDTO>> createOrder(@Valid @RequestBody CreateOrderDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Order created successfully", orderService.createOrder(dto)));
     }
 
